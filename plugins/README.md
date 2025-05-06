@@ -1,0 +1,1 @@
+# Karrio server community plugins
