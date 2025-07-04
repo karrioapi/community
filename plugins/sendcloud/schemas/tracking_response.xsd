@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://sendcloud.com/ws/tracking" xmlns="http://sendcloud.com/ws/tracking" elementFormDefault="qualified">
+    <xsd:element name="tracking-response">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="tracking-info" maxOccurs="unbounded">
+                    <xsd:complexType>
+                        <xsd:all>
+                            <xsd:element name="tracking-number" type="xsd:string" />
+                            <xsd:element name="status" type="xsd:string" />
+                            <xsd:element name="status-details" type="xsd:string" minOccurs="0" />
+                            <xsd:element name="estimated-delivery" type="xsd:date" minOccurs="0" />
+                            <xsd:element name="events">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="event" maxOccurs="unbounded">
+                                            <xsd:complexType>
+                                                <xsd:all>
+                                                    <xsd:element name="date" type="xsd:date" />
+                                                    <xsd:element name="time" type="xsd:time" />
+                                                    <xsd:element name="code" type="xsd:string" />
+                                                    <xsd:element name="description" type="xsd:string" />
+                                                    <xsd:element name="location" type="xsd:string" minOccurs="0" />
+                                                </xsd:all>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:all>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>
