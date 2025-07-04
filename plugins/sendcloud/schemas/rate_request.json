@@ -1,0 +1,129 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "from_address": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "company": {
+                    "type": "string"
+                },
+                "address_line_1": {
+                    "type": "string"
+                },
+                "address_line_2": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "postal_code": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "address_line_1",
+                "city",
+                "postal_code",
+                "country"
+            ]
+        },
+        "to_address": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "company": {
+                    "type": "string"
+                },
+                "address_line_1": {
+                    "type": "string"
+                },
+                "address_line_2": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "postal_code": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "address_line_1",
+                "city",
+                "postal_code",
+                "country"
+            ]
+        },
+        "parcels": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "height": {
+                        "type": "number"
+                    },
+                    "length": {
+                        "type": "number"
+                    },
+                    "width": {
+                        "type": "number"
+                    },
+                    "weight": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "height",
+                    "length",
+                    "width",
+                    "weight"
+                ]
+            }
+        },
+        "service_points": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "carrier": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "to_service_point": {
+            "type": "integer"
+        },
+        "from_service_point": {
+            "type": "integer"
+        }
+    },
+    "required": [
+        "from_address",
+        "to_address",
+        "parcels"
+    ]
+}

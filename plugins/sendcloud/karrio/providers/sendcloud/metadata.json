@@ -1,0 +1,58 @@
+[
+    {
+        "id": "sendcloud",
+        "name": "SendCloud",
+        "services": [
+            {
+                "id": "1",
+                "name": "SendCloud Standard",
+                "code": "sendcloud_standard"
+            },
+            {
+                "id": "2",
+                "name": "SendCloud Express",
+                "code": "sendcloud_express"
+            },
+            {
+                "id": "3",
+                "name": "SendCloud Morning",
+                "code": "sendcloud_morning"
+            },
+            {
+                "id": "4",
+                "name": "SendCloud Evening",
+                "code": "sendcloud_evening"
+            },
+            {
+                "id": "5",
+                "name": "SendCloud Same Day",
+                "code": "sendcloud_same_day"
+            },
+            {
+                "id": "6",
+                "name": "SendCloud Package Point",
+                "code": "sendcloud_package_point"
+            },
+            {
+                "id": "7",
+                "name": "SendCloud DPD Pickup",
+                "code": "sendcloud_dpd_pickup"
+            },
+            {
+                "id": "8",
+                "name": "SendCloud DHL Express",
+                "code": "sendcloud_dhl_express"
+            },
+            {
+                "id": "9",
+                "name": "SendCloud UPS Standard",
+                "code": "sendcloud_ups_standard"
+            },
+            {
+                "id": "10",
+                "name": "SendCloud FedEx International",
+                "code": "sendcloud_fedex_international"
+            }
+        ]
+    }
+]

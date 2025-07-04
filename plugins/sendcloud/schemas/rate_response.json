@@ -1,0 +1,108 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "shipping_products": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "service_point_input": {
+                        "type": "string"
+                    },
+                    "carrier": {
+                        "type": "string"
+                    },
+                    "price": {
+                        "type": "number"
+                    },
+                    "selected": {
+                        "type": "boolean"
+                    },
+                    "min_weight": {
+                        "type": "string"
+                    },
+                    "max_weight": {
+                        "type": "string"
+                    },
+                    "countries": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "methods": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "functionalities": {
+                        "type": "object",
+                        "properties": {
+                            "delivery_confirmation": {
+                                "type": "boolean"
+                            },
+                            "saturday_delivery": {
+                                "type": "boolean"
+                            },
+                            "evening_delivery": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "count": {
+            "type": "integer"
+        },
+        "next": {
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "previous": {
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "results": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "price": {
+                        "type": "number"
+                    },
+                    "carrier": {
+                        "type": "string"
+                    },
+                    "selected": {
+                        "type": "boolean"
+                    }
+                }
+            }
+        }
+    }
+}
