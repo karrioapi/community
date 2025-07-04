@@ -1,15 +1,14 @@
-"""Karrio SendCloud shipment API implementation."""
-
-import karrio.schemas.sendcloud.shipment_request as sendcloud
-import karrio.schemas.sendcloud.shipment_response as shipping
-
+"""
+SendCloud Shipment Create Provider - API v2/v3 JSON Implementation
+"""
 import typing
 import karrio.lib as lib
-import karrio.core.units as units
 import karrio.core.models as models
 import karrio.providers.sendcloud.error as error
 import karrio.providers.sendcloud.utils as provider_utils
 import karrio.providers.sendcloud.units as provider_units
+import karrio.schemas.sendcloud.parcel_request as sendcloud
+import karrio.schemas.sendcloud.parcel_response as shipping
 
 
 def parse_shipment_response(
@@ -17,158 +16,113 @@ def parse_shipment_response(
     settings: provider_utils.Settings,
 ) -> typing.Tuple[models.ShipmentDetails, typing.List[models.Message]]:
     response = _response.deserialize()
-    messages = error.parse_error_response(response, settings)
+    errors = provider_error.parse_error_response(response, settings)
+    shipment = _extract_details(response, settings) if "parcel" in response else None
 
-    # Check if we have valid shipment data (either parcel object or flat response)
-    has_shipment = (
-        ("parcel" in response and response["parcel"] is not None) or
-        ("tracking_number" in response or "shipment_id" in response)
-    )
-
-    shipment = _extract_details(response, settings) if has_shipment else None
-
-    return shipment, messages
+    return shipment, errors
 
 
 def _extract_details(
-    data: dict,
-    settings: provider_utils.Settings,
+    response: dict, settings: provider_utils.Settings
 ) -> models.ShipmentDetails:
-    """Extract shipment details from SendCloud response."""
-    
-    # Extract basic shipment information
-    tracking_number = data.get("tracking_number")
-    shipment_id = data.get("shipment_id")
-    label_format = data.get("label_format", "PDF")
-    service_code = data.get("service_code")
-    
-    # Extract label and invoice data
-    label_data = data.get("label_image")
-    invoice_data = data.get("invoice_image")
+    parcel = lib.to_object(shipping.Parcel, response.get("parcel"))
+
+    label_url = None
+    if parcel.label and parcel.label.normal_printer:
+        label_url = parcel.label.normal_printer[0]
+
+    tracking_url = getattr(parcel, "tracking_url", None)
 
     return models.ShipmentDetails(
         carrier_id=settings.carrier_id,
         carrier_name=settings.carrier_name,
-        tracking_number=tracking_number,
-        shipment_identifier=shipment_id,
-        label_type=label_format,
+        shipment_identifier=str(parcel.id),
+        tracking_number=parcel.tracking_number,
+        label_type="PDF",
         docs=models.Documents(
-            label=label_data,
-            invoice=invoice_data,
+            label=provider_utils.download_label(label_url) if label_url else None
         ),
         meta=dict(
-            service_code=service_code,
+            tracking_url=tracking_url,
+            carrier_tracking_link=tracking_url,
+            service_name=parcel.shipment.name if parcel.shipment else None,
+            label_url=label_url,
+            parcel_id=parcel.id,
+            reference=parcel.reference,
         ),
     )
 
 
-def shipment_request(
-    payload: models.ShipmentRequest,
-    settings: provider_utils.Settings,
-) -> lib.Serializable:
-    """Create a shipment request for SendCloud's parcel API."""
+def shipment_request(payload: models.ShipmentRequest, settings: provider_utils.Settings) -> lib.Serializable:
     shipper = lib.to_address(payload.shipper)
     recipient = lib.to_address(payload.recipient)
-    packages = lib.to_packages(payload.parcels)
-    
-    # Parse service to extract carrier and method
-    service_parts = (payload.service or "").split("_", 2)
-    shipping_method_id = None
-    if len(service_parts) >= 3 and service_parts[0] == "sendcloud":
-        # Extract shipping method ID from composite service
-        # e.g., sendcloud_postnl_standard -> need to find method ID
-        carrier_code = service_parts[1]
-        product_code = service_parts[2]
-        # In production, this would be mapped from rate response metadata
-        
+    package = lib.to_packages(
+        payload.parcels,
+        package_option_type=provider_units.ShippingOption,
+    ).single
+
     options = lib.to_shipping_options(
-        payload.options,
-        package_options=packages.options,
+        payload,
+        package_options=package.options,
         initializer=provider_units.shipping_options_initializer,
     )
 
-    # SendCloud expects total weight
-    total_weight = sum(pkg.weight.KG for pkg in packages)
-    
-    # Get max dimensions
-    max_length = max((pkg.length.CM for pkg in packages if pkg.length), default=0)
-    max_width = max((pkg.width.CM for pkg in packages if pkg.width), default=0)
-    max_height = max((pkg.height.CM for pkg in packages if pkg.height), default=0)
+    service = provider_units.ShippingService.map(payload.service or "standard")
 
-    # Handle customs for international shipments using proper schema types
-    customs_items = []
-    if payload.customs:
-        customs_items = [
-            sendcloud.ParcelItemType(
-                description=item.description or item.title,
-                quantity=item.quantity,
-                weight=str(item.weight),
-                value=str(item.value_amount),
-                hscode=item.hs_code,
-                origincountry=item.origin_country or shipper.country_code,
-                sku=item.sku,
-                productid=item.metadata.get("product_id"),
+    parcel_items = []
+    if package.parcel.items:
+        for item in package.parcel.items:
+            parcel_items.append(
+                sendcloud.ParcelItem(
+                    description=item.description or item.title or "Item",
+                    quantity=item.quantity,
+                                         weight=str(units.Weight(item.weight, item.weight_unit).KG),
+                    value=str(item.value_amount or 0),
+                    hs_code=item.hs_code,
+                    origin_country=item.origin_country,
+                    product_id=item.id,
+                    sku=item.sku,
+                    properties=item.metadata,
+                )
             )
-            for item in payload.customs.commodities
+
+    if not parcel_items:
+        parcel_items = [
+            sendcloud.ParcelItem(
+                description=package.parcel.content or "Package",
+                quantity=1,
+                weight=str(package.weight.KG),
+                value="0",
+            )
         ]
 
-    # Map data to SendCloud shipment request format
-    request = sendcloud.ShipmentRequestType(
-        name=recipient.person_name or recipient.company_name,
-        address=recipient.address_line1,
-        address2=recipient.address_line2,
-        housenumber=lib.failsafe(lambda: int(recipient.street_number)),
-        city=recipient.city,
-        postalcode=recipient.postal_code,
-        country=recipient.country_code,
-        companyname=recipient.company_name,
-        email=recipient.email,
-        telephone=recipient.phone_number,
-        weight=str(total_weight),
-        length=int(max_length) if max_length > 0 else None,
-        width=int(max_width) if max_width > 0 else None,
-        height=int(max_height) if max_height > 0 else None,
-        requestlabel=lib.identity(
-            options.sendcloud_request_label.state
-            if options.sendcloud_request_label.state is not None
-            else True
-        ),
-        applyshippingrules=lib.identity(
-            settings.connection_config.apply_shipping_rules.state
-            if settings.connection_config.apply_shipping_rules.state is not None
-            else True
-        ),
-        shippingmethod=shipping_method_id,
-        externalreference=payload.reference,
-        ordernumber=lib.failsafe(lambda: payload.metadata.get("order_number")),
-        insuredvalue=options.insurance.state,
-        totalinsuredvalue=options.insurance.state,
-        senderaddress=lib.identity(
-            # In production, sender addresses would be pre-configured in SendCloud
-            int(payload.metadata.get("sender_address_id"))
-            if "sender_address_id" in (payload.metadata or {})
-            else None
-        ),
-        shipmentuuid=lib.failsafe(lambda: payload.metadata.get("shipment_uuid")),
-        customsinvoicenr=lib.identity(
-            payload.customs.invoice
-            if payload.customs and payload.customs.invoice
-            else None
-        ),
-        customsshipmenttype=lib.identity(
-            # Map Karrio customs content type to SendCloud type ID
-            # 1: Gift, 2: Documents, 3: Commercial Goods, 4: Commercial Sample, 5: Return
-            {
-                "gift": 1,
-                "documents": 2,
-                "merchandise": 3,
-                "sample": 4,
-                "return_merchandise": 5,
-            }.get(payload.customs.content_type, 3)
-            if payload.customs
-            else None
-        ),
-        parcelitems=customs_items if customs_items else None,
+    request = sendcloud.ParcelRequest(
+        parcel=sendcloud.ParcelData(
+            name=recipient.person_name,
+            company_name=recipient.company_name,
+            email=recipient.email,
+            telephone=recipient.phone_number,
+            address=recipient.street,
+            house_number=recipient.address_line2 or "1",
+            address_2=recipient.address_line2,
+            city=recipient.city,
+            country=recipient.country_code,
+            postal_code=recipient.postal_code,
+            weight=str(package.weight.KG),
+            length=str(package.length.CM) if package.length else None,
+            width=str(package.width.CM) if package.width else None,
+            height=str(package.height.CM) if package.height else None,
+            parcel_items=parcel_items,
+            request_label=payload.label_type is not None,
+            apply_shipping_rules=False,
+            shipment=sendcloud.Shipment(
+                id=service.value,
+                name=service.name,
+            ) if service else None,
+            sender_address=getattr(settings, "sender_address", None),
+            total_order_value="0",
+            total_order_value_currency="EUR",
+        )
     )
 
     return lib.Serializable(request, lib.to_dict)
