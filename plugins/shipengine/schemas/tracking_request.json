@@ -1,0 +1,15 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "tracking_number": {
+            "type": "string"
+        },
+        "carrier_code": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "tracking_number"
+    ]
+}

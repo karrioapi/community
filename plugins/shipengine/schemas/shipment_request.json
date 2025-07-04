@@ -1,0 +1,369 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "shipment": {
+            "type": "object",
+            "properties": {
+                "service_code": {
+                    "type": "string"
+                },
+                "ship_to": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "company_name": {
+                            "type": "string"
+                        },
+                        "address_line1": {
+                            "type": "string"
+                        },
+                        "address_line2": {
+                            "type": "string"
+                        },
+                        "city_locality": {
+                            "type": "string"
+                        },
+                        "state_province": {
+                            "type": "string"
+                        },
+                        "postal_code": {
+                            "type": "string"
+                        },
+                        "country_code": {
+                            "type": "string"
+                        },
+                        "phone": {
+                            "type": "string"
+                        },
+                        "email": {
+                            "type": "string"
+                        },
+                        "address_residential_indicator": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "address_line1",
+                        "city_locality",
+                        "postal_code",
+                        "country_code"
+                    ]
+                },
+                "ship_from": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "company_name": {
+                            "type": "string"
+                        },
+                        "address_line1": {
+                            "type": "string"
+                        },
+                        "address_line2": {
+                            "type": "string"
+                        },
+                        "city_locality": {
+                            "type": "string"
+                        },
+                        "state_province": {
+                            "type": "string"
+                        },
+                        "postal_code": {
+                            "type": "string"
+                        },
+                        "country_code": {
+                            "type": "string"
+                        },
+                        "phone": {
+                            "type": "string"
+                        },
+                        "email": {
+                            "type": "string"
+                        },
+                        "address_residential_indicator": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "address_line1",
+                        "city_locality",
+                        "postal_code",
+                        "country_code"
+                    ]
+                },
+                "return_to": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "company_name": {
+                            "type": "string"
+                        },
+                        "address_line1": {
+                            "type": "string"
+                        },
+                        "address_line2": {
+                            "type": "string"
+                        },
+                        "city_locality": {
+                            "type": "string"
+                        },
+                        "state_province": {
+                            "type": "string"
+                        },
+                        "postal_code": {
+                            "type": "string"
+                        },
+                        "country_code": {
+                            "type": "string"
+                        },
+                        "phone": {
+                            "type": "string"
+                        },
+                        "email": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "packages": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "weight": {
+                                "type": "object",
+                                "properties": {
+                                    "value": {
+                                        "type": "number"
+                                    },
+                                    "unit": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "value",
+                                    "unit"
+                                ]
+                            },
+                            "dimensions": {
+                                "type": "object",
+                                "properties": {
+                                    "length": {
+                                        "type": "number"
+                                    },
+                                    "width": {
+                                        "type": "number"
+                                    },
+                                    "height": {
+                                        "type": "number"
+                                    },
+                                    "unit": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "package_code": {
+                                "type": "string"
+                            },
+                            "insured_value": {
+                                "type": "object",
+                                "properties": {
+                                    "amount": {
+                                        "type": "number"
+                                    },
+                                    "currency": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "label_messages": {
+                                "type": "object",
+                                "properties": {
+                                    "reference1": {
+                                        "type": "string"
+                                    },
+                                    "reference2": {
+                                        "type": "string"
+                                    },
+                                    "reference3": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "external_package_id": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "weight"
+                        ]
+                    }
+                },
+                "customs": {
+                    "type": "object",
+                    "properties": {
+                        "contents": {
+                            "type": "string"
+                        },
+                        "non_delivery": {
+                            "type": "string"
+                        },
+                        "customs_items": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "customs_item_id": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "quantity": {
+                                        "type": "integer"
+                                    },
+                                    "value": {
+                                        "type": "object",
+                                        "properties": {
+                                            "amount": {
+                                                "type": "number"
+                                            },
+                                            "currency": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "harmonized_tariff_code": {
+                                        "type": "string"
+                                    },
+                                    "country_of_origin": {
+                                        "type": "string"
+                                    },
+                                    "unit_of_measure": {
+                                        "type": "string"
+                                    },
+                                    "sku": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "advanced_options": {
+                    "type": "object",
+                    "properties": {
+                        "bill_to_account": {
+                            "type": "string"
+                        },
+                        "bill_to_country_code": {
+                            "type": "string"
+                        },
+                        "bill_to_party": {
+                            "type": "string"
+                        },
+                        "bill_to_postal_code": {
+                            "type": "string"
+                        },
+                        "contains_alcohol": {
+                            "type": "boolean"
+                        },
+                        "delivered_duty_paid": {
+                            "type": "boolean"
+                        },
+                        "dry_ice": {
+                            "type": "boolean"
+                        },
+                        "dry_ice_weight": {
+                            "type": "object",
+                            "properties": {
+                                "value": {
+                                    "type": "number"
+                                },
+                                "unit": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "freight_class": {
+                            "type": "string"
+                        },
+                        "non_machinable": {
+                            "type": "boolean"
+                        },
+                        "saturday_delivery": {
+                            "type": "boolean"
+                        },
+                        "use_ups_ground_freight_pricing": {
+                            "type": "boolean"
+                        },
+                        "freight_charge": {
+                            "type": "object",
+                            "properties": {
+                                "amount": {
+                                    "type": "number"
+                                },
+                                "currency": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "collect_on_delivery": {
+                            "type": "object",
+                            "properties": {
+                                "payment_type": {
+                                    "type": "string"
+                                },
+                                "payment_amount": {
+                                    "type": "object",
+                                    "properties": {
+                                        "amount": {
+                                            "type": "number"
+                                        },
+                                        "currency": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "required": [
+                "ship_to",
+                "ship_from",
+                "packages"
+            ]
+        },
+        "rate_id": {
+            "type": "string"
+        },
+        "validate_address": {
+            "type": "string"
+        },
+        "label_layout": {
+            "type": "string"
+        },
+        "label_format": {
+            "type": "string"
+        },
+        "label_download_type": {
+            "type": "string"
+        },
+        "display_scheme": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "shipment"
+    ]
+}

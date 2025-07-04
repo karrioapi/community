@@ -1,0 +1,336 @@
+{
+    "label": "ShipEngine",
+    "is_hub": true,
+    "supports": {
+        "rates": true,
+        "tracking": true,
+        "shipment": true,
+        "pickup": false
+    },
+    "services": [
+        {
+            "service_name": "UPS Ground",
+            "service_code": "ups_ground",
+            "carrier_service_code": "ups_ground",
+            "description": "UPS Ground"
+        },
+        {
+            "service_name": "UPS 2nd Day Air",
+            "service_code": "ups_2_day_air",
+            "carrier_service_code": "ups_2_day_air",
+            "description": "UPS 2nd Day Air"
+        },
+        {
+            "service_name": "UPS Next Day Air",
+            "service_code": "ups_next_day_air",
+            "carrier_service_code": "ups_next_day_air",
+            "description": "UPS Next Day Air"
+        },
+        {
+            "service_name": "UPS Express",
+            "service_code": "ups_express",
+            "carrier_service_code": "ups_express",
+            "description": "UPS Express"
+        },
+        {
+            "service_name": "UPS Worldwide Express",
+            "service_code": "ups_worldwide_express",
+            "carrier_service_code": "ups_worldwide_express",
+            "description": "UPS Worldwide Express"
+        },
+        {
+            "service_name": "UPS Worldwide Express Plus",
+            "service_code": "ups_worldwide_express_plus",
+            "carrier_service_code": "ups_worldwide_express_plus",
+            "description": "UPS Worldwide Express Plus"
+        },
+        {
+            "service_name": "UPS 3 Day Select",
+            "service_code": "ups_3_day_select",
+            "carrier_service_code": "ups_3_day_select",
+            "description": "UPS 3 Day Select"
+        },
+        {
+            "service_name": "UPS Express Saver",
+            "service_code": "ups_express_saver",
+            "carrier_service_code": "ups_express_saver",
+            "description": "UPS Express Saver"
+        },
+        {
+            "service_name": "FedEx Ground",
+            "service_code": "fedex_ground",
+            "carrier_service_code": "fedex_ground",
+            "description": "FedEx Ground"
+        },
+        {
+            "service_name": "FedEx 2 Day",
+            "service_code": "fedex_2_day",
+            "carrier_service_code": "fedex_2_day",
+            "description": "FedEx 2 Day"
+        },
+        {
+            "service_name": "FedEx Express Overnight",
+            "service_code": "fedex_express_overnight",
+            "carrier_service_code": "fedex_express_overnight",
+            "description": "FedEx Express Overnight"
+        },
+        {
+            "service_name": "FedEx Standard Overnight",
+            "service_code": "fedex_standard_overnight",
+            "carrier_service_code": "fedex_standard_overnight",
+            "description": "FedEx Standard Overnight"
+        },
+        {
+            "service_name": "FedEx Priority Overnight",
+            "service_code": "fedex_priority_overnight",
+            "carrier_service_code": "fedex_priority_overnight",
+            "description": "FedEx Priority Overnight"
+        },
+        {
+            "service_name": "FedEx International Economy",
+            "service_code": "fedex_international_economy",
+            "carrier_service_code": "fedex_international_economy",
+            "description": "FedEx International Economy"
+        },
+        {
+            "service_name": "FedEx International Priority",
+            "service_code": "fedex_international_priority",
+            "carrier_service_code": "fedex_international_priority",
+            "description": "FedEx International Priority"
+        },
+        {
+            "service_name": "FedEx International First",
+            "service_code": "fedex_international_first",
+            "carrier_service_code": "fedex_international_first",
+            "description": "FedEx International First"
+        },
+        {
+            "service_name": "FedEx Express Saver",
+            "service_code": "fedex_express_saver",
+            "carrier_service_code": "fedex_express_saver",
+            "description": "FedEx Express Saver"
+        },
+        {
+            "service_name": "USPS Priority Mail",
+            "service_code": "usps_priority_mail",
+            "carrier_service_code": "usps_priority_mail",
+            "description": "USPS Priority Mail"
+        },
+        {
+            "service_name": "USPS Priority Mail Express",
+            "service_code": "usps_priority_mail_express",
+            "carrier_service_code": "usps_priority_mail_express",
+            "description": "USPS Priority Mail Express"
+        },
+        {
+            "service_name": "USPS First Class Mail",
+            "service_code": "usps_first_class_mail",
+            "carrier_service_code": "usps_first_class_mail",
+            "description": "USPS First Class Mail"
+        },
+        {
+            "service_name": "USPS Media Mail",
+            "service_code": "usps_media_mail",
+            "carrier_service_code": "usps_media_mail",
+            "description": "USPS Media Mail"
+        },
+        {
+            "service_name": "USPS Parcel Select",
+            "service_code": "usps_parcel_select",
+            "carrier_service_code": "usps_parcel_select",
+            "description": "USPS Parcel Select"
+        },
+        {
+            "service_name": "USPS Priority Mail International",
+            "service_code": "usps_priority_mail_international",
+            "carrier_service_code": "usps_priority_mail_international",
+            "description": "USPS Priority Mail International"
+        },
+        {
+            "service_name": "USPS Priority Mail Express International",
+            "service_code": "usps_priority_mail_express_international",
+            "carrier_service_code": "usps_priority_mail_express_international",
+            "description": "USPS Priority Mail Express International"
+        },
+        {
+            "service_name": "USPS First Class Mail International",
+            "service_code": "usps_first_class_mail_international",
+            "carrier_service_code": "usps_first_class_mail_international",
+            "description": "USPS First Class Mail International"
+        },
+        {
+            "service_name": "DHL Express",
+            "service_code": "dhl_express",
+            "carrier_service_code": "dhl_express",
+            "description": "DHL Express"
+        },
+        {
+            "service_name": "DHL Express 12",
+            "service_code": "dhl_express_12",
+            "carrier_service_code": "dhl_express_12",
+            "description": "DHL Express 12"
+        },
+        {
+            "service_name": "DHL Express 10:30",
+            "service_code": "dhl_express_10_30",
+            "carrier_service_code": "dhl_express_10_30",
+            "description": "DHL Express 10:30"
+        },
+        {
+            "service_name": "DHL Express Worldwide",
+            "service_code": "dhl_express_worldwide",
+            "carrier_service_code": "dhl_express_worldwide",
+            "description": "DHL Express Worldwide"
+        },
+        {
+            "service_name": "DHL Economy Select",
+            "service_code": "dhl_economy_select",
+            "carrier_service_code": "dhl_economy_select",
+            "description": "DHL Economy Select"
+        },
+        {
+            "service_name": "Canada Post Regular Parcel",
+            "service_code": "canada_post_regular_parcel",
+            "carrier_service_code": "canada_post_regular_parcel",
+            "description": "Canada Post Regular Parcel"
+        },
+        {
+            "service_name": "Canada Post Expedited Parcel",
+            "service_code": "canada_post_expedited_parcel",
+            "carrier_service_code": "canada_post_expedited_parcel",
+            "description": "Canada Post Expedited Parcel"
+        },
+        {
+            "service_name": "Canada Post Xpresspost",
+            "service_code": "canada_post_xpresspost",
+            "carrier_service_code": "canada_post_xpresspost",
+            "description": "Canada Post Xpresspost"
+        },
+        {
+            "service_name": "Canada Post Priority",
+            "service_code": "canada_post_priority",
+            "carrier_service_code": "canada_post_priority",
+            "description": "Canada Post Priority"
+        },
+        {
+            "service_name": "OnTrac Ground",
+            "service_code": "ontrac_ground",
+            "carrier_service_code": "ontrac_ground",
+            "description": "OnTrac Ground"
+        },
+        {
+            "service_name": "OnTrac Sunrise",
+            "service_code": "ontrac_sunrise",
+            "carrier_service_code": "ontrac_sunrise",
+            "description": "OnTrac Sunrise"
+        },
+        {
+            "service_name": "OnTrac Gold",
+            "service_code": "ontrac_gold",
+            "carrier_service_code": "ontrac_gold",
+            "description": "OnTrac Gold"
+        },
+        {
+            "service_name": "LSO Ground",
+            "service_code": "lso_ground",
+            "carrier_service_code": "lso_ground",
+            "description": "LSO Ground"
+        },
+        {
+            "service_name": "LSO 2 Day",
+            "service_code": "lso_2_day",
+            "carrier_service_code": "lso_2_day",
+            "description": "LSO 2 Day"
+        },
+        {
+            "service_name": "LSO Next Day",
+            "service_code": "lso_next_day",
+            "carrier_service_code": "lso_next_day",
+            "description": "LSO Next Day"
+        },
+        {
+            "service_name": "Stamps.com Priority Mail",
+            "service_code": "stamps_com_priority_mail",
+            "carrier_service_code": "stamps_com_priority_mail",
+            "description": "Stamps.com Priority Mail"
+        },
+        {
+            "service_name": "Stamps.com First Class Mail",
+            "service_code": "stamps_com_first_class_mail",
+            "carrier_service_code": "stamps_com_first_class_mail",
+            "description": "Stamps.com First Class Mail"
+        },
+        {
+            "service_name": "Stamps.com Media Mail",
+            "service_code": "stamps_com_media_mail",
+            "carrier_service_code": "stamps_com_media_mail",
+            "description": "Stamps.com Media Mail"
+        },
+        {
+            "service_name": "Standard",
+            "service_code": "standard",
+            "carrier_service_code": "standard",
+            "description": "Standard delivery"
+        },
+        {
+            "service_name": "Express",
+            "service_code": "express",
+            "carrier_service_code": "express",
+            "description": "Express delivery"
+        },
+        {
+            "service_name": "Overnight",
+            "service_code": "overnight",
+            "carrier_service_code": "overnight",
+            "description": "Overnight delivery"
+        },
+        {
+            "service_name": "Ground",
+            "service_code": "ground",
+            "carrier_service_code": "ground",
+            "description": "Ground delivery"
+        },
+        {
+            "service_name": "International",
+            "service_code": "international",
+            "carrier_service_code": "international",
+            "description": "International delivery"
+        },
+        {
+            "service_name": "Priority",
+            "service_code": "priority",
+            "carrier_service_code": "priority",
+            "description": "Priority delivery"
+        },
+        {
+            "service_name": "Economy",
+            "service_code": "economy",
+            "carrier_service_code": "economy",
+            "description": "Economy delivery"
+        },
+        {
+            "service_name": "Expedited",
+            "service_code": "expedited",
+            "carrier_service_code": "expedited",
+            "description": "Expedited delivery"
+        },
+        {
+            "service_name": "Next Day",
+            "service_code": "next_day",
+            "carrier_service_code": "next_day",
+            "description": "Next day delivery"
+        },
+        {
+            "service_name": "2 Day",
+            "service_code": "2_day",
+            "carrier_service_code": "2_day",
+            "description": "2 day delivery"
+        },
+        {
+            "service_name": "3 Day",
+            "service_code": "3_day",
+            "carrier_service_code": "3_day",
+            "description": "3 day delivery"
+        }
+    ]
+}

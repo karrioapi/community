@@ -1,0 +1,86 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "tracking_number": {
+            "type": "string"
+        },
+        "status_code": {
+            "type": "string"
+        },
+        "status_description": {
+            "type": "string"
+        },
+        "carrier_status_code": {
+            "type": "string"
+        },
+        "carrier_status_description": {
+            "type": "string"
+        },
+        "ship_date": {
+            "type": "string"
+        },
+        "estimated_delivery_date": {
+            "type": "string"
+        },
+        "actual_delivery_date": {
+            "type": "string"
+        },
+        "exception_description": {
+            "type": "string"
+        },
+        "events": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "occurred_at": {
+                        "type": "string"
+                    },
+                    "carrier_occurred_at": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "city_locality": {
+                        "type": "string"
+                    },
+                    "state_province": {
+                        "type": "string"
+                    },
+                    "postal_code": {
+                        "type": "string"
+                    },
+                    "country_code": {
+                        "type": "string"
+                    },
+                    "company_name": {
+                        "type": "string"
+                    },
+                    "signer": {
+                        "type": "string"
+                    },
+                    "event_code": {
+                        "type": "string"
+                    },
+                    "carrier_event_code": {
+                        "type": "string"
+                    },
+                    "tracking_url": {
+                        "type": "string"
+                    },
+                    "latitude": {
+                        "type": "number"
+                    },
+                    "longitude": {
+                        "type": "number"
+                    }
+                }
+            }
+        },
+        "tracking_url": {
+            "type": "string"
+        }
+    }
+}

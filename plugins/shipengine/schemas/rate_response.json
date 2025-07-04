@@ -1,0 +1,184 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "rate_response": {
+            "type": "object",
+            "properties": {
+                "rates": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "rate_id": {
+                                "type": "string"
+                            },
+                            "rate_type": {
+                                "type": "string"
+                            },
+                            "carrier_id": {
+                                "type": "string"
+                            },
+                            "shipping_amount": {
+                                "type": "object",
+                                "properties": {
+                                    "currency": {
+                                        "type": "string"
+                                    },
+                                    "amount": {
+                                        "type": "number"
+                                    }
+                                }
+                            },
+                            "insurance_amount": {
+                                "type": "object",
+                                "properties": {
+                                    "currency": {
+                                        "type": "string"
+                                    },
+                                    "amount": {
+                                        "type": "number"
+                                    }
+                                }
+                            },
+                            "confirmation_amount": {
+                                "type": "object",
+                                "properties": {
+                                    "currency": {
+                                        "type": "string"
+                                    },
+                                    "amount": {
+                                        "type": "number"
+                                    }
+                                }
+                            },
+                            "other_amount": {
+                                "type": "object",
+                                "properties": {
+                                    "currency": {
+                                        "type": "string"
+                                    },
+                                    "amount": {
+                                        "type": "number"
+                                    }
+                                }
+                            },
+                            "zone": {
+                                "type": "integer"
+                            },
+                            "package_type": {
+                                "type": "string"
+                            },
+                            "delivery_days": {
+                                "type": "integer"
+                            },
+                            "guaranteed_service": {
+                                "type": "boolean"
+                            },
+                            "estimated_delivery_date": {
+                                "type": "string"
+                            },
+                            "carrier_delivery_days": {
+                                "type": "string"
+                            },
+                            "ship_date": {
+                                "type": "string"
+                            },
+                            "negotiated_rate": {
+                                "type": "boolean"
+                            },
+                            "service_type": {
+                                "type": "string"
+                            },
+                            "service_code": {
+                                "type": "string"
+                            },
+                            "trackable": {
+                                "type": "boolean"
+                            },
+                            "carrier_code": {
+                                "type": "string"
+                            },
+                            "carrier_nickname": {
+                                "type": "string"
+                            },
+                            "carrier_friendly_name": {
+                                "type": "string"
+                            },
+                            "validation_status": {
+                                "type": "string"
+                            },
+                            "warning_messages": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "error_messages": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "invalid_rates": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "carrier_id": {
+                                "type": "string"
+                            },
+                            "carrier_code": {
+                                "type": "string"
+                            },
+                            "service_code": {
+                                "type": "string"
+                            },
+                            "error_messages": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "rate_request_id": {
+                    "type": "string"
+                },
+                "shipment_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "errors": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "error_source": {
+                                "type": "string"
+                            },
+                            "error_type": {
+                                "type": "string"
+                            },
+                            "error_code": {
+                                "type": "string"
+                            },
+                            "message": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
