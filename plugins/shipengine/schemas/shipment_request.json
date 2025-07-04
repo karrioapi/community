@@ -1,369 +1,108 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "type": "object",
-    "properties": {
-        "shipment": {
-            "type": "object",
-            "properties": {
-                "service_code": {
-                    "type": "string"
+    "shipment": {
+        "service_code": "ups_ground",
+        "ship_to": {
+            "name": "John Doe",
+            "company_name": "Example Corp",
+            "address_line1": "123 Main St",
+            "address_line2": "Suite 100",
+            "city_locality": "Los Angeles",
+            "state_province": "CA",
+            "postal_code": "90210",
+            "country_code": "US",
+            "phone": "555-123-4567",
+            "email": "john.doe@example.com",
+            "address_residential_indicator": "yes"
+        },
+        "ship_from": {
+            "name": "Jane Smith",
+            "company_name": "Acme Corp",
+            "address_line1": "456 Oak Ave",
+            "address_line2": "Floor 2",
+            "city_locality": "New York",
+            "state_province": "NY",
+            "postal_code": "10001",
+            "country_code": "US",
+            "phone": "555-987-6543",
+            "email": "jane.smith@acme.com",
+            "address_residential_indicator": "no"
+        },
+        "return_to": {
+            "name": "Returns Department",
+            "company_name": "Acme Corp",
+            "address_line1": "456 Oak Ave",
+            "city_locality": "New York",
+            "state_province": "NY",
+            "postal_code": "10001",
+            "country_code": "US"
+        },
+        "packages": [
+            {
+                "weight": {
+                    "value": 2.5,
+                    "unit": "pound"
                 },
-                "ship_to": {
-                    "type": "object",
-                    "properties": {
-                        "name": {
-                            "type": "string"
-                        },
-                        "company_name": {
-                            "type": "string"
-                        },
-                        "address_line1": {
-                            "type": "string"
-                        },
-                        "address_line2": {
-                            "type": "string"
-                        },
-                        "city_locality": {
-                            "type": "string"
-                        },
-                        "state_province": {
-                            "type": "string"
-                        },
-                        "postal_code": {
-                            "type": "string"
-                        },
-                        "country_code": {
-                            "type": "string"
-                        },
-                        "phone": {
-                            "type": "string"
-                        },
-                        "email": {
-                            "type": "string"
-                        },
-                        "address_residential_indicator": {
-                            "type": "string"
-                        }
+                "dimensions": {
+                    "length": 12.0,
+                    "width": 8.0,
+                    "height": 6.0,
+                    "unit": "inch"
+                },
+                "package_code": "package",
+                "insured_value": {
+                    "amount": 100.00,
+                    "currency": "USD"
+                },
+                "label_messages": {
+                    "reference1": "Order #12345",
+                    "reference2": "Customer #67890",
+                    "reference3": "Handle with care"
+                },
+                "external_package_id": "PKG-001"
+            }
+        ],
+        "customs": {
+            "contents": "merchandise",
+            "non_delivery": "return_to_sender",
+            "customs_items": [
+                {
+                    "customs_item_id": "ci_12345",
+                    "description": "Sample Product",
+                    "quantity": 1,
+                    "value": {
+                        "amount": 25.00,
+                        "currency": "USD"
                     },
-                    "required": [
-                        "name",
-                        "address_line1",
-                        "city_locality",
-                        "postal_code",
-                        "country_code"
-                    ]
-                },
-                "ship_from": {
-                    "type": "object",
-                    "properties": {
-                        "name": {
-                            "type": "string"
-                        },
-                        "company_name": {
-                            "type": "string"
-                        },
-                        "address_line1": {
-                            "type": "string"
-                        },
-                        "address_line2": {
-                            "type": "string"
-                        },
-                        "city_locality": {
-                            "type": "string"
-                        },
-                        "state_province": {
-                            "type": "string"
-                        },
-                        "postal_code": {
-                            "type": "string"
-                        },
-                        "country_code": {
-                            "type": "string"
-                        },
-                        "phone": {
-                            "type": "string"
-                        },
-                        "email": {
-                            "type": "string"
-                        },
-                        "address_residential_indicator": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "name",
-                        "address_line1",
-                        "city_locality",
-                        "postal_code",
-                        "country_code"
-                    ]
-                },
-                "return_to": {
-                    "type": "object",
-                    "properties": {
-                        "name": {
-                            "type": "string"
-                        },
-                        "company_name": {
-                            "type": "string"
-                        },
-                        "address_line1": {
-                            "type": "string"
-                        },
-                        "address_line2": {
-                            "type": "string"
-                        },
-                        "city_locality": {
-                            "type": "string"
-                        },
-                        "state_province": {
-                            "type": "string"
-                        },
-                        "postal_code": {
-                            "type": "string"
-                        },
-                        "country_code": {
-                            "type": "string"
-                        },
-                        "phone": {
-                            "type": "string"
-                        },
-                        "email": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "packages": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "weight": {
-                                "type": "object",
-                                "properties": {
-                                    "value": {
-                                        "type": "number"
-                                    },
-                                    "unit": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "value",
-                                    "unit"
-                                ]
-                            },
-                            "dimensions": {
-                                "type": "object",
-                                "properties": {
-                                    "length": {
-                                        "type": "number"
-                                    },
-                                    "width": {
-                                        "type": "number"
-                                    },
-                                    "height": {
-                                        "type": "number"
-                                    },
-                                    "unit": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "package_code": {
-                                "type": "string"
-                            },
-                            "insured_value": {
-                                "type": "object",
-                                "properties": {
-                                    "amount": {
-                                        "type": "number"
-                                    },
-                                    "currency": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "label_messages": {
-                                "type": "object",
-                                "properties": {
-                                    "reference1": {
-                                        "type": "string"
-                                    },
-                                    "reference2": {
-                                        "type": "string"
-                                    },
-                                    "reference3": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "external_package_id": {
-                                "type": "string"
-                            }
-                        },
-                        "required": [
-                            "weight"
-                        ]
-                    }
-                },
-                "customs": {
-                    "type": "object",
-                    "properties": {
-                        "contents": {
-                            "type": "string"
-                        },
-                        "non_delivery": {
-                            "type": "string"
-                        },
-                        "customs_items": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "customs_item_id": {
-                                        "type": "string"
-                                    },
-                                    "description": {
-                                        "type": "string"
-                                    },
-                                    "quantity": {
-                                        "type": "integer"
-                                    },
-                                    "value": {
-                                        "type": "object",
-                                        "properties": {
-                                            "amount": {
-                                                "type": "number"
-                                            },
-                                            "currency": {
-                                                "type": "string"
-                                            }
-                                        }
-                                    },
-                                    "harmonized_tariff_code": {
-                                        "type": "string"
-                                    },
-                                    "country_of_origin": {
-                                        "type": "string"
-                                    },
-                                    "unit_of_measure": {
-                                        "type": "string"
-                                    },
-                                    "sku": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "advanced_options": {
-                    "type": "object",
-                    "properties": {
-                        "bill_to_account": {
-                            "type": "string"
-                        },
-                        "bill_to_country_code": {
-                            "type": "string"
-                        },
-                        "bill_to_party": {
-                            "type": "string"
-                        },
-                        "bill_to_postal_code": {
-                            "type": "string"
-                        },
-                        "contains_alcohol": {
-                            "type": "boolean"
-                        },
-                        "delivered_duty_paid": {
-                            "type": "boolean"
-                        },
-                        "dry_ice": {
-                            "type": "boolean"
-                        },
-                        "dry_ice_weight": {
-                            "type": "object",
-                            "properties": {
-                                "value": {
-                                    "type": "number"
-                                },
-                                "unit": {
-                                    "type": "string"
-                                }
-                            }
-                        },
-                        "freight_class": {
-                            "type": "string"
-                        },
-                        "non_machinable": {
-                            "type": "boolean"
-                        },
-                        "saturday_delivery": {
-                            "type": "boolean"
-                        },
-                        "use_ups_ground_freight_pricing": {
-                            "type": "boolean"
-                        },
-                        "freight_charge": {
-                            "type": "object",
-                            "properties": {
-                                "amount": {
-                                    "type": "number"
-                                },
-                                "currency": {
-                                    "type": "string"
-                                }
-                            }
-                        },
-                        "collect_on_delivery": {
-                            "type": "object",
-                            "properties": {
-                                "payment_type": {
-                                    "type": "string"
-                                },
-                                "payment_amount": {
-                                    "type": "object",
-                                    "properties": {
-                                        "amount": {
-                                            "type": "number"
-                                        },
-                                        "currency": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    "harmonized_tariff_code": "123456.78",
+                    "country_of_origin": "US",
+                    "unit_of_measure": "each",
+                    "sku": "SKU-001"
                 }
-            },
-            "required": [
-                "ship_to",
-                "ship_from",
-                "packages"
             ]
         },
-        "rate_id": {
-            "type": "string"
-        },
-        "validate_address": {
-            "type": "string"
-        },
-        "label_layout": {
-            "type": "string"
-        },
-        "label_format": {
-            "type": "string"
-        },
-        "label_download_type": {
-            "type": "string"
-        },
-        "display_scheme": {
-            "type": "string"
+        "advanced_options": {
+            "bill_to_account": "123456789",
+            "bill_to_country_code": "US",
+            "bill_to_party": "third_party",
+            "bill_to_postal_code": "10001",
+            "contains_alcohol": false,
+            "delivered_duty_paid": false,
+            "dry_ice": false,
+            "saturday_delivery": false,
+            "non_machinable": false,
+            "collect_on_delivery": {
+                "payment_type": "cash",
+                "payment_amount": {
+                    "amount": 25.00,
+                    "currency": "USD"
+                }
+            }
         }
     },
-    "required": [
-        "shipment"
-    ]
+    "rate_id": "se-28529731",
+    "validate_address": "validate_and_clean",
+    "label_layout": "4x6",
+    "label_format": "pdf",
+    "label_download_type": "url",
+    "display_scheme": "label"
 }

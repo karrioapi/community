@@ -1,26 +1,14 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "type": "object",
-    "properties": {
-        "errors": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "error_source": {
-                        "type": "string"
-                    },
-                    "error_type": {
-                        "type": "string"
-                    },
-                    "error_code": {
-                        "type": "string"
-                    },
-                    "message": {
-                        "type": "string"
-                    }
-                }
-            }
+    "request_id": "aa3d8e8e-462b-4476-9618-72db7f7b7009",
+    "errors": [
+        {
+            "error_source": "carrier",
+            "error_type": "account_status",
+            "error_code": "auto_fund_not_supported",
+            "message": "Body of request cannot be null.",
+            "carrier_id": "se-28529731",
+            "carrier_code": "dhl_express",
+            "field_name": "shipment.ship_to.phone_number"
         }
-    }
+    ]
 }

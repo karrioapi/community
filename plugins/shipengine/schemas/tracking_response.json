@@ -1,86 +1,62 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "type": "object",
-    "properties": {
-        "tracking_number": {
-            "type": "string"
+    "tracking_number": "1Z12345E0205271688",
+    "status_code": "DE",
+    "status_description": "Delivered",
+    "carrier_status_code": "D",
+    "carrier_status_description": "Delivered",
+    "ship_date": "2023-01-01T00:00:00Z",
+    "estimated_delivery_date": "2023-01-04T00:00:00Z",
+    "actual_delivery_date": "2023-01-03T15:30:00Z",
+    "exception_description": null,
+    "events": [
+        {
+            "occurred_at": "2023-01-01T10:00:00Z",
+            "carrier_occurred_at": "2023-01-01T10:00:00-05:00",
+            "description": "Package picked up",
+            "city_locality": "New York",
+            "state_province": "NY",
+            "postal_code": "10001",
+            "country_code": "US",
+            "company_name": "UPS",
+            "signer": null,
+            "event_code": "PU",
+            "carrier_event_code": "M",
+            "tracking_url": "https://www.ups.com/track?tracknum=1Z12345E0205271688",
+            "latitude": 40.7128,
+            "longitude": -74.0060
         },
-        "status_code": {
-            "type": "string"
+        {
+            "occurred_at": "2023-01-02T08:30:00Z",
+            "carrier_occurred_at": "2023-01-02T08:30:00-05:00",
+            "description": "Package in transit",
+            "city_locality": "Philadelphia",
+            "state_province": "PA",
+            "postal_code": "19101",
+            "country_code": "US",
+            "company_name": "UPS",
+            "signer": null,
+            "event_code": "IT",
+            "carrier_event_code": "I",
+            "tracking_url": "https://www.ups.com/track?tracknum=1Z12345E0205271688",
+            "latitude": 39.9526,
+            "longitude": -75.1652
         },
-        "status_description": {
-            "type": "string"
-        },
-        "carrier_status_code": {
-            "type": "string"
-        },
-        "carrier_status_description": {
-            "type": "string"
-        },
-        "ship_date": {
-            "type": "string"
-        },
-        "estimated_delivery_date": {
-            "type": "string"
-        },
-        "actual_delivery_date": {
-            "type": "string"
-        },
-        "exception_description": {
-            "type": "string"
-        },
-        "events": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "occurred_at": {
-                        "type": "string"
-                    },
-                    "carrier_occurred_at": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string"
-                    },
-                    "city_locality": {
-                        "type": "string"
-                    },
-                    "state_province": {
-                        "type": "string"
-                    },
-                    "postal_code": {
-                        "type": "string"
-                    },
-                    "country_code": {
-                        "type": "string"
-                    },
-                    "company_name": {
-                        "type": "string"
-                    },
-                    "signer": {
-                        "type": "string"
-                    },
-                    "event_code": {
-                        "type": "string"
-                    },
-                    "carrier_event_code": {
-                        "type": "string"
-                    },
-                    "tracking_url": {
-                        "type": "string"
-                    },
-                    "latitude": {
-                        "type": "number"
-                    },
-                    "longitude": {
-                        "type": "number"
-                    }
-                }
-            }
-        },
-        "tracking_url": {
-            "type": "string"
+        {
+            "occurred_at": "2023-01-03T15:30:00Z",
+            "carrier_occurred_at": "2023-01-03T15:30:00-08:00",
+            "description": "Package delivered",
+            "city_locality": "Los Angeles",
+            "state_province": "CA",
+            "postal_code": "90210",
+            "country_code": "US",
+            "company_name": "UPS",
+            "signer": "J. DOE",
+            "event_code": "DE",
+            "carrier_event_code": "D",
+            "tracking_url": "https://www.ups.com/track?tracknum=1Z12345E0205271688",
+            "latitude": 34.0522,
+            "longitude": -118.2437
         }
-    }
+    ],
+    "tracking_url": "https://www.ups.com/track?tracknum=1Z12345E0205271688"
 }

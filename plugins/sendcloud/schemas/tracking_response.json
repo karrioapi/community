@@ -1,49 +1,30 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "type": "object",
-    "properties": {
-        "tracking": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "string"
-                },
-                "tracking_number": {
-                    "type": "string"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "updated": {
-                    "type": "string"
-                },
-                "carrier": {
-                    "type": "string"
-                },
-                "tracking_events": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "timestamp": {
-                                "type": "string"
-                            },
-                            "status": {
-                                "type": "string"
-                            },
-                            "message": {
-                                "type": "string"
-                            },
-                            "location": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+  "tracking": {
+    "code": "delivered",
+    "tracking_number": "3STEST001234567",
+    "message": "Package delivered successfully",
+    "status": "delivered",
+    "updated": "2023-01-01T15:30:00Z",
+    "carrier": "postnl",
+    "tracking_events": [
+      {
+        "timestamp": "2023-01-01T10:00:00Z",
+        "status": "picked_up",
+        "message": "Package picked up",
+        "location": "Amsterdam, NL"
+      },
+      {
+        "timestamp": "2023-01-01T12:00:00Z",
+        "status": "in_transit",
+        "message": "Package in transit",
+        "location": "Utrecht, NL"
+      },
+      {
+        "timestamp": "2023-01-01T15:30:00Z",
+        "status": "delivered",
+        "message": "Package delivered successfully",
+        "location": "Rotterdam, NL"
+      }
+    ]
+  }
 }

@@ -1,140 +1,45 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "type": "object",
-    "properties": {
-        "parcel": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "company_name": {
-                    "type": "string"
-                },
-                "address": {
-                    "type": "string"
-                },
-                "address_2": {
-                    "type": "string"
-                },
-                "house_number": {
-                    "type": "string"
-                },
-                "city": {
-                    "type": "string"
-                },
-                "postal_code": {
-                    "type": "string"
-                },
-                "country": {
-                    "type": "string"
-                },
-                "telephone": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "shipment": {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "integer"
-                        },
-                        "name": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "weight": {
-                    "type": "string"
-                },
-                "height": {
-                    "type": "string"
-                },
-                "length": {
-                    "type": "string"
-                },
-                "width": {
-                    "type": "string"
-                },
-                "parcel_items": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "description": {
-                                "type": "string"
-                            },
-                            "quantity": {
-                                "type": "integer"
-                            },
-                            "weight": {
-                                "type": "string"
-                            },
-                            "value": {
-                                "type": "string"
-                            },
-                            "sku": {
-                                "type": "string"
-                            },
-                            "hs_code": {
-                                "type": "string"
-                            },
-                            "origin_country": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                },
-                "customs_invoice_nr": {
-                    "type": "string"
-                },
-                "customs_shipment_type": {
-                    "type": "string"
-                },
-                "external_order_id": {
-                    "type": "string"
-                },
-                "external_shipment_id": {
-                    "type": "string"
-                },
-                "total_order_value": {
-                    "type": "string"
-                },
-                "total_order_value_currency": {
-                    "type": "string"
-                },
-                "is_return": {
-                    "type": "boolean"
-                },
-                "insured_value": {
-                    "type": "integer"
-                },
-                "to_service_point": {
-                    "type": "integer"
-                },
-                "request_label": {
-                    "type": "boolean"
-                },
-                "request_label_async": {
-                    "type": "boolean"
-                },
-                "apply_shipping_rules": {
-                    "type": "boolean"
-                }
-            },
-            "required": [
-                "name",
-                "address",
-                "city",
-                "postal_code",
-                "country",
-                "shipment"
-            ]
-        }
+  "parcel": {
+    "name": "John Doe",
+    "company_name": "Acme Corp",
+    "address": "123 Main St",
+    "address_2": "Suite 100",
+    "house_number": "123",
+    "city": "Amsterdam",
+    "postal_code": "1012AB",
+    "country": "NL",
+    "telephone": "+31201234567",
+    "email": "john.doe@example.com",
+    "shipment": {
+      "id": 8,
+      "name": "Standard"
     },
-    "required": [
-        "parcel"
-    ]
+    "weight": "2.5",
+    "height": "10",
+    "length": "20",
+    "width": "15",
+    "parcel_items": [
+      {
+        "description": "Sample Product",
+        "quantity": 1,
+        "weight": "2.5",
+        "value": "25.00",
+        "sku": "SKU-001",
+        "hs_code": "123456",
+        "origin_country": "NL"
+      }
+    ],
+    "customs_invoice_nr": "INV-001",
+    "customs_shipment_type": "commercial_goods",
+    "external_order_id": "ORDER-123",
+    "external_shipment_id": "SHIP-456",
+    "total_order_value": "25.00",
+    "total_order_value_currency": "EUR",
+    "is_return": false,
+    "insured_value": 100,
+    "to_service_point": 12345,
+    "request_label": true,
+    "request_label_async": false,
+    "apply_shipping_rules": true
+  }
 }

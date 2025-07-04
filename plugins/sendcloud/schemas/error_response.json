@@ -1,20 +1,7 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "type": "object",
-    "properties": {
-        "error": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "integer"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "request": {
-                    "type": "string"
-                }
-            }
-        }
+    "error": {
+        "code": 400,
+        "message": "Invalid request parameters",
+        "request": "POST /api/v2/shipments"
     }
 }

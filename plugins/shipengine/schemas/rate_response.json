@@ -1,184 +1,57 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "type": "object",
-    "properties": {
-        "rate_response": {
-            "type": "object",
-            "properties": {
-                "rates": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "rate_id": {
-                                "type": "string"
-                            },
-                            "rate_type": {
-                                "type": "string"
-                            },
-                            "carrier_id": {
-                                "type": "string"
-                            },
-                            "shipping_amount": {
-                                "type": "object",
-                                "properties": {
-                                    "currency": {
-                                        "type": "string"
-                                    },
-                                    "amount": {
-                                        "type": "number"
-                                    }
-                                }
-                            },
-                            "insurance_amount": {
-                                "type": "object",
-                                "properties": {
-                                    "currency": {
-                                        "type": "string"
-                                    },
-                                    "amount": {
-                                        "type": "number"
-                                    }
-                                }
-                            },
-                            "confirmation_amount": {
-                                "type": "object",
-                                "properties": {
-                                    "currency": {
-                                        "type": "string"
-                                    },
-                                    "amount": {
-                                        "type": "number"
-                                    }
-                                }
-                            },
-                            "other_amount": {
-                                "type": "object",
-                                "properties": {
-                                    "currency": {
-                                        "type": "string"
-                                    },
-                                    "amount": {
-                                        "type": "number"
-                                    }
-                                }
-                            },
-                            "zone": {
-                                "type": "integer"
-                            },
-                            "package_type": {
-                                "type": "string"
-                            },
-                            "delivery_days": {
-                                "type": "integer"
-                            },
-                            "guaranteed_service": {
-                                "type": "boolean"
-                            },
-                            "estimated_delivery_date": {
-                                "type": "string"
-                            },
-                            "carrier_delivery_days": {
-                                "type": "string"
-                            },
-                            "ship_date": {
-                                "type": "string"
-                            },
-                            "negotiated_rate": {
-                                "type": "boolean"
-                            },
-                            "service_type": {
-                                "type": "string"
-                            },
-                            "service_code": {
-                                "type": "string"
-                            },
-                            "trackable": {
-                                "type": "boolean"
-                            },
-                            "carrier_code": {
-                                "type": "string"
-                            },
-                            "carrier_nickname": {
-                                "type": "string"
-                            },
-                            "carrier_friendly_name": {
-                                "type": "string"
-                            },
-                            "validation_status": {
-                                "type": "string"
-                            },
-                            "warning_messages": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            "error_messages": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                },
-                "invalid_rates": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "carrier_id": {
-                                "type": "string"
-                            },
-                            "carrier_code": {
-                                "type": "string"
-                            },
-                            "service_code": {
-                                "type": "string"
-                            },
-                            "error_messages": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                },
-                "rate_request_id": {
-                    "type": "string"
-                },
-                "shipment_id": {
-                    "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "errors": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "error_source": {
-                                "type": "string"
-                            },
-                            "error_type": {
-                                "type": "string"
-                            },
-                            "error_code": {
-                                "type": "string"
-                            },
-                            "message": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+  "rate_response": {
+    "rates": [
+      {
+        "rate_id": "se-28529731",
+        "rate_type": "shipment",
+        "carrier_id": "se-28529731",
+        "shipping_amount": {
+          "currency": "USD",
+          "amount": 12.45
+        },
+        "insurance_amount": {
+          "currency": "USD",
+          "amount": 1.50
+        },
+        "confirmation_amount": {
+          "currency": "USD",
+          "amount": 0.00
+        },
+        "other_amount": {
+          "currency": "USD",
+          "amount": 0.00
+        },
+        "zone": 3,
+        "package_type": "package",
+        "delivery_days": 3,
+        "guaranteed_service": false,
+        "estimated_delivery_date": "2023-01-04T00:00:00Z",
+        "carrier_delivery_days": "3-5",
+        "ship_date": "2023-01-01T00:00:00Z",
+        "negotiated_rate": false,
+        "service_type": "UPS Ground",
+        "service_code": "ups_ground",
+        "trackable": true,
+        "carrier_code": "ups",
+        "carrier_nickname": "UPS",
+        "carrier_friendly_name": "UPS",
+        "validation_status": "valid",
+        "warning_messages": [],
+        "error_messages": []
+      }
+    ],
+    "invalid_rates": [
+      {
+        "carrier_id": "se-28529732",
+        "carrier_code": "fedex",
+        "service_code": "fedex_ground",
+        "error_messages": ["Service not available for this route"]
+      }
+    ],
+    "rate_request_id": "se-28529731",
+    "shipment_id": "se-28529731",
+    "created_at": "2023-01-01T10:00:00Z",
+    "status": "completed",
+    "errors": []
+  }
 }

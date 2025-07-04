@@ -1,193 +1,69 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "type": "object",
-    "properties": {
-        "parcel": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "company_name": {
-                    "type": "string"
-                },
-                "address": {
-                    "type": "string"
-                },
-                "address_2": {
-                    "type": "string"
-                },
-                "house_number": {
-                    "type": "string"
-                },
-                "city": {
-                    "type": "string"
-                },
-                "postal_code": {
-                    "type": "string"
-                },
-                "country": {
-                    "type": "string"
-                },
-                "telephone": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "date_created": {
-                    "type": "string"
-                },
-                "date_updated": {
-                    "type": "string"
-                },
-                "shipment": {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "integer"
-                        },
-                        "name": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "weight": {
-                    "type": "string"
-                },
-                "height": {
-                    "type": "string"
-                },
-                "length": {
-                    "type": "string"
-                },
-                "width": {
-                    "type": "string"
-                },
-                "tracking_number": {
-                    "type": "string"
-                },
-                "tracking_url": {
-                    "type": "string"
-                },
-                "label": {
-                    "type": "object",
-                    "properties": {
-                        "normal_printer": {
-                            "type": "array"
-                        },
-                        "label_printer": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "customs_declaration": {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "integer"
-                        },
-                        "currency": {
-                            "type": "string"
-                        },
-                        "content": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "parcel_items": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "description": {
-                                "type": "string"
-                            },
-                            "quantity": {
-                                "type": "integer"
-                            },
-                            "weight": {
-                                "type": "string"
-                            },
-                            "value": {
-                                "type": "string"
-                            },
-                            "sku": {
-                                "type": "string"
-                            },
-                            "hs_code": {
-                                "type": "string"
-                            },
-                            "origin_country": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                },
-                "status": {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "integer"
-                        },
-                        "message": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "carrier": {
-                    "type": "object",
-                    "properties": {
-                        "code": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "external_order_id": {
-                    "type": "string"
-                },
-                "external_shipment_id": {
-                    "type": "string"
-                },
-                "total_order_value": {
-                    "type": "string"
-                },
-                "total_order_value_currency": {
-                    "type": "string"
-                },
-                "is_return": {
-                    "type": "boolean"
-                },
-                "insured_value": {
-                    "type": "integer"
-                },
-                "to_service_point": {
-                    "type": "integer"
-                },
-                "documents": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "type": {
-                                "type": "string"
-                            },
-                            "size": {
-                                "type": "string"
-                            },
-                            "link": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+  "parcel": {
+    "id": 12345,
+    "name": "John Doe",
+    "company_name": "Acme Corp",
+    "address": "123 Main St",
+    "address_2": "Suite 100",
+    "house_number": "123",
+    "city": "Amsterdam",
+    "postal_code": "1012AB",
+    "country": "NL",
+    "telephone": "+31201234567",
+    "email": "john.doe@example.com",
+    "date_created": "2023-01-01T10:00:00Z",
+    "date_updated": "2023-01-01T10:30:00Z",
+    "shipment": {
+      "id": 8,
+      "name": "Standard"
+    },
+    "weight": "2.5",
+    "height": "10",
+    "length": "20",
+    "width": "15",
+    "tracking_number": "3STEST001234567",
+    "tracking_url": "https://tracktrace.postnl.nl/details/3STEST001234567",
+    "label": {
+      "normal_printer": ["https://panel.sendcloud.sc/api/v2/labels/label_12345.pdf"],
+      "label_printer": "https://panel.sendcloud.sc/api/v2/labels/label_12345.zpl"
+    },
+    "customs_declaration": {
+      "id": 789,
+      "currency": "EUR",
+      "content": "commercial_goods"
+    },
+    "parcel_items": [
+      {
+        "description": "Sample Product",
+        "quantity": 1,
+        "weight": "2.5",
+        "value": "25.00",
+        "sku": "SKU-001",
+        "hs_code": "123456",
+        "origin_country": "NL"
+      }
+    ],
+    "status": {
+      "id": 1,
+      "message": "Ready to send"
+    },
+    "carrier": {
+      "code": "postnl",
+      "name": "PostNL"
+    },
+    "external_order_id": "ORDER-123",
+    "external_shipment_id": "SHIP-456",
+    "total_order_value": "25.00",
+    "total_order_value_currency": "EUR",
+    "is_return": false,
+    "insured_value": 100,
+    "to_service_point": 12345,
+    "documents": [
+      {
+        "type": "label",
+        "size": "A4",
+        "link": "https://panel.sendcloud.sc/api/v2/labels/label_12345.pdf"
+      }
+    ]
+  }
 }
