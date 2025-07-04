@@ -1,73 +1,95 @@
-"""Karrio ShipEngine utilities."""
+"""Karrio ShipEngine connection settings and utilities."""
 
+import base64
+import datetime
 import karrio.lib as lib
-import karrio.core.settings as settings
+import karrio.core as core
+import karrio.core.errors as errors
 
 
-class Settings(settings.Settings):
-    """ShipEngine connection settings."""
+class Settings(core.Settings):
+    """ShipEngine connection settings with API key authentication."""
 
+    # API Key authentication for ShipEngine
     api_key: str
-    server_url: str = "https://api.shipengine.com"
 
     @property
     def carrier_name(self):
+        """Returns the carrier name."""
         return "shipengine"
 
     @property
-    def connection_config(self) -> lib.units.Options:
-        from karrio.providers.shipengine.units import ConnectionConfig
+    def server_url(self):
+        """Returns the API server URL.
+        
+        ShipEngine uses the same URL for both test and production environments.
+        The API key determines the actual environment and account access.
+        """
+        return (
+            "https://api.shipengine.com"
+            if not self.test_mode
+            else "https://api.shipengine.com"  # ShipEngine uses the same URL for test/prod
+        )
 
+    @property
+    def tracking_url(self):
+        """Returns the tracking URL template."""
+        return "https://www.shipengine.com/tracking/{}"
+
+    @property
+    def authorization(self):
+        """Returns the authorization header value.
+        
+        ShipEngine uses API key authentication in the format:
+        "API-Key: {api_key}"
+        
+        Returns:
+            str: Authorization header value
+        """
+        return f"API-Key {self.api_key}"
+
+    @property
+    def connection_config(self) -> lib.units.Options:
+        """Returns connection configuration options."""
         return lib.to_connection_config(
             self.config or {},
             option_type=ConnectionConfig,
         )
 
 
-def standard_request_serializer(
-    request: lib.Serializable,
-) -> dict:
-    return lib.to_dict(request.serialize())
+def validate_api_key(api_key: str) -> bool:
+    """Validate ShipEngine API key format.
+    
+    Args:
+        api_key: The API key to validate
+        
+    Returns:
+        bool: True if valid format, False otherwise
+    """
+    # ShipEngine API keys typically start with "TEST_" for sandbox or have specific format
+    return bool(api_key and len(api_key) >= 10)
 
 
-def standard_response_serializer(
-    response: lib.Deserializable[str],
-) -> dict:
-    return lib.to_dict(response.deserialize())
+def create_request_headers(settings: Settings) -> dict:
+    """Create standard request headers for ShipEngine API.
+    
+    Args:
+        settings: ShipEngine settings
+        
+    Returns:
+        dict: Request headers
+    """
+    return {
+        "API-Key": settings.api_key,
+        "Content-Type": "application/json",
+        "User-Agent": f"Karrio/{settings.carrier_name}",
+    }
 
 
 class ConnectionConfig(lib.Enum):
-    """Carrier specific connection configs"""
-
-    platform_name = lib.OptionEnum("platform_name")
-    api_key = lib.OptionEnum("api_key")
-    server_url = lib.OptionEnum("server_url")
-    carrier_id = lib.OptionEnum("carrier_id")
-    service_code = lib.OptionEnum("service_code")
-    package_code = lib.OptionEnum("package_code")
-    confirmation_type = lib.OptionEnum("confirmation_type")
-    label_format = lib.OptionEnum("label_format")
-    label_layout = lib.OptionEnum("label_layout")
-    display_scheme = lib.OptionEnum("display_scheme")
-    dry_ice = lib.OptionEnum("dry_ice", bool)
-    dry_ice_weight = lib.OptionEnum("dry_ice_weight")
-    saturday_delivery = lib.OptionEnum("saturday_delivery", bool)
-    non_machinable = lib.OptionEnum("non_machinable", bool)
-    contains_alcohol = lib.OptionEnum("contains_alcohol", bool)
-    delivered_duty_paid = lib.OptionEnum("delivered_duty_paid", bool)
-    bill_to_account = lib.OptionEnum("bill_to_account")
-    bill_to_country_code = lib.OptionEnum("bill_to_country_code")
-    bill_to_party = lib.OptionEnum("bill_to_party")
-    bill_to_postal_code = lib.OptionEnum("bill_to_postal_code")
-    freight_class = lib.OptionEnum("freight_class")
-    freight_charge = lib.OptionEnum("freight_charge")
-    cod_payment_type = lib.OptionEnum("cod_payment_type")
-    cod_payment_amount = lib.OptionEnum("cod_payment_amount")
-    validate_address = lib.OptionEnum("validate_address")
-    rate_id = lib.OptionEnum("rate_id")
-    warehouse_id = lib.OptionEnum("warehouse_id")
-    reference1 = lib.OptionEnum("reference1")
-    reference2 = lib.OptionEnum("reference2")
-    reference3 = lib.OptionEnum("reference3")
+    """ShipEngine connection configuration options."""
     shipping_options = lib.OptionEnum("shipping_options", list)
-    shipping_services = lib.OptionEnum("shipping_services", list) 
+    shipping_services = lib.OptionEnum("shipping_services", list)
+    label_type = lib.OptionEnum("label_type", str, "PDF")  # PDF default for labels
+    warehouse_id = lib.OptionEnum("warehouse_id", str)
+    carrier_id = lib.OptionEnum("carrier_id", str)

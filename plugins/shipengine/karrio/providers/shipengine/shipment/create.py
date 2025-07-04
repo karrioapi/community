@@ -1,59 +1,93 @@
-"""Karrio ShipEngine shipment creation parser."""
+"""Karrio ShipEngine shipment API implementation."""
+
+# IMPLEMENTATION INSTRUCTIONS:
+# 1. Uncomment the imports when the schema types are generated
+# 2. Import the specific request and response types you need
+# 3. Create a request instance with the appropriate request type
+# 4. Extract shipment details from the response
+#
+# NOTE: JSON schema types are generated with "Type" suffix (e.g., ShipmentRequestType),
+# while XML schema types don't have this suffix (e.g., ShipmentRequest).
+
+import karrio.schemas.shipengine.shipment_request as shipengine_req
+import karrio.schemas.shipengine.shipment_response as shipengine_res
 
 import typing
 import karrio.lib as lib
-import karrio.core.models as models
 import karrio.core.units as units
+import karrio.core.models as models
 import karrio.providers.shipengine.error as error
 import karrio.providers.shipengine.utils as provider_utils
 import karrio.providers.shipengine.units as provider_units
 
 
 def parse_shipment_response(
-    response: lib.Deserializable[typing.Dict],
+    _response: lib.Deserializable[lib.Element],
     settings: provider_utils.Settings,
-) -> typing.Tuple[typing.List[models.ShipmentDetails], typing.List[models.Message]]:
-    responses = lib.to_dict(response.deserialize())
+) -> typing.Tuple[models.ShipmentDetails, typing.List[models.Message]]:
+    response = _response.deserialize()
     messages = error.parse_error_response(response, settings)
+
+    # Check if we have valid shipment data
     
-    shipment_details = [
-        _extract_details(responses, settings)
-    ] if "label_id" in responses else []
+    has_shipment = response.xpath(".//shipment") if hasattr(response, 'xpath') else False
     
-    return shipment_details, messages
+
+    shipment = _extract_details(response, settings) if has_shipment else None
+
+    return shipment, messages
 
 
 def _extract_details(
-    data: typing.Dict,
+    data: lib.Element,
     settings: provider_utils.Settings,
 ) -> models.ShipmentDetails:
-    shipment = lib.to_dict(data)
+    """
+    Extract shipment details from carrier response data
+
+    data: The carrier-specific shipment data structure
+    settings: The carrier connection settings
+
+    Returns a ShipmentDetails object with extracted shipment information
+    """
+    # Convert the carrier data to a proper object for easy attribute access
     
+    # For XML APIs, convert Element to proper response object
+    shipment = lib.to_object(shipengine_res.ShipmentResponse, data)
+
+    # Extract tracking info
+    tracking_number = shipment.tracking_number if hasattr(shipment, 'tracking_number') else ""
+    shipment_id = shipment.shipment_id if hasattr(shipment, 'shipment_id') else ""
+
+    # Extract label info
+    label_format = shipment.label_format if hasattr(shipment, 'label_format') else "PDF"
+    label_base64 = shipment.label_image if hasattr(shipment, 'label_image') else ""
+
+    # Extract optional invoice
+    invoice_base64 = shipment.invoice_image if hasattr(shipment, 'invoice_image') else ""
+
+    # Extract service code for metadata
+    service_code = shipment.service_code if hasattr(shipment, 'service_code') else ""
+    
+
+    documents = models.Documents(
+        label=label_base64,
+    )
+
+    # Add invoice if present
+    if invoice_base64:
+        documents.invoice = invoice_base64
+
     return models.ShipmentDetails(
         carrier_id=settings.carrier_id,
         carrier_name=settings.carrier_name,
-        tracking_number=shipment.get("tracking_number"),
-        shipment_identifier=shipment.get("shipment_id"),
-        label_type="PDF",
-        docs=models.Documents(
-            label=shipment.get("label_download", {}).get("pdf") or shipment.get("label_download", {}).get("href"),
-        ),
+        tracking_number=tracking_number,
+        shipment_identifier=shipment_id,
+        label_type=label_format,
+        docs=documents,
         meta=dict(
-            label_id=shipment.get("label_id"),
-            service_code=shipment.get("service_code"),
-            carrier_code=shipment.get("carrier_code"),
-            carrier_id=shipment.get("carrier_id"),
-            ship_date=shipment.get("ship_date"),
-            created_at=shipment.get("created_at"),
-            shipment_cost=shipment.get("shipment_cost"),
-            insurance_cost=shipment.get("insurance_cost"),
-            is_return_label=shipment.get("is_return_label"),
-            is_international=shipment.get("is_international"),
-            label_format=shipment.get("label_format"),
-            label_layout=shipment.get("label_layout"),
-            display_scheme=shipment.get("display_scheme"),
-            trackable=shipment.get("trackable"),
-            **shipment,
+            service_code=service_code,
+            # Add any other relevant metadata from the carrier's response
         ),
     )
 
@@ -62,172 +96,74 @@ def shipment_request(
     payload: models.ShipmentRequest,
     settings: provider_utils.Settings,
 ) -> lib.Serializable:
+    """
+    Create a shipment request for the carrier API
+
+    payload: The standardized ShipmentRequest from karrio
+    settings: The carrier connection settings
+
+    Returns a Serializable object that can be sent to the carrier API
+    """
+    # Convert karrio models to carrier-specific format
     shipper = lib.to_address(payload.shipper)
     recipient = lib.to_address(payload.recipient)
     packages = lib.to_packages(payload.parcels)
+    service = provider_units.ShippingService.map(payload.service).value_or_key
     options = lib.to_shipping_options(
         payload.options,
         package_options=packages.options,
         initializer=provider_units.shipping_options_initializer,
     )
+
+    # Create the carrier-specific request object
     
-    # Get preferred service
-    service_code = payload.selected_rate_id or getattr(options, "shipengine_service_code", None)
-    carrier_id = getattr(options, "shipengine_carrier_id", None)
-    
-    # Get label preferences
-    label_format = getattr(options, "shipengine_label_format", "pdf")
-    label_layout = getattr(options, "shipengine_label_layout", "4x6")
-    display_scheme = getattr(options, "shipengine_display_scheme", "label")
-    validate_address = getattr(options, "shipengine_validate_address", "no_validation")
-    
-    # Build advanced options
-    advanced_options = dict()
-    
-    if getattr(options, "shipengine_saturday_delivery", False):
-        advanced_options["saturday_delivery"] = True
-    if getattr(options, "shipengine_non_machinable", False):
-        advanced_options["non_machinable"] = True
-    if getattr(options, "shipengine_contains_alcohol", False):
-        advanced_options["contains_alcohol"] = True
-    if getattr(options, "shipengine_delivered_duty_paid", False):
-        advanced_options["delivered_duty_paid"] = True
-    if getattr(options, "shipengine_dry_ice", False):
-        advanced_options["dry_ice"] = True
-        dry_ice_weight = getattr(options, "shipengine_dry_ice_weight", None)
-        if dry_ice_weight:
-            advanced_options["dry_ice_weight"] = dict(
-                value=float(dry_ice_weight),
-                unit="pound",
-            )
-    
-    # Build billing options
-    bill_to_account = getattr(options, "shipengine_bill_to_account", None)
-    bill_to_country_code = getattr(options, "shipengine_bill_to_country_code", None)
-    bill_to_party = getattr(options, "shipengine_bill_to_party", None)
-    bill_to_postal_code = getattr(options, "shipengine_bill_to_postal_code", None)
-    
-    if bill_to_account:
-        advanced_options["bill_to_account"] = bill_to_account
-    if bill_to_country_code:
-        advanced_options["bill_to_country_code"] = bill_to_country_code
-    if bill_to_party:
-        advanced_options["bill_to_party"] = bill_to_party
-    if bill_to_postal_code:
-        advanced_options["bill_to_postal_code"] = bill_to_postal_code
-    
-    # Build freight options
-    freight_class = getattr(options, "shipengine_freight_class", None)
-    freight_charge = getattr(options, "shipengine_freight_charge", None)
-    
-    if freight_class:
-        advanced_options["freight_class"] = freight_class
-    if freight_charge:
-        advanced_options["freight_charge"] = dict(
-            amount=float(freight_charge),
-            currency=units.Currency.map(payload.options.get("currency") or "USD").value,
-        )
-    
-    # Build COD options
-    cod_payment_type = getattr(options, "shipengine_cod_payment_type", None)
-    cod_payment_amount = getattr(options, "shipengine_cod_payment_amount", None)
-    
-    if cod_payment_type and cod_payment_amount:
-        advanced_options["collect_on_delivery"] = dict(
-            payment_type=cod_payment_type,
-            payment_amount=dict(
-                amount=float(cod_payment_amount),
-                currency=units.Currency.map(payload.options.get("currency") or "USD").value,
-            ),
-        )
-    
-    # Build customs for international shipments
-    customs = None
-    if payload.customs:
-        customs = dict(
-            contents=payload.customs.content_type or "merchandise",
-            non_delivery=payload.customs.options.get("non_delivery", "return_to_sender"),
-            customs_items=[
-                dict(
-                    customs_item_id=item.sku,
-                    description=item.description,
-                    quantity=item.quantity,
-                    value=dict(
-                        amount=float(item.value_amount),
-                        currency=item.value_currency,
-                    ),
-                    harmonized_tariff_code=item.hs_code,
-                    country_of_origin=item.origin_country,
-                    unit_of_measure=item.metadata.get("unit_of_measure", "each"),
-                    sku=item.sku,
-                )
-                for item in payload.customs.commodities
-            ],
-        )
-    
-    request = dict(
-        shipment=dict(
-            service_code=service_code,
-            ship_to=dict(
-                name=recipient.person_name or recipient.company_name,
-                company_name=recipient.company_name,
-                address_line1=recipient.address_line1,
-                address_line2=recipient.address_line2,
-                city_locality=recipient.city,
-                state_province=recipient.state_code,
-                postal_code=recipient.postal_code,
-                country_code=recipient.country_code,
-                phone=recipient.phone_number,
-                email=recipient.email,
-                address_residential_indicator="yes" if recipient.residential else "no",
-            ),
-            ship_from=dict(
-                name=shipper.person_name or shipper.company_name,
-                company_name=shipper.company_name,
-                address_line1=shipper.address_line1,
-                address_line2=shipper.address_line2,
-                city_locality=shipper.city,
-                state_province=shipper.state_code,
-                postal_code=shipper.postal_code,
-                country_code=shipper.country_code,
-                phone=shipper.phone_number,
-                email=shipper.email,
-                address_residential_indicator="yes" if shipper.residential else "no",
-            ),
-            packages=[
-                dict(
-                    weight=dict(
-                        value=float(package.weight.value),
-                        unit=package.weight.unit.lower(),
-                    ),
-                    dimensions=dict(
-                        length=float(package.length.value),
-                        width=float(package.width.value),
-                        height=float(package.height.value),
-                        unit=package.dimension_unit.lower(),
-                    ),
-                    package_code=getattr(package, "packaging_type", None),
-                    insured_value=dict(
-                        amount=float(package.options.get("insurance", 0) or 0),
-                        currency=units.Currency.map(payload.options.get("currency") or "USD").value,
-                    ) if package.options.get("insurance") else None,
-                    label_messages=dict(
-                        reference1=getattr(options, "shipengine_reference1", None) or payload.reference,
-                        reference2=getattr(options, "shipengine_reference2", None),
-                        reference3=getattr(options, "shipengine_reference3", None),
-                    ),
-                    external_package_id=package.parcel.reference,
-                )
-                for package in packages
-            ],
-            customs=customs,
-            advanced_options=advanced_options if advanced_options else None,
+    # For XML API request
+    request = shipengine_req.ShipmentRequest(
+        # Map shipper details
+        shipper=shipengine_req.Address(
+            address_line1=shipper.address_line1,
+            city=shipper.city,
+            postal_code=shipper.postal_code,
+            country_code=shipper.country_code,
+            state_code=shipper.state_code,
+            person_name=shipper.person_name,
+            company_name=shipper.company_name,
+            phone_number=shipper.phone_number,
+            email=shipper.email,
         ),
-        rate_id=payload.selected_rate_id if payload.selected_rate_id and payload.selected_rate_id != service_code else None,
-        validate_address=validate_address,
-        label_layout=label_layout,
-        label_format=label_format,
-        display_scheme=display_scheme,
+        # Map recipient details
+        recipient=shipengine_req.Address(
+            address_line1=recipient.address_line1,
+            city=recipient.city,
+            postal_code=recipient.postal_code,
+            country_code=recipient.country_code,
+            state_code=recipient.state_code,
+            person_name=recipient.person_name,
+            company_name=recipient.company_name,
+            phone_number=recipient.phone_number,
+            email=recipient.email,
+        ),
+        # Map package details
+        packages=[
+            shipengine_req.Package(
+                weight=package.weight.value,
+                weight_unit=provider_units.WeightUnit[package.weight.unit].value,
+                length=package.length.value if package.length else None,
+                width=package.width.value if package.width else None,
+                height=package.height.value if package.height else None,
+                dimension_unit=provider_units.DimensionUnit[package.dimension_unit].value if package.dimension_unit else None,
+                packaging_type=provider_units.PackagingType[package.packaging_type or 'your_packaging'].value,
+            )
+            for package in packages
+        ],
+        # Add service code
+        service_code=service,
+        # Add account information
+        customer_number=settings.customer_number,
+        # Add label details
+        label_format=payload.label_type or "PDF",
+        # Add any other required fields for the carrier API
     )
     
-    return lib.Serializable(request) 
+
+    return lib.Serializable(request, lib.to_xml)

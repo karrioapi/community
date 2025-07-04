@@ -4,7 +4,7 @@ This package is a SendCloud extension of the [karrio](https://pypi.org/project/k
 
 ## Requirements
 
-`Python 3.7+`
+`Python 3.11+`
 
 ## Installation
 
@@ -15,16 +15,14 @@ pip install karrio.sendcloud
 ## Usage
 
 ```python
-import karrio
+import karrio.sdk as karrio
 from karrio.mappers.sendcloud.settings import Settings
 
 
 # Initialize a carrier gateway
-canadapost = karrio.gateway["sendcloud"].create(
+sendcloud = karrio.gateway["sendcloud"].create(
     Settings(
-        username="your_sendcloud_username",
-        password="your_sendcloud_password",
-        test_mode=True
+        ...
     )
 )
 ```

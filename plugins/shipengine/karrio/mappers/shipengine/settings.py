@@ -8,7 +8,7 @@ import karrio.providers.shipengine.utils as provider_utils
 class Settings(provider_utils.Settings):
     """ShipEngine connection settings."""
 
-    # Add carrier specific API connection properties here
+    # API Key authentication for ShipEngine
     api_key: str
 
     # generic properties
@@ -17,4 +17,4 @@ class Settings(provider_utils.Settings):
     carrier_id: str = "shipengine"
     account_country_code: str = None
     metadata: dict = {}
-    config: dict = {} 
+    config: dict = {}

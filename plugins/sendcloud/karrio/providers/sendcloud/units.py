@@ -1,68 +1,128 @@
+"""Karrio SendCloud shipping units and enumerations."""
+
+import re
 import typing
-import pathlib
 import karrio.lib as lib
 import karrio.core.units as units
+import karrio.core.models as models
 
 
-class LabelFormat(lib.StrEnum):
-    """Carrier specific label format"""
-
-    pdf = "pdf"
-    png = "png"
-    zpl = "zpl"
-    url = "url"
-
-    PDF = pdf
-    PNG = png
-    ZPL = zpl
+class LabelType(lib.Enum):
+    """SendCloud supported label formats."""
+    PDF = "PDF"
+    PNG = "PNG"
+    ZPL = "ZPL"
 
 
-class DimensionUnit(lib.StrEnum):
-    """Carrier specific dimension unit"""
-
-    CM = "cm"
-    IN = "in"
-
-
-class WeightUnit(lib.StrEnum):
-    """Carrier specific weight unit"""
-
-    LB = "lb"
-    KG = "kg"
+class PaymentType(lib.StrEnum):
+    """SendCloud payment types."""
+    sender = "SENDER"
+    recipient = "RECIPIENT"
+    third_party = "THIRD_PARTY"
 
 
 class PackagingType(lib.StrEnum):
-    """Carrier specific packaging type"""
+    """SendCloud packaging types."""
+    package = "package"
+    envelope = "envelope"
+    box = "box"
+    tube = "tube"
+    pallet = "pallet"
+    
+    # SendCloud specific packaging types
+    sendcloud_box = "box"
+    sendcloud_package = "package"
+    sendcloud_envelope = "envelope"
+    sendcloud_tube = "tube"
+    sendcloud_pallet = "pallet"
 
-    PACKAGE = "PACKAGE"
+    # Unified Packaging type mapping
+    small_box = package
+    medium_box = package
+    large_box = package
+    your_packaging = package
 
-    """ Unified Packaging type mapping """
-    envelope = PACKAGE
-    pak = PACKAGE
-    tube = PACKAGE
-    pallet = PACKAGE
-    small_box = PACKAGE
-    medium_box = PACKAGE
-    your_packaging = PACKAGE
+
+class ShippingService(lib.StrEnum):
+    """SendCloud shipping services."""
+    sendcloud_standard = "standard"
+    sendcloud_express = "express"
+    sendcloud_economy = "economy"
+    sendcloud_priority = "priority"
+    sendcloud_overnight = "overnight"
+    sendcloud_international = "international"
+    sendcloud_domestic = "domestic"
+    
+    # Common service aliases
+    standard = sendcloud_standard
+    express = sendcloud_express
+    economy = sendcloud_economy
+    priority = sendcloud_priority
+    overnight = sendcloud_overnight
 
 
 class ShippingOption(lib.Enum):
-    """Carrier specific options"""
+    """SendCloud shipping options."""
+    sendcloud_signature_required = lib.OptionEnum("signature_required", bool)
+    sendcloud_insurance = lib.OptionEnum("insurance", float)
+    sendcloud_saturday_delivery = lib.OptionEnum("saturday_delivery", bool)
+    sendcloud_delivery_confirmation = lib.OptionEnum("delivery_confirmation", bool)
+    sendcloud_cash_on_delivery = lib.OptionEnum("cash_on_delivery", float)
+    sendcloud_hold_for_pickup = lib.OptionEnum("hold_for_pickup", bool)
+    sendcloud_adult_signature = lib.OptionEnum("adult_signature", bool)
+    sendcloud_reference_number = lib.OptionEnum("reference_number", str)
+    sendcloud_delivery_instructions = lib.OptionEnum("delivery_instructions", str)
+    sendcloud_packaging_type = lib.OptionEnum("packaging_type", str)
+    sendcloud_label_format = lib.OptionEnum("label_format", str)
+    sendcloud_currency = lib.OptionEnum("currency", str)
+    sendcloud_shipment_date = lib.OptionEnum("shipment_date", str)
+    sendcloud_dry_ice = lib.OptionEnum("dry_ice", bool)
+    sendcloud_hazmat = lib.OptionEnum("hazmat", bool)
+    
+    # Unified Option type mapping
+    insurance = sendcloud_insurance
+    signature_confirmation = sendcloud_signature_required
+    saturday_delivery = sendcloud_saturday_delivery
+    cash_on_delivery = sendcloud_cash_on_delivery
+    hold_for_pickup = sendcloud_hold_for_pickup
+    currency = sendcloud_currency
+    shipment_date = sendcloud_shipment_date
+    delivery_confirmation = sendcloud_delivery_confirmation
+    adult_signature = sendcloud_adult_signature
+    reference_number = sendcloud_reference_number
+    delivery_instructions = sendcloud_delivery_instructions
+    packaging_type = sendcloud_packaging_type
+    label_format = sendcloud_label_format
+    dry_ice = sendcloud_dry_ice
+    hazmat = sendcloud_hazmat
 
-    # fmt: off
-    sendcloud_service_point_id = lib.OptionEnum("service_point_id")
-    sendcloud_apply_shipping_rules = lib.OptionEnum("apply_shipping_rules", bool)
-    sendcloud_request_label = lib.OptionEnum("request_label", bool)
-    sendcloud_request_label_async = lib.OptionEnum("request_label_async", bool)
-    sendcloud_insured_value = lib.OptionEnum("insured_value", int)
-    sendcloud_external_order_id = lib.OptionEnum("external_order_id")
-    sendcloud_external_shipment_id = lib.OptionEnum("external_shipment_id")
-    sendcloud_customs_invoice_nr = lib.OptionEnum("customs_invoice_nr")
-    sendcloud_customs_shipment_type = lib.OptionEnum("customs_shipment_type")
-    sendcloud_total_order_value = lib.OptionEnum("total_order_value")
-    sendcloud_total_order_value_currency = lib.OptionEnum("total_order_value_currency")
-    sendcloud_is_return = lib.OptionEnum("is_return", bool)
-    # fmt: on
+
+class TrackingStatus(lib.Enum):
+    """SendCloud tracking status mapping."""
+    announced = ["announced", "info_received"]
+    in_transit = ["in_transit", "transit", "shipped", "dispatched"]
+    out_for_delivery = ["out_for_delivery", "ready_for_delivery"]
+    delivery_attempted = ["delivery_attempted", "delivery_failed"]
+    delivered = ["delivered", "delivered_to_recipient"]
+    exception = ["exception", "error", "problem"]
+    return_to_sender = ["return_to_sender", "returning"]
+    cancelled = ["cancelled", "canceled"]
+    pending = ["pending", "processing"]
+    ready_for_pickup = ["ready_for_pickup", "awaiting_pickup"]
+    on_hold = ["on_hold", "held"]
+    delivery_delayed = ["delivery_delayed", "delayed"]
+    
+    # Default mappings
+    unknown = ["unknown", "other"]
+
+
+class ConnectionConfig(lib.Enum):
+    """SendCloud connection configuration options."""
+    shipping_options = lib.OptionEnum("shipping_options", list)
+    shipping_services = lib.OptionEnum("shipping_services", list)
+    label_type = lib.OptionEnum("label_type", str, LabelType.PDF.value)
+    test_mode = lib.OptionEnum("test_mode", bool, False)
+    metadata = lib.OptionEnum("metadata", dict)
 
 
 def shipping_options_initializer(
@@ -71,8 +131,14 @@ def shipping_options_initializer(
 ) -> units.ShippingOptions:
     """
     Apply default values to the given options.
+    
+    Args:
+        options: Dictionary of shipping options
+        package_options: Existing package options to merge
+        
+    Returns:
+        Initialized ShippingOptions object
     """
-
     if package_options is not None:
         options.update(package_options.content)
 
@@ -82,61 +148,49 @@ def shipping_options_initializer(
     return units.ShippingOptions(options, ShippingOption, items_filter=items_filter)
 
 
-class TrackingStatus(lib.Enum):
-    on_hold = ["on_hold"]
-    delivered = ["delivered"]
-    in_transit = ["in_transit"]
-    delivery_failed = ["delivery_failed"]
-    delivery_delayed = ["delivery_delayed"]
-    out_for_delivery = ["out_for_delivery"]
-    ready_for_pickup = ["ready_for_pickup"]
+def validate_service(service_code: str) -> bool:
+    """
+    Validate if a service code is supported by SendCloud.
+    
+    Args:
+        service_code: The service code to validate
+        
+    Returns:
+        True if valid, False otherwise
+    """
+    return service_code in [service.value for service in ShippingService]
 
 
-# Basic SendCloud shipping services
-ShippingService = lib.StrEnum(
-    "ShippingService",
-    {
-        "sendcloud_standard": "SendCloud Standard",
-        "sendcloud_express": "SendCloud Express",
-        "sendcloud_morning": "SendCloud Morning",
-        "sendcloud_evening": "SendCloud Evening",
-        "sendcloud_same_day": "SendCloud Same Day",
-        "sendcloud_package_point": "SendCloud Package Point",
-        "sendcloud_dpd_pickup": "SendCloud DPD Pickup",
-        "sendcloud_dhl_express": "SendCloud DHL Express",
-        "sendcloud_ups_standard": "SendCloud UPS Standard",
-        "sendcloud_fedex_international": "SendCloud FedEx International",
-    },
-)
+def get_service_name(service_code: str) -> str:
+    """
+    Get the human-readable name for a service code.
+    
+    Args:
+        service_code: The service code
+        
+    Returns:
+        Human-readable service name
+    """
+    service_mapping = {
+        "standard": "SendCloud Standard",
+        "express": "SendCloud Express",
+        "economy": "SendCloud Economy",
+        "priority": "SendCloud Priority",
+        "overnight": "SendCloud Overnight",
+        "international": "SendCloud International",
+        "domestic": "SendCloud Domestic",
+    }
+    return service_mapping.get(service_code, f"SendCloud {service_code.title()}")
 
-ShippingServiceID = lib.StrEnum(
-    "ShippingServiceID",
-    {
-        "1": "sendcloud_standard",
-        "2": "sendcloud_express",
-        "3": "sendcloud_morning",
-        "4": "sendcloud_evening",
-        "5": "sendcloud_same_day",
-        "6": "sendcloud_package_point",
-        "7": "sendcloud_dpd_pickup",
-        "8": "sendcloud_dhl_express",
-        "9": "sendcloud_ups_standard",
-        "10": "sendcloud_fedex_international",
-    },
-)
 
-ShippingCourierID = lib.StrEnum(
-    "ShippingCourierID",
-    {
-        "dpd": "DPD",
-        "dhl": "DHL",
-        "ups": "UPS",
-        "fedex": "FedEx",
-        "postnl": "PostNL",
-        "gls": "GLS",
-        "hermes": "Hermes",
-        "bpost": "bpost",
-        "dhl_express": "DHL Express",
-        "ups_express": "UPS Express",
-    },
-) 
+def get_packaging_type(packaging: str) -> str:
+    """
+    Map unified packaging type to SendCloud specific type.
+    
+    Args:
+        packaging: The packaging type
+        
+    Returns:
+        SendCloud specific packaging type
+    """
+    return getattr(PackagingType, packaging, PackagingType.package).value

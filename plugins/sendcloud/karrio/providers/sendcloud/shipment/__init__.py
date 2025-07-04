@@ -1,4 +1,3 @@
-"""Karrio SendCloud shipment API implementation."""
 
 from karrio.providers.sendcloud.shipment.create import (
     parse_shipment_response,
@@ -7,4 +6,4 @@ from karrio.providers.sendcloud.shipment.create import (
 from karrio.providers.sendcloud.shipment.cancel import (
     parse_shipment_cancel_response,
     shipment_cancel_request,
-) 
+)

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://shipengine.com/ws/tracking" xmlns="http://shipengine.com/ws/tracking" elementFormDefault="qualified">
+    <xsd:element name="tracking-request">
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element name="tracking-numbers">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="tracking-number" type="xsd:string" maxOccurs="unbounded" />
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="language-code" type="xsd:string" minOccurs="0" />
+                <xsd:element name="reference" type="xsd:string" minOccurs="0" />
+            </xsd:all>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>

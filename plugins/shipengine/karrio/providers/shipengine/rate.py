@@ -1,134 +1,165 @@
-"""Karrio ShipEngine rate parser."""
+"""Karrio ShipEngine rate API implementation."""
+
+# IMPLEMENTATION INSTRUCTIONS:
+# 1. Uncomment the imports when the schema types are generated
+# 2. Import the specific request and response types you need
+# 3. Create a request instance with the appropriate request type
+# 4. Extract data from the response to populate the RateDetails
+#
+# NOTE: JSON schema types are generated with "Type" suffix (e.g., RateRequestType),
+# while XML schema types don't have this suffix (e.g., RateRequest).
+
+import karrio.schemas.shipengine.rate_request as shipengine_req
+import karrio.schemas.shipengine.rate_response as shipengine_res
 
 import typing
 import karrio.lib as lib
-import karrio.core.models as models
 import karrio.core.units as units
-import karrio.providers.shipengine.error as error
-import karrio.providers.shipengine.utils as provider_utils
+import karrio.core.models as models
+import karrio.providers.shipengine.error as provider_error
 import karrio.providers.shipengine.units as provider_units
+import karrio.providers.shipengine.utils as provider_utils
 
 
 def parse_rate_response(
-    response: lib.Deserializable[typing.Dict],
+    _response: lib.Deserializable[str],
     settings: provider_utils.Settings,
 ) -> typing.Tuple[typing.List[models.RateDetails], typing.List[models.Message]]:
-    responses = lib.to_dict(response.deserialize())
-    messages = error.parse_error_response(response, settings)
+    """Parse ShipEngine rate response and extract rate details.
     
-    rates = [
-        _extract_details(rate, settings)
-        for rate in responses.get("rate_response", {}).get("rates", [])
-    ]
-    
-    return rates, messages
+    Args:
+        _response: The raw response from ShipEngine API
+        settings: Provider settings
+        
+    Returns:
+        Tuple of rate details list and error messages
+    """
+    response = _response.deserialize()
+    errors = provider_error.parse_error_response(response, settings)
+    rates = _extract_details(response, settings) if "error" not in response else []
+
+    return rates, errors
 
 
 def _extract_details(
-    data: typing.Dict,
+    response: dict,
     settings: provider_utils.Settings,
-) -> models.RateDetails:
-    rate = lib.to_dict(data)
-    service = provider_units.ShippingService.map(rate.get("service_code"))
+) -> typing.List[models.RateDetails]:
+    """Extract rate details from ShipEngine response.
     
-    return models.RateDetails(
-        carrier_id=settings.carrier_id,
-        carrier_name=settings.carrier_name,
-        service=service.name_or_key,
-        service_type=service.value,
-        total_charge=lib.to_decimal(rate.get("shipping_amount", {}).get("amount", 0)),
-        currency=rate.get("shipping_amount", {}).get("currency", "USD"),
-        estimated_delivery=lib.to_date(rate.get("estimated_delivery_date")),
-        meta=dict(
-            service_name=service.name_or_key,
-            rate_id=rate.get("rate_id"),
-            carrier_id=rate.get("carrier_id"),
-            carrier_code=rate.get("carrier_code"),
-            carrier_friendly_name=rate.get("carrier_friendly_name"),
-            zone=rate.get("zone"),
-            package_type=rate.get("package_type"),
-            delivery_days=rate.get("delivery_days"),
-            guaranteed_service=rate.get("guaranteed_service"),
-            negotiated_rate=rate.get("negotiated_rate"),
-            trackable=rate.get("trackable"),
-            validation_status=rate.get("validation_status"),
-            **rate,
-        ),
-    )
+    Args:
+        response: Parsed response dictionary
+        settings: Provider settings
+        
+    Returns:
+        List of rate details
+    """
+    # For testing purposes, return mock rate details
+    # In production, parse actual ShipEngine response structure
+    rates = response.get("rate_response", {}).get("rates", [])
+    
+    return [
+        models.RateDetails(
+            carrier_id=settings.carrier_id,
+            carrier_name=settings.carrier_name,
+            service=provider_units.get_service_name(
+                rate.get("service_code", "standard")
+            ),
+            currency=rate.get("shipping_amount", {}).get("currency", "USD"),
+            total_charge=lib.to_decimal(
+                rate.get("shipping_amount", {}).get("amount", "0.00")
+            ),
+            transit_days=rate.get("estimated_delivery_date"),
+            meta=dict(
+                service_name=rate.get("service_type"),
+                rate_provider="ShipEngine",
+                carrier_id=rate.get("carrier_id"),
+                rate_id=rate.get("rate_id"),
+            ),
+        )
+        for rate in rates
+    ]
 
 
 def rate_request(
     payload: models.RateRequest,
-    settings: provider_utils.Settings,
+    settings: provider_utils.Settings
 ) -> lib.Serializable:
+    """Create ShipEngine rate request from payload.
+    
+    Args:
+        payload: Rate request payload
+        settings: Provider settings
+        
+    Returns:
+        Serializable request object
+    """
     shipper = lib.to_address(payload.shipper)
     recipient = lib.to_address(payload.recipient)
-    packages = lib.to_packages(payload.parcels)
+    package = lib.to_packages(
+        payload.parcels,
+        package_option_type=provider_units.ShippingOption,
+    ).single
     options = lib.to_shipping_options(
-        payload.options,
-        package_options=packages.options,
+        payload,
+        package_options=package.options,
         initializer=provider_units.shipping_options_initializer,
     )
-    
-    # Get carrier preferences
-    carrier_ids = getattr(options, "shipengine_carrier_ids", None)
-    service_codes = getattr(options, "shipengine_service_codes", None)
-    
-    request = dict(
-        rate_options=lib.to_dict(
-            dict(
-                carrier_ids=carrier_ids,
-                service_codes=service_codes,
-                calculate_tax_amount=True,
-                preferred_currency=units.Currency.map(payload.options.get("currency") or "USD").value,
-            )
-        ),
-        shipment=dict(
-            ship_to=dict(
-                name=recipient.person_name or recipient.company_name,
-                company_name=recipient.company_name,
-                address_line1=recipient.address_line1,
-                address_line2=recipient.address_line2,
-                city_locality=recipient.city,
-                state_province=recipient.state_code,
-                postal_code=recipient.postal_code,
-                country_code=recipient.country_code,
-                phone=recipient.phone_number,
-                email=recipient.email,
-            ),
-            ship_from=dict(
-                name=shipper.person_name or shipper.company_name,
-                company_name=shipper.company_name,
-                address_line1=shipper.address_line1,
-                address_line2=shipper.address_line2,
-                city_locality=shipper.city,
-                state_province=shipper.state_code,
-                postal_code=shipper.postal_code,
-                country_code=shipper.country_code,
-                phone=shipper.phone_number,
-                email=shipper.email,
-            ),
-            packages=[
-                dict(
-                    weight=dict(
-                        value=float(package.weight.value),
-                        unit=package.weight.unit.lower(),
+
+    # Create ShipEngine rate request structure
+    request = {
+        "rate_options": {
+            "carrier_ids": payload.services or [],
+            "service_codes": payload.services or [],
+            "calculate_tax_amount": True,
+            "preferred_currency": "USD",
+        },
+        "shipment": {
+            "ship_from": {
+                "name": shipper.person_name,
+                "company_name": shipper.company_name,
+                "address_line1": shipper.street,
+                "address_line2": shipper.address_line2,
+                "city_locality": shipper.city,
+                "state_province": shipper.state_code,
+                "postal_code": shipper.postal_code,
+                "country_code": shipper.country_code,
+                "phone": shipper.phone_number,
+                "address_residential_indicator": "yes" if shipper.residential else "no",
+            },
+            "ship_to": {
+                "name": recipient.person_name,
+                "company_name": recipient.company_name,
+                "address_line1": recipient.street,
+                "address_line2": recipient.address_line2,
+                "city_locality": recipient.city,
+                "state_province": recipient.state_code,
+                "postal_code": recipient.postal_code,
+                "country_code": recipient.country_code,
+                "phone": recipient.phone_number,
+                "address_residential_indicator": "yes" if recipient.residential else "no",
+            },
+            "packages": [
+                {
+                    "weight": {
+                        "value": package.weight,
+                        "unit": "kilogram",
+                    },
+                    "dimensions": {
+                        "length": package.length,
+                        "width": package.width,
+                        "height": package.height,
+                        "unit": "centimeter",
+                    },
+                    "package_code": provider_units.get_packaging_type(
+                        package.packaging_type or "package"
                     ),
-                    dimensions=dict(
-                        length=float(package.length.value),
-                        width=float(package.width.value),
-                        height=float(package.height.value),
-                        unit=package.dimension_unit.lower(),
-                    ),
-                    package_code=getattr(package, "packaging_type", None),
-                    insured_value=dict(
-                        amount=float(package.options.get("insurance", 0) or 0),
-                        currency=units.Currency.map(payload.options.get("currency") or "USD").value,
-                    ) if package.options.get("insurance") else None,
-                )
-                for package in packages
+                }
             ],
-        ),
-    )
-    
-    return lib.Serializable(request) 
+            "advanced_options": {
+                option.code: option.state for _, option in options.items()
+            },
+        },
+    }
+
+    return lib.Serializable(request, lib.to_dict)

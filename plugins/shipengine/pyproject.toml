@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "karrio_shipengine"
-version = "2025.5rc1"
+version = "2025.7"
 description = "Karrio - ShipEngine Shipping Extension"
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.11"
 license = "Apache-2.0"
 authors = [
     {name = "karrio", email = "hello@karrio.io"}
@@ -25,7 +25,7 @@ dependencies = [
 Homepage = "https://github.com/karrioapi/karrio"
 
 [project.entry-points."karrio.plugins"]
-shipengine = "karrio.plugins.shipengine:METADATA"
+shipengine = "karrio.plugins.shipengine"
 
 [tool.setuptools]
 zip-safe = false
@@ -37,6 +37,3 @@ include-package-data = true
 [tool.setuptools.packages.find]
 exclude = ["tests.*", "tests"]
 namespaces = true
-
-[tool.setuptools.package-data]
-"karrio.providers.shipengine" = ["metadata.json"] 

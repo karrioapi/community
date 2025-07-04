@@ -1,7 +1,0 @@
-{
-    "error": {
-        "code": 400,
-        "message": "Invalid request parameters",
-        "request": "POST /api/v2/shipments"
-    }
-}
