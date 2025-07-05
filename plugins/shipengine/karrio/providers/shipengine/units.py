@@ -175,13 +175,15 @@ def shipping_options_initializer(
     Returns:
         Initialized ShippingOptions object
     """
+    _options = options or {}
+    
     if package_options is not None:
-        options.update(package_options.content)
+        _options.update(package_options.content)
 
     def items_filter(key: str) -> bool:
         return key in ShippingOption  # type: ignore
 
-    return units.ShippingOptions(options, ShippingOption, items_filter=items_filter)
+    return units.ShippingOptions(_options, ShippingOption, items_filter=items_filter)
 
 
 def validate_service(service_code: str) -> bool:

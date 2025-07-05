@@ -9,62 +9,113 @@ import karrio.providers.sendcloud.utils as provider_utils
 def parse_error_response(
     response: dict,
     settings: provider_utils.Settings,
-    **kwargs,
 ) -> typing.List[models.Message]:
-    """Parse SendCloud API error response following established Karrio patterns."""
-    
-    # Extract errors from various possible response structures
     errors = []
     
-    # Handle standard error structure
     if "error" in response:
-        error = response["error"]
-        if isinstance(error, dict):
-            errors.append(error)
-        elif isinstance(error, str):
-            errors.append({"message": error})
-    
-    # Handle errors array
-    if "errors" in response:
-        error_list = response["errors"]
-        if isinstance(error_list, list):
-            errors.extend(error_list)
-        elif isinstance(error_list, dict):
-            errors.append(error_list)
-    
-    # Handle message field
-    if "message" in response and not errors:
-        errors.append({"message": response["message"]})
-    
-    # Handle detail field (common in DRF APIs)
-    if "detail" in response and not errors:
-        errors.append({"message": response["detail"]})
+        error_data = response["error"]
         
-    # Handle validation errors
-    if "non_field_errors" in response:
-        for error in response["non_field_errors"]:
-            errors.append({"message": error})
+        if isinstance(error_data, dict):
+            message = error_data.get("message", "Unknown error")
+            code = error_data.get("code", "UNKNOWN")
+            
+            errors.append(
+                models.Message(
+                    code=code,
+                    message=message,
+                    carrier_id=settings.carrier_id,
+                    carrier_name=settings.carrier_name,
+                    details=lib.to_dict(error_data),
+                )
+            )
+        elif isinstance(error_data, str):
+            errors.append(
+                models.Message(
+                    code="ERROR",
+                    message=error_data,
+                    carrier_id=settings.carrier_id,
+                    carrier_name=settings.carrier_name,
+                )
+            )
     
-    # Handle field-specific errors
-    for field, field_errors in response.items():
-        if field not in ["error", "errors", "message", "detail", "non_field_errors"] and isinstance(field_errors, list):
-            for error in field_errors:
-                errors.append({"message": f"{field}: {error}", "field": field})
-
-    return [
-        models.Message(
-            carrier_id=settings.carrier_id,
-            carrier_name=settings.carrier_name,
-            code=lib.failsafe(lambda: error.get("code") or error.get("error_code") or "SENDCLOUD_ERROR"),
-            message=lib.failsafe(lambda: error.get("message") or error.get("error_message") or str(error)),
-            details=lib.to_dict(
-                {
-                    "field": error.get("field"),
-                    "error_type": error.get("type"),
-                    "response": response,
-                    **kwargs,
-                }
-            ),
+    elif "errors" in response:
+        error_list = response["errors"]
+        for error in error_list:
+            if isinstance(error, dict):
+                message = error.get("message", "Unknown error")
+                code = error.get("code", "UNKNOWN")
+                field = error.get("field", "")
+                
+                errors.append(
+                    models.Message(
+                        code=code,
+                        message=f"{field}: {message}" if field else message,
+                        carrier_id=settings.carrier_id,
+                        carrier_name=settings.carrier_name,
+                        details=lib.to_dict(error),
+                    )
+                )
+    
+    elif "message" in response:
+        errors.append(
+            models.Message(
+                code="ERROR",
+                message=response["message"],
+                carrier_id=settings.carrier_id,
+                carrier_name=settings.carrier_name,
+            )
         )
-        for error in errors
-    ]
+    
+    return errors
+
+
+def parse_validation_error(
+    response: dict,
+    settings: provider_utils.Settings,
+) -> typing.List[models.Message]:
+    """
+    Parse SendCloud validation errors specifically
+    """
+    messages = []
+    
+    if "error" in response and "details" in response["error"]:
+        for detail in response["error"]["details"]:
+            if isinstance(detail, dict) and "field" in detail:
+                field = detail["field"]
+                message = detail.get("message", "Validation failed")
+                
+                validation_error = models.Message(
+                    carrier_id=settings.carrier_id,
+                    carrier_name=settings.carrier_name,
+                    code=f"VALIDATION_{field.upper()}",
+                    message=f"Validation error for {field}: {message}",
+                    details=detail,
+                )
+                messages.append(validation_error)
+    
+    return messages
+
+
+def parse_authentication_error(
+    response: dict,
+    settings: provider_utils.Settings,
+) -> typing.List[models.Message]:
+    """
+    Parse SendCloud authentication errors specifically
+    """
+    if "error" in response:
+        error_data = response["error"]
+        code = error_data.get("code", "AUTH_ERROR")
+        message = error_data.get("message", "Authentication failed")
+        
+        return [
+            models.Message(
+                carrier_id=settings.carrier_id,
+                carrier_name=settings.carrier_name,
+                code=str(code),
+                message=f"Authentication error: {message}",
+                details=error_data,
+            )
+        ]
+    
+    return []

@@ -9,8 +9,8 @@
 # NOTE: JSON schema types are generated with "Type" suffix (e.g., TrackingRequestType),
 # while XML schema types don't have this suffix (e.g., TrackingRequest).
 
-import karrio.schemas.shipengine.tracking_request as shipengine_req
-import karrio.schemas.shipengine.tracking_response as shipengine_res
+from karrio.schemas.shipengine import tracking_request as shipengine_req
+from karrio.schemas.shipengine import tracking_response as shipengine_res
 
 import typing
 import karrio.lib as lib
@@ -46,7 +46,7 @@ def parse_tracking_response(
 def _extract_details(
     data: lib.Element,
     settings: provider_utils.Settings,
-    tracking_number: str = None,
+    tracking_number: str=None,
 ) -> models.TrackingDetails:
     """
     Extract tracking details from carrier response data
@@ -78,7 +78,6 @@ def _extract_details(
                 "description": event.description if hasattr(event, 'description') else "",
                 "location": event.location if hasattr(event, 'location') else ""
             })
-    
 
     # Map carrier status to karrio standard tracking status
     status = next(
@@ -126,16 +125,14 @@ def tracking_request(
     tracking_numbers = payload.tracking_numbers
     reference = payload.reference
 
-    
     # For XML API request
-    request = shipengine_req.TrackingRequest(
-        tracking_numbers=tracking_numbers,
+    request = shipengine_req.tracking_request(
+        tracking_numbers=shipengine_req.tracking_numbersType(
+            tracking_number=tracking_numbers
+        ),
         # Add required tracking request details
         reference=reference,
-        language=payload.language_code or "en",
-        # Add account credentials
-        account_number=settings.account_number,
+        language_code="en",
     )
-    
 
-    return lib.Serializable(request, lib.to_xml)
+    return lib.Serializable(request)

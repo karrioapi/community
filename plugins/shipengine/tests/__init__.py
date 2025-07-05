@@ -1,4 +1,4 @@
 
-from shipengine.test_rate import *
-from shipengine.test_tracking import *
-from shipengine.test_shipment import *
+from tests.shipengine.test_rate import *
+from tests.shipengine.test_tracking import *
+from tests.shipengine.test_shipment import *

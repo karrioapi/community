@@ -2,6 +2,7 @@
 
 import karrio.lib as lib
 import karrio.api.proxy as proxy
+import karrio.providers.sendcloud.utils as provider_utils
 import karrio.mappers.sendcloud.settings as provider_settings
 
 # IMPLEMENTATION INSTRUCTIONS:
@@ -14,83 +15,70 @@ import karrio.mappers.sendcloud.settings as provider_settings
 class Proxy(proxy.Proxy):
     settings: provider_settings.Settings
 
-    def get_rates(self, request: lib.Serializable) -> lib.Deserializable[str]:
-        # REPLACE THIS WITH YOUR ACTUAL API CALL IMPLEMENTATION
-        # ---------------------------------------------------------
-        # Example implementation:
-        # response = lib.request(
-        #     url=f"{self.settings.server_url}/rates",
-        #     data=request.serialize(),
-        #     trace=self.trace_as("xml"),
-        #     method="POST",
-        #     headers={
-        #         "Content-Type": "application/xml",
-        #         "Authorization": f"Basic {self.settings.authorization}"
-        #     },
-        # )
+    def get_rates(self, request: lib.Serializable) -> lib.Deserializable[dict]:
+        response = lib.request(
+            url=f"{self.settings.api_url}/parcels",
+            data=lib.to_json(request.serialize()),
+            trace=self.trace_as("json"),
+            method="POST",
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {self.settings.access_token}",
+            },
+            decoder=provider_utils.default_response_deserializer,
+            on_error=lambda b: provider_utils.default_response_deserializer(b.read()),
+        )
 
-        # DEVELOPMENT ONLY: Remove this stub response and uncomment the API call above when implementing the real carrier API
-        response = '<r></r>'
-
-        return lib.Deserializable(response, lib.to_element)
+        return lib.Deserializable(response, lib.to_dict, request.ctx)
     
-    def create_shipment(self, request: lib.Serializable) -> lib.Deserializable[str]:
-        # REPLACE THIS WITH YOUR ACTUAL API CALL IMPLEMENTATION
-        # ---------------------------------------------------------
-        # Example implementation:
-        # response = lib.request(
-        #     url=f"{self.settings.server_url}/shipments",
-        #     data=request.serialize(),
-        #     trace=self.trace_as("xml"),
-        #     method="POST",
-        #     headers={
-        #         "Content-Type": "application/xml",
-        #         "Authorization": f"Basic {self.settings.authorization}"
-        #     },
-        # )
+    def create_shipment(self, request: lib.Serializable) -> lib.Deserializable[dict]:
+        response = lib.request(
+            url=f"{self.settings.api_url}/parcels",
+            data=lib.to_json(request.serialize()),
+            trace=self.trace_as("json"),
+            method="POST",
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {self.settings.access_token}",
+            },
+            decoder=provider_utils.default_response_deserializer,
+            on_error=lambda b: provider_utils.default_response_deserializer(b.read()),
+        )
 
-        # DEVELOPMENT ONLY: Remove this stub response and uncomment the API call above when implementing the real carrier API
-        response = '<r></r>'
-
-        return lib.Deserializable(response, lib.to_element)
+        return lib.Deserializable(response, lib.to_dict)
     
-    def cancel_shipment(self, request: lib.Serializable) -> lib.Deserializable[str]:
-        # REPLACE THIS WITH YOUR ACTUAL API CALL IMPLEMENTATION
-        # ---------------------------------------------------------
-        # Example implementation:
-        # response = lib.request(
-        #     url=f"{self.settings.server_url}/shipments/cancel",
-        #     data=request.serialize(),
-        #     trace=self.trace_as("xml"),
-        #     method="POST",
-        #     headers={
-        #         "Content-Type": "application/xml",
-        #         "Authorization": f"Basic {self.settings.authorization}"
-        #     },
-        # )
+    def cancel_shipment(self, request: lib.Serializable) -> lib.Deserializable[dict]:
+        parcel_id = request.ctx.get("parcel_id") or request.serialize()
+        response = lib.request(
+            url=f"{self.settings.api_url}/parcels/{parcel_id}",
+            data="",
+            trace=self.trace_as("json"),
+            method="DELETE",
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {self.settings.access_token}",
+            },
+            decoder=provider_utils.default_response_deserializer,
+            on_error=lambda b: provider_utils.default_response_deserializer(b.read()),
+        )
 
-        # DEVELOPMENT ONLY: Remove this stub response and uncomment the API call above when implementing the real carrier API
-        response = '<r></r>'
-
-        return lib.Deserializable(response, lib.to_element)
+        return lib.Deserializable(response, lib.to_dict, request.ctx)
     
-    def get_tracking(self, request: lib.Serializable) -> lib.Deserializable[str]:
-        # REPLACE THIS WITH YOUR ACTUAL API CALL IMPLEMENTATION
-        # ---------------------------------------------------------
-        # Example implementation:
-        # response = lib.request(
-        #     url=f"{self.settings.server_url}/tracking",
-        #     data=request.serialize(),
-        #     trace=self.trace_as("xml"),
-        #     method="POST",
-        #     headers={
-        #         "Content-Type": "application/xml",
-        #         "Authorization": f"Basic {self.settings.authorization}"
-        #     },
-        # )
+    def get_tracking(self, request: lib.Serializable) -> lib.Deserializable[dict]:
+        tracking_number = request.serialize().get("tracking_number")
+        response = lib.request(
+            url=f"{self.settings.api_url}/parcels",
+            data="",
+            trace=self.trace_as("json"),
+            method="GET",
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {self.settings.access_token}",
+            },
+            params={"tracking_number": tracking_number},
+            decoder=provider_utils.default_response_deserializer,
+            on_error=lambda b: provider_utils.default_response_deserializer(b.read()),
+        )
 
-        # DEVELOPMENT ONLY: Remove this stub response and uncomment the API call above when implementing the real carrier API
-        response = '<r></r>'
-
-        return lib.Deserializable(response, lib.to_element)
+        return lib.Deserializable(response, lib.to_dict)
     

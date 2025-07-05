@@ -9,8 +9,8 @@
 # NOTE: JSON schema types are generated with "Type" suffix (e.g., ShipmentRequestType),
 # while XML schema types don't have this suffix (e.g., ShipmentRequest).
 
-import karrio.schemas.shipengine.shipment_request as shipengine_req
-import karrio.schemas.shipengine.shipment_response as shipengine_res
+from karrio.schemas.shipengine import shipment_request as shipengine_req
+from karrio.schemas.shipengine import shipment_response as shipengine_res
 
 import typing
 import karrio.lib as lib
@@ -31,7 +31,6 @@ def parse_shipment_response(
     # Check if we have valid shipment data
     
     has_shipment = response.xpath(".//shipment") if hasattr(response, 'xpath') else False
-    
 
     shipment = _extract_details(response, settings) if has_shipment else None
 
@@ -68,7 +67,6 @@ def _extract_details(
 
     # Extract service code for metadata
     service_code = shipment.service_code if hasattr(shipment, 'service_code') else ""
-    
 
     documents = models.Documents(
         label=label_base64,
@@ -116,11 +114,11 @@ def shipment_request(
     )
 
     # Create the carrier-specific request object
-    
+
     # For XML API request
-    request = shipengine_req.ShipmentRequest(
+    request = shipengine_req.shipment_request(
         # Map shipper details
-        shipper=shipengine_req.Address(
+        shipper=shipengine_req.shipperType(
             address_line1=shipper.address_line1,
             city=shipper.city,
             postal_code=shipper.postal_code,
@@ -132,7 +130,7 @@ def shipment_request(
             email=shipper.email,
         ),
         # Map recipient details
-        recipient=shipengine_req.Address(
+        recipient=shipengine_req.recipientType(
             address_line1=recipient.address_line1,
             city=recipient.city,
             postal_code=recipient.postal_code,
@@ -144,26 +142,25 @@ def shipment_request(
             email=recipient.email,
         ),
         # Map package details
-        packages=[
-            shipengine_req.Package(
-                weight=package.weight.value,
-                weight_unit=provider_units.WeightUnit[package.weight.unit].value,
-                length=package.length.value if package.length else None,
-                width=package.width.value if package.width else None,
-                height=package.height.value if package.height else None,
-                dimension_unit=provider_units.DimensionUnit[package.dimension_unit].value if package.dimension_unit else None,
-                packaging_type=provider_units.PackagingType[package.packaging_type or 'your_packaging'].value,
-            )
-            for package in packages
-        ],
+        packages=shipengine_req.packagesType(
+            package=[
+                shipengine_req.packageType(
+                    weight=package.weight.value,
+                    weight_unit=package.weight.unit,
+                    length=package.length.value if package.length else None,
+                    width=package.width.value if package.width else None,
+                    height=package.height.value if package.height else None,
+                    dimension_unit=package.dimension_unit if package.dimension_unit else None,
+                    packaging_type=provider_units.get_packaging_type(package.packaging_type or 'your_packaging'),
+                )
+                for package in packages
+            ]
+        ),
         # Add service code
-        service_code=service,
-        # Add account information
-        customer_number=settings.customer_number,
+        service=service,
         # Add label details
-        label_format=payload.label_type or "PDF",
+        label_type=payload.label_type or "PDF",
         # Add any other required fields for the carrier API
     )
-    
 
-    return lib.Serializable(request, lib.to_xml)
+    return lib.Serializable(request)

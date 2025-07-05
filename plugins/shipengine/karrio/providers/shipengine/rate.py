@@ -22,21 +22,12 @@ import karrio.providers.shipengine.utils as provider_utils
 
 
 def parse_rate_response(
-    _response: lib.Deserializable[str],
+    _response: lib.Deserializable[dict],
     settings: provider_utils.Settings,
 ) -> typing.Tuple[typing.List[models.RateDetails], typing.List[models.Message]]:
-    """Parse ShipEngine rate response and extract rate details.
-    
-    Args:
-        _response: The raw response from ShipEngine API
-        settings: Provider settings
-        
-    Returns:
-        Tuple of rate details list and error messages
-    """
     response = _response.deserialize()
     errors = provider_error.parse_error_response(response, settings)
-    rates = _extract_details(response, settings) if "error" not in response else []
+    rates = _extract_details(response, settings) if "rates" in response else []
 
     return rates, errors
 
@@ -45,121 +36,100 @@ def _extract_details(
     response: dict,
     settings: provider_utils.Settings,
 ) -> typing.List[models.RateDetails]:
-    """Extract rate details from ShipEngine response.
+    rates = []
     
-    Args:
-        response: Parsed response dictionary
-        settings: Provider settings
+    for rate_data in response.get("rates", []):
+        rate = lib.to_object(shipengine_res.Rate, rate_data)
         
-    Returns:
-        List of rate details
-    """
-    # For testing purposes, return mock rate details
-    # In production, parse actual ShipEngine response structure
-    rates = response.get("rate_response", {}).get("rates", [])
+        if rate:
+            rates.append(
+                models.RateDetails(
+                    carrier_id=settings.carrier_id,
+                    carrier_name=rate.carrier_friendly_name or settings.carrier_name,
+                    service=rate.service_code,
+                    total_charge=rate.shipping_amount.amount,
+                    currency=rate.shipping_amount.currency,
+                    transit_days=rate.delivery_days,
+                    meta=dict(
+                        rate_id=rate.rate_id,
+                        service_type=rate.service_type,
+                        package_type=rate.package_type,
+                        zone=rate.zone,
+                        guaranteed_service=rate.guaranteed_service,
+                        negotiated_rate=rate.negotiated_rate,
+                        trackable=rate.trackable,
+                        validation_status=rate.validation_status,
+                        carrier_code=rate.carrier_code,
+                        carrier_nickname=rate.carrier_nickname,
+                        service_name=rate.service_code,
+                    ),
+                )
+            )
     
-    return [
-        models.RateDetails(
-            carrier_id=settings.carrier_id,
-            carrier_name=settings.carrier_name,
-            service=provider_units.get_service_name(
-                rate.get("service_code", "standard")
-            ),
-            currency=rate.get("shipping_amount", {}).get("currency", "USD"),
-            total_charge=lib.to_decimal(
-                rate.get("shipping_amount", {}).get("amount", "0.00")
-            ),
-            transit_days=rate.get("estimated_delivery_date"),
-            meta=dict(
-                service_name=rate.get("service_type"),
-                rate_provider="ShipEngine",
-                carrier_id=rate.get("carrier_id"),
-                rate_id=rate.get("rate_id"),
-            ),
-        )
-        for rate in rates
-    ]
+    return rates
 
 
 def rate_request(
     payload: models.RateRequest,
-    settings: provider_utils.Settings
+    settings: provider_utils.Settings,
 ) -> lib.Serializable:
-    """Create ShipEngine rate request from payload.
-    
-    Args:
-        payload: Rate request payload
-        settings: Provider settings
-        
-    Returns:
-        Serializable request object
-    """
     shipper = lib.to_address(payload.shipper)
     recipient = lib.to_address(payload.recipient)
-    package = lib.to_packages(
-        payload.parcels,
-        package_option_type=provider_units.ShippingOption,
-    ).single
+    packages = lib.to_packages(payload.parcels)
+    services = payload.services
     options = lib.to_shipping_options(
-        payload,
-        package_options=package.options,
+        payload.options,
+        package_options=packages.options,
         initializer=provider_units.shipping_options_initializer,
     )
 
-    # Create ShipEngine rate request structure
-    request = {
-        "rate_options": {
-            "carrier_ids": payload.services or [],
-            "service_codes": payload.services or [],
-            "calculate_tax_amount": True,
-            "preferred_currency": "USD",
-        },
-        "shipment": {
-            "ship_from": {
-                "name": shipper.person_name,
-                "company_name": shipper.company_name,
-                "address_line1": shipper.street,
-                "address_line2": shipper.address_line2,
-                "city_locality": shipper.city,
-                "state_province": shipper.state_code,
-                "postal_code": shipper.postal_code,
-                "country_code": shipper.country_code,
-                "phone": shipper.phone_number,
-                "address_residential_indicator": "yes" if shipper.residential else "no",
-            },
-            "ship_to": {
-                "name": recipient.person_name,
-                "company_name": recipient.company_name,
-                "address_line1": recipient.street,
-                "address_line2": recipient.address_line2,
-                "city_locality": recipient.city,
-                "state_province": recipient.state_code,
-                "postal_code": recipient.postal_code,
-                "country_code": recipient.country_code,
-                "phone": recipient.phone_number,
-                "address_residential_indicator": "yes" if recipient.residential else "no",
-            },
-            "packages": [
-                {
-                    "weight": {
-                        "value": package.weight,
-                        "unit": "kilogram",
-                    },
-                    "dimensions": {
-                        "length": package.length,
-                        "width": package.width,
-                        "height": package.height,
-                        "unit": "centimeter",
-                    },
-                    "package_code": provider_units.get_packaging_type(
-                        package.packaging_type or "package"
-                    ),
-                }
-            ],
-            "advanced_options": {
-                option.code: option.state for _, option in options.items()
-            },
-        },
-    }
+    request = shipengine_req.RateRequest(
+        ship_from=shipengine_req.Address(
+            name=shipper.person_name,
+            company_name=shipper.company_name,
+            phone=shipper.phone_number,
+            address_line1=shipper.address_line1,
+            address_line2=shipper.address_line2,
+            city_locality=shipper.city,
+            state_province=shipper.state_code,
+            postal_code=shipper.postal_code,
+            country_code=shipper.country_code,
+        ),
+        ship_to=shipengine_req.Address(
+            name=recipient.person_name,
+            company_name=recipient.company_name,
+            phone=recipient.phone_number,
+            address_line1=recipient.address_line1,
+            address_line2=recipient.address_line2,
+            city_locality=recipient.city,
+            state_province=recipient.state_code,
+            postal_code=recipient.postal_code,
+            country_code=recipient.country_code,
+        ),
+        packages=[
+            shipengine_req.Package(
+                weight=shipengine_req.Weight(
+                    value=package.weight.LB,
+                    unit="pound",
+                ),
+                dimensions=shipengine_req.Dimensions(
+                    length=package.length.IN,
+                    width=package.width.IN,
+                    height=package.height.IN,
+                    unit="inch",
+                ) if package.length and package.width and package.height else None,
+                package_code=provider_units.PackagingType.map(package.packaging_type or "package").value,
+            )
+            for package in packages
+        ],
+        carrier_ids=options.get("carrier_ids") or settings.config.get("carrier_ids"),
+        service_codes=services,
+        calculate_tax_amount=options.get("calculate_tax_amount"),
+        compare_delivery_dates=options.get("compare_delivery_dates"),
+        confirmation=options.get("confirmation"),
+        insurance_amount=options.get("insurance_amount"),
+        shipment_date=options.get("shipment_date"),
+        tags=options.get("tags"),
+    )
 
     return lib.Serializable(request, lib.to_dict)

@@ -8,14 +8,17 @@ import karrio.providers.sendcloud.utils as provider_utils
 class Settings(provider_utils.Settings):
     """SendCloud connection settings."""
 
-    # OAuth2 credentials for SendCloud API
+    # API credentials for SendCloud API v2/v3
     client_id: str
     client_secret: str
 
+    # Optional settings
+    sender_address_id: int = None
+    test_mode: bool = False
+    
     # generic properties
     id: str = None
-    test_mode: bool = False
     carrier_id: str = "sendcloud"
-    account_country_code: str = None
+    account_country_code: str = "NL"
     metadata: dict = {}
     config: dict = {}

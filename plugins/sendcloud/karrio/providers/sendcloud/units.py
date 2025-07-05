@@ -126,24 +126,24 @@ class ConnectionConfig(lib.Enum):
 
 
 def shipping_options_initializer(
-    options: dict,
+    payload: typing.Any,
     package_options: units.ShippingOptions=None,
 ) -> units.ShippingOptions:
-    """
-    Apply default values to the given options.
+    options = {}
     
-    Args:
-        options: Dictionary of shipping options
-        package_options: Existing package options to merge
-        
-    Returns:
-        Initialized ShippingOptions object
-    """
+    if hasattr(payload, "label_type") and payload.label_type:
+        options.update(
+            sendcloud_label_format=LabelType.map(payload.label_type or "PDF").value,
+        )
+    
+    if hasattr(payload, "options") and payload.options:
+        options.update(payload.options)
+    
     if package_options is not None:
         options.update(package_options.content)
 
     def items_filter(key: str) -> bool:
-        return key in ShippingOption  # type: ignore
+        return key in ShippingOption
 
     return units.ShippingOptions(options, ShippingOption, items_filter=items_filter)
 
