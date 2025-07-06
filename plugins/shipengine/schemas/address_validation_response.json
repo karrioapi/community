@@ -1,0 +1,16 @@
+{
+  "is_valid": true,
+  "normalized_address": {
+    "street_address": "123 MAIN ST",
+    "city_locality": "CITY NAME",
+    "postal_code": "12345",
+    "country_code": "US",
+    "state_province": "CA"
+  },
+  "validation_messages": [
+    {
+      "message": "Address is valid",
+      "code": "SUCCESS"
+    }
+  ]
+}

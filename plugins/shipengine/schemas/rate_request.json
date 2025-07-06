@@ -1,0 +1,50 @@
+{
+  "rate_options": {
+    "calculate_tax_amount": true,
+    "preferred_currency": "USD"
+  },
+  "shipment": {
+    "validate_address": "validate_and_clean",
+    "ship_to": {
+      "name": "Test Recipient",
+      "phone": "+0987654321",
+      "company_name": "Recipient Company",
+      "address_line1": "456 Recipient St",
+      "address_line2": "",
+      "address_line3": "",
+      "city_locality": "Los Angeles",
+      "state_province": "CA",
+      "postal_code": "90210",
+      "country_code": "US",
+      "address_residential_indicator": "no"
+    },
+    "ship_from": {
+      "name": "Test Shipper",
+      "phone": "+1234567890",
+      "company_name": "Test Company",
+      "address_line1": "123 Test Street",
+      "address_line2": "",
+      "address_line3": "",
+      "city_locality": "Austin",
+      "state_province": "TX",
+      "postal_code": "78701",
+      "country_code": "US",
+      "address_residential_indicator": "no"
+    },
+    "packages": [
+      {
+        "weight": {
+          "value": 5.0,
+          "unit": "pound"
+        },
+        "dimensions": {
+          "unit": "inch",
+          "length": 12.0,
+          "width": 8.0,
+          "height": 10.0
+        },
+        "package_code": "package"
+      }
+    ]
+  }
+}

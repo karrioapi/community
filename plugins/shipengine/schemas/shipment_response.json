@@ -1,0 +1,11 @@
+{
+  "label_id": "se-label-123456",
+  "shipment_id": "se-shipment-789012",
+  "tracking_number": "1Z999AA1234567890",
+  "carrier_id": "se-carrier-345678",
+  "carrier_code": "ups",
+  "service_code": "ups_ground",
+  "label_download": {
+    "pdf": "https://api.shipengine.com/v1/downloads/labels/se-label-123456.pdf"
+  }
+}

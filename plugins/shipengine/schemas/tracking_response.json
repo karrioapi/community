@@ -1,0 +1,28 @@
+{
+  "tracking_number": "1Z999AA1234567890",
+  "status_code": "DE",
+  "status_description": "Delivered",
+  "carrier_code": "ups",
+  "carrier_status_description": "Package delivered",
+  "estimated_delivery_date": "2024-01-15T10:30:00Z",
+  "actual_delivery_date": "2024-01-15T10:30:00Z",
+  "tracking_url": "https://www.ups.com/track?tracknum=1Z999AA1234567890",
+  "events": [
+    {
+      "occurred_at": "2024-01-15T10:30:00Z",
+      "description": "Package delivered",
+      "event_code": "DL",
+      "city_locality": "Los Angeles",
+      "state_province": "CA",
+      "country_code": "US"
+    },
+    {
+      "occurred_at": "2024-01-15T08:00:00Z",
+      "description": "Out for delivery",
+      "event_code": "OD",
+      "city_locality": "Los Angeles", 
+      "state_province": "CA",
+      "country_code": "US"
+    }
+  ]
+}

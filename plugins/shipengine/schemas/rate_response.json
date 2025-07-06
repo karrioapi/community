@@ -1,0 +1,62 @@
+{
+  "rate_response": {
+    "rates": [
+      {
+        "rate_id": "se-123456789",
+        "carrier_id": "se-test-carrier",
+        "carrier_code": "ups",
+        "service_code": "ups_ground",
+        "service_type": "UPS Ground",
+        "carrier_friendly_name": "UPS",
+        "shipping_amount": {
+          "amount": "12.50",
+          "currency": "USD"
+        },
+        "insurance_amount": {
+          "amount": "0.00",
+          "currency": "USD"
+        },
+        "confirmation_amount": {
+          "amount": "0.00",
+          "currency": "USD"
+        },
+        "other_amount": {
+          "amount": "0.00",
+          "currency": "USD"
+        },
+        "delivery_days": 3,
+        "estimated_delivery_date": "2024-01-18T10:30:00Z",
+        "guaranteed_service": false,
+        "trackable": true
+      },
+      {
+        "rate_id": "se-987654321",
+        "carrier_id": "se-test-carrier-2",
+        "carrier_code": "fedex",
+        "service_code": "fedex_2day",
+        "service_type": "FedEx 2Day",
+        "carrier_friendly_name": "FedEx",
+        "shipping_amount": {
+          "amount": "25.99",
+          "currency": "USD"
+        },
+        "insurance_amount": {
+          "amount": "2.00",
+          "currency": "USD"
+        },
+        "confirmation_amount": {
+          "amount": "0.00",
+          "currency": "USD"
+        },
+        "other_amount": {
+          "amount": "1.50",
+          "currency": "USD"
+        },
+        "delivery_days": 2,
+        "estimated_delivery_date": "2024-01-16T10:30:00Z",
+        "guaranteed_service": true,
+        "trackable": true
+      }
+    ]
+  }
+}

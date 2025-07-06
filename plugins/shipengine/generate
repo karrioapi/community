@@ -1,23 +1,32 @@
+#!/bin/bash
+set -e
+
 SCHEMAS=./schemas
-LIB_MODULES=./karrio/schemas/easyship
+LIB_MODULES=./karrio/schemas/shipengine
+
+# Get project root (3 levels up from community/plugins/shipengine)
+ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
+
+# Clean existing generated files
 find "${LIB_MODULES}" -name "*.py" -exec rm -r {} \;
 touch "${LIB_MODULES}/__init__.py"
 
+# Generation function - use default naming to get snake_case from API
 generate_schema() {
     echo "Generating $1..."
     "${ROOT}/bin/cli" codegen generate "$1" "$2" --nice-property-names
 }
 
+# Generate all required schemas
 generate_schema "${SCHEMAS}/error_response.json" "${LIB_MODULES}/error_response.py"
-generate_schema "${SCHEMAS}/manifest_request.json" "${LIB_MODULES}/manifest_request.py"
-generate_schema "${SCHEMAS}/manifest_response.json" "${LIB_MODULES}/manifest_response.py"
-generate_schema "${SCHEMAS}/pickup_cancel_response.json" "${LIB_MODULES}/pickup_cancel_response.py"
-generate_schema "${SCHEMAS}/pickup_request.json" "${LIB_MODULES}/pickup_request.py"
-generate_schema "${SCHEMAS}/pickup_response.json" "${LIB_MODULES}/pickup_response.py"
+generate_schema "${SCHEMAS}/address_validation_request.json" "${LIB_MODULES}/address_validation_request.py"
+generate_schema "${SCHEMAS}/address_validation_response.json" "${LIB_MODULES}/address_validation_response.py"
 generate_schema "${SCHEMAS}/rate_request.json" "${LIB_MODULES}/rate_request.py"
 generate_schema "${SCHEMAS}/rate_response.json" "${LIB_MODULES}/rate_response.py"
-generate_schema "${SCHEMAS}/shipment_cancel_response.json" "${LIB_MODULES}/shipment_cancel_response.py"
 generate_schema "${SCHEMAS}/shipment_request.json" "${LIB_MODULES}/shipment_request.py"
 generate_schema "${SCHEMAS}/shipment_response.json" "${LIB_MODULES}/shipment_response.py"
+generate_schema "${SCHEMAS}/shipment_cancel_request.json" "${LIB_MODULES}/shipment_cancel_request.py"
+generate_schema "${SCHEMAS}/shipment_cancel_response.json" "${LIB_MODULES}/shipment_cancel_response.py"
 generate_schema "${SCHEMAS}/tracking_request.json" "${LIB_MODULES}/tracking_request.py"
 generate_schema "${SCHEMAS}/tracking_response.json" "${LIB_MODULES}/tracking_response.py"
+
