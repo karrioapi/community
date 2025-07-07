@@ -1,0 +1,18 @@
+{
+  "warnings": [
+    "Postal code not found"
+  ],
+  "address": [
+    {
+      "countryCode": "CZ",
+      "postalCode": "14800",
+      "cityName": "Prague",
+      "countyName": "Central Bohemia",
+      "serviceArea": {
+        "code": "PRG",
+        "description": "Prague Service Area",
+        "GMTOffset": "+01:00"
+      }
+    }
+  ]
+}

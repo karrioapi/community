@@ -1,0 +1,11 @@
+{
+  "instance": "/mydhlapi/rates",
+  "detail": "999: Process failure occurred. Process ID associated for that transaction (987655)",
+  "title": "PROCESS_FAILURE", 
+  "message": "Process failure occurred",
+  "status": "500",
+  "additionalDetails": [
+    "Key is missing in the request",
+    "Invalid customerDetails"
+  ]
+}

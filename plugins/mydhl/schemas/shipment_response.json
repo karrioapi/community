@@ -1,0 +1,108 @@
+{
+  "shipmentTrackingNumber": "123456790",
+  "cancelPickupUrl": "https://express.api.dhl.com/mydhlapi/shipments/123456790/pickup/cancelation",
+  "trackingUrl": "https://www.dhl.com/en/express/tracking.html?AWB=123456790&brand=DHL",
+  "dispatchConfirmationNumber": "PRG999126012345",
+  "packages": [
+    {
+      "referenceNumber": 1,
+      "trackingNumber": "JD012345678900",
+      "trackingUrl": "https://www.dhl.com/en/express/tracking.html?AWB=1234567890&brand=DHL",
+      "volumetricWeight": 10.5,
+      "documents": [
+        {
+          "imageFormat": "PDF",
+          "content": "JVBERi0xLjQKJeLjz9MKNCAwIG9iago8PC9GaWx=",
+          "typeCode": "label"
+        }
+      ]
+    }
+  ],
+  "documents": [
+    {
+      "imageFormat": "PDF",
+      "content": "JVBERi0xLjQKJeLjz9MKNCAwIG9iago8PC9GaWx=",
+      "typeCode": "waybillDoc"
+    },
+    {
+      "imageFormat": "PDF",
+      "content": "JVBERi0xLjQKJeLjz9MKNCAwIG9iago8PC9GaWx=",
+      "typeCode": "invoice"
+    }
+  ],
+  "onDemandDeliveryURL": "https://www.dhl.com/ondemanddelivery?AWB=123456790",
+  "shipmentDetails": [
+    {
+      "serviceHandlingFeatureCodes": [
+        "II",
+        "WY"
+      ],
+      "volumetricWeight": 10.5,
+      "billingCode": "AP",
+      "serviceContentCode": "ODD",
+      "customerDetails": {
+        "shipperDetails": {
+          "postalAddress": {
+            "postalCode": "14800",
+            "cityName": "Prague",
+            "countryCode": "CZ",
+            "provinceCode": "CZ",
+            "addressLine1": "V Parku 2308/10",
+            "addressLine2": "addres2",
+            "addressLine3": "addres3",
+            "countyName": "Central Bohemia"
+          },
+          "contactInformation": {
+            "email": "that@before.de",
+            "phone": "+1123456789",
+            "mobilePhone": "+60112345678",
+            "companyName": "Company Name",
+            "fullName": "John Brew"
+          },
+          "registrationNumbers": [
+            {
+              "typeCode": "VAT",
+              "number": "CZ123456789",
+              "issuerCountryCode": "CZ"
+            }
+          ],
+          "typeCode": "business"
+        },
+        "receiverDetails": {
+          "postalAddress": {
+            "postalCode": "14800",
+            "cityName": "Prague",
+            "countryCode": "CZ",
+            "provinceCode": "CZ",
+            "addressLine1": "V Parku 2308/10",
+            "addressLine2": "addres2",
+            "addressLine3": "addres3",
+            "countyName": "Central Bohemia"
+          },
+          "contactInformation": {
+            "email": "that@before.de",
+            "phone": "+1123456789",
+            "mobilePhone": "+60112345678",
+            "companyName": "Company Name",
+            "fullName": "John Brew"
+          },
+          "registrationNumbers": [
+            {
+              "typeCode": "VAT",
+              "number": "CZ123456789",
+              "issuerCountryCode": "CZ"
+            }
+          ],
+          "typeCode": "business"
+        }
+      }
+    }
+  ],
+  "estimatedDeliveryDate": {
+    "estimatedDeliveryDate": "2020-06-12",
+    "estimatedDeliveryType": "QDDC"
+  },
+  "warnings": [
+    "The declared value was ignored"
+  ]
+}

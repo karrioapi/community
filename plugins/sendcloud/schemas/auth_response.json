@@ -1,0 +1,8 @@
+{
+  "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "expires_in": 3600,
+  "id_token": null,
+  "refresh_token": "xxxxxxxxxxx",
+  "scope": "public",
+  "token_type": "Bearer"
+}

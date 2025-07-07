@@ -1,0 +1,11 @@
+{
+  "error": {
+    "code": "validation_error",
+    "message": "Validation failed",
+    "request": "req_123456"
+  },
+  "errors": {
+    "from_country": ["Country not supported"],
+    "weight": ["Weight must be greater than 0"]
+  }
+}

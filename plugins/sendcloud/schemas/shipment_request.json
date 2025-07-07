@@ -1,0 +1,39 @@
+{
+  "name": "John Doe",
+  "address": "123 Main Street",
+  "address_2": "Apt 4B",
+  "house_number": "123",
+  "city": "Amsterdam",
+  "postal_code": "1000AB",
+  "country": "NL",
+  "company_name": "Test Company BV",
+  "email": "john.doe@example.com",
+  "telephone": "+31201234567",
+  "weight": "1.5",
+  "length": 25,
+  "width": 20,
+  "height": 15,
+  "request_label": true,
+  "apply_shipping_rules": true,
+  "shipping_method": 123,
+  "external_reference": "ORDER-001",
+  "order_number": "ORD-12345",
+  "insured_value": 100.00,
+  "total_insured_value": 100.00,
+  "sender_address": 456,
+  "shipment_uuid": "550e8400-e29b-41d4-a716-446655440000",
+  "customs_invoice_nr": "INV-001",
+  "customs_shipment_type": 2,
+  "parcel_items": [
+    {
+      "description": "T-shirt",
+      "quantity": 2,
+      "weight": "0.3",
+      "value": "25.00",
+      "hs_code": "6109100000",
+      "origin_country": "NL",
+      "sku": "TSH-001",
+      "product_id": "prod_123"
+    }
+  ]
+}

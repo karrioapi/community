@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "properties": {
+    "tracking_number": {
+      "type": "string",
+      "description": "Tracking number to query"
+    },
+    "carrier": {
+      "type": "string",
+      "description": "Carrier code (optional)"
+    }
+  },
+  "required": ["tracking_number"]
+}

@@ -1,0 +1,134 @@
+{
+  "products": [
+    {
+      "productName": "EXPRESS WORLDWIDE",
+      "productCode": "P",
+      "localProductCode": "P",
+      "localProductCountryCode": "CZ",
+      "networkTypeCode": "TD",
+      "isCustomerAgreement": false,
+      "weight": {
+        "volumetric": 0,
+        "provided": 10.5,
+        "unitOfMeasurement": "metric"
+      },
+      "totalPrice": [
+        {
+          "currencyType": "BILLC",
+          "priceCurrency": "GBP",
+          "price": 141.51
+        },
+        {
+          "currencyType": "BILLC",
+          "priceCurrency": "GBP",
+          "price": 141.51
+        },
+        {
+          "currencyType": "BILLC",
+          "priceCurrency": "GBP",
+          "price": 141.51
+        }
+      ],
+      "totalPriceBreakdown": [
+        {
+          "currencyType": "BILLC",
+          "priceCurrency": "GBP",
+          "priceType": "TAX",
+          "price": 0,
+          "rate": 0,
+          "basePrice": 0
+        }
+      ],
+      "detailedPriceBreakdown": [
+        {
+          "currencyType": "BILLC",
+          "priceCurrency": "GBP",
+          "breakdown": [
+            {
+              "name": "EXPRESS WORLDWIDE DOC",
+              "serviceCode": "YY",
+              "localServiceCode": "YY",
+              "typeCode": "EXPRESS WORLDWIDE",
+              "serviceTypeCode": "SCH",
+              "price": 127.45,
+              "priceCurrency": "GBP",
+              "isCustomerAgreement": false,
+              "isMarketedService": false,
+              "isBillingServiceIndicator": false,
+              "priceBreakdown": [
+                {
+                  "priceType": "TAX",
+                  "typeCode": "All bu",
+                  "price": 0,
+                  "rate": 0,
+                  "basePrice": 0
+                }
+              ],
+              "tariffRateFormula": "10.5"
+            }
+          ]
+        }
+      ],
+      "serviceCodeMutuallyExclusiveGroups": [
+        {
+          "serviceCodeRuleName": "Exclusive Optional Services",
+          "description": "Exclusive Optional Services",
+          "serviceCodes": [
+            {
+              "serviceCode": "PZ"
+            }
+          ]
+        }
+      ],
+      "serviceCodeDependencyRuleGroups": [
+        {
+          "dependentServiceCode": "PZ",
+          "dependencyRuleGroup": [
+            {
+              "dependencyRuleName": "Labelfree and PLT rule",
+              "dependencyDescription": "Labelfree requires Paperless trade (PLT) only if PLT is allowed for product globals",
+              "dependencyCondition": "Must provide the requiredServiceCode if it is allowed for productCode",
+              "requiredServiceCodes": [
+                {
+                  "serviceCode": "WY"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "pickupCapabilities": {
+        "nextBusinessDay": false,
+        "localCutoffDateAndTime": "2019-09-18T15:00:00",
+        "GMTCutoffTime": "16:00:00",
+        "pickupEarliest": "09:30:00",
+        "pickupLatest": "16:00:00",
+        "originServiceAreaCode": "ELA",
+        "originFacilityAreaCode": "HHR",
+        "pickupAdditionalDays": 0,
+        "pickupDayOfWeek": 3
+      },
+      "deliveryCapabilities": {
+        "deliveryTypeCode": "QDDC",
+        "estimatedDeliveryDateAndTime": "2019-09-20T12:00:00",
+        "destinationServiceAreaCode": "PRG",
+        "destinationFacilityAreaCode": "PR3",
+        "deliveryAdditionalDays": 0,
+        "deliveryDayOfWeek": 5,
+        "totalTransitDays": 2
+      },
+      "items": [],
+      "pricingDate": "2020-02-25"
+    }
+  ],
+  "exchangeRates": [
+    {
+      "currentExchangeRate": 1.13127,
+      "currency": "EUR",
+      "baseCurrency": "USD"
+    }
+  ],
+  "warnings": [
+    "Price can't be calculated"
+  ]
+}
