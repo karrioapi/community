@@ -1,9 +1,9 @@
-"""Karrio ShipEngine error parser."""
+"""Karrio Veho error parser."""
 
 import typing
 import karrio.lib as lib
 import karrio.core.models as models
-import karrio.providers.shipengine.utils as provider_utils
+import karrio.providers.veho.utils as provider_utils
 
 
 def parse_error_response(

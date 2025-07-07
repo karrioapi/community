@@ -1,4 +1,4 @@
-"""ShipEngine carrier shipment tests."""
+"""Veho carrier shipment tests."""
 
 import unittest
 from unittest.mock import patch, ANY
@@ -10,9 +10,7 @@ import karrio.core.models as models
 
 logger = logging.getLogger(__name__)
 
-
-class TestShipEngineShipment(unittest.TestCase):
-
+class TestVehoShipment(unittest.TestCase):
     def setUp(self):
         self.maxDiff = None
         self.ShipmentRequest = models.ShipmentRequest(**ShipmentPayload)
@@ -23,8 +21,8 @@ class TestShipEngineShipment(unittest.TestCase):
         self.assertEqual(lib.to_dict(request.serialize()), ShipmentRequest)
 
     def test_create_shipment(self):
-        with patch("karrio.mappers.shipengine.proxy.lib.request") as mock:
-            mock.return_value = "<r></r>"
+        with patch("karrio.mappers.veho.proxy.lib.request") as mock:
+            mock.return_value = "{}"
             karrio.Shipment.create(self.ShipmentRequest).from_(gateway)
             self.assertEqual(
                 mock.call_args[1]["url"],
@@ -32,7 +30,7 @@ class TestShipEngineShipment(unittest.TestCase):
             )
 
     def test_parse_shipment_response(self):
-        with patch("karrio.mappers.shipengine.proxy.lib.request") as mock:
+        with patch("karrio.mappers.veho.proxy.lib.request") as mock:
             mock.return_value = ShipmentResponse
             parsed_response = (
                 karrio.Shipment.create(self.ShipmentRequest)
@@ -46,8 +44,8 @@ class TestShipEngineShipment(unittest.TestCase):
         self.assertEqual(lib.to_dict(request.serialize()), ShipmentCancelRequest)
 
     def test_cancel_shipment(self):
-        with patch("karrio.mappers.shipengine.proxy.lib.request") as mock:
-            mock.return_value = "<r></r>"
+        with patch("karrio.mappers.veho.proxy.lib.request") as mock:
+            mock.return_value = "{}"
             karrio.Shipment.cancel(self.ShipmentCancelRequest).from_(gateway)
             self.assertEqual(
                 mock.call_args[1]["url"],
@@ -55,7 +53,7 @@ class TestShipEngineShipment(unittest.TestCase):
             )
 
     def test_parse_shipment_cancel_response(self):
-        with patch("karrio.mappers.shipengine.proxy.lib.request") as mock:
+        with patch("karrio.mappers.veho.proxy.lib.request") as mock:
             mock.return_value = ShipmentCancelResponse
             parsed_response = (
                 karrio.Shipment.cancel(self.ShipmentCancelRequest)
@@ -65,7 +63,7 @@ class TestShipEngineShipment(unittest.TestCase):
             self.assertListEqual(lib.to_dict(parsed_response), ParsedShipmentCancelResponse)
 
     def test_parse_error_response(self):
-        with patch("karrio.mappers.shipengine.proxy.lib.request") as mock:
+        with patch("karrio.mappers.veho.proxy.lib.request") as mock:
             mock.return_value = ErrorResponse
             parsed_response = (
                 karrio.Shipment.create(self.ShipmentRequest)
@@ -77,6 +75,7 @@ class TestShipEngineShipment(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
 
 ShipmentPayload = {
     "shipper": {
@@ -119,54 +118,56 @@ ShipmentCancelPayload = {
 
 ShipmentRequest = {
     "shipper": {
-        "address_line1": "123 Test Street",
+        "addressLine1": "123 Test Street",
         "city": "Test City",
-        "postal_code": "12345",
-        "country_code": "US",
-        "state_code": "CA",
-        "person_name": "Test Person",
-        "company_name": "Test Company",
-        "phone_number": "1234567890",
+        "postalCode": "12345",
+        "countryCode": "US",
+        "stateCode": "CA",
+        "personName": "Test Person",
+        "companyName": "Test Company",
+        "phoneNumber": "1234567890",
         "email": "test@example.com"
     },
     "recipient": {
-        "address_line1": "123 Test Street",
+        "addressLine1": "123 Test Street",
         "city": "Test City",
-        "postal_code": "12345",
-        "country_code": "US",
-        "state_code": "CA",
-        "person_name": "Test Person",
-        "company_name": "Test Company",
-        "phone_number": "1234567890",
+        "postalCode": "12345",
+        "countryCode": "US",
+        "stateCode": "CA",
+        "personName": "Test Person",
+        "companyName": "Test Company",
+        "phoneNumber": "1234567890",
         "email": "test@example.com"
     },
     "packages": [
         {
             "weight": 10.0,
-            "weight_unit": "KG",
+            "weightUnit": "KG",
             "length": 10.0,
             "width": 10.0,
             "height": 10.0,
-            "dimension_unit": "CM",
-            "packaging_type": "BOX"
+            "dimensionUnit": "CM",
+            "packagingType": "BOX"
         }
     ],
-    "service_code": "express",
-    "label_format": "PDF"
+    "serviceCode": "express",
+    "labelFormat": "PDF"
 }
 
 ShipmentCancelRequest = {
-    "shipment_identifier": "SHIP123456"
+    "shipmentIdentifier": "SHIP123456"
 }
 
 ShipmentResponse = """{
   "shipment": {
-    "tracking_number": "1Z999999999999999",
-    "shipment_id": "SHIP123456",
-    "label_format": "PDF",
-    "label_image": "base64_encoded_label_data",
-    "invoice_image": "base64_encoded_invoice_data",
-    "service_code": "express"
+    "trackingNumber": "1Z999999999999999",
+    "shipmentId": "SHIP123456",
+    "labelData": {
+      "format": "PDF",
+      "image": "base64_encoded_label_data"
+    },
+    "invoiceImage": "base64_encoded_invoice_data",
+    "serviceCode": "express"
   }
 }"""
 
@@ -185,8 +186,8 @@ ErrorResponse = """{
 
 ParsedShipmentResponse = [
     {
-        "carrier_id": "shipengine",
-        "carrier_name": "shipengine",
+        "carrier_id": "veho",
+        "carrier_name": "veho",
         "tracking_number": "1Z999999999999999",
         "shipment_identifier": "SHIP123456",
         "label_type": "PDF",
@@ -203,8 +204,8 @@ ParsedShipmentResponse = [
 
 ParsedShipmentCancelResponse = [
     {
-        "carrier_id": "shipengine",
-        "carrier_name": "shipengine",
+        "carrier_id": "veho",
+        "carrier_name": "veho",
         "success": True,
         "operation": "Cancel Shipment"
     },
@@ -215,8 +216,8 @@ ParsedErrorResponse = [
     {},
     [
         {
-            "carrier_id": "shipengine",
-            "carrier_name": "shipengine",
+            "carrier_id": "veho",
+            "carrier_name": "veho",
             "code": "shipment_error",
             "message": "Unable to create shipment",
             "details": {

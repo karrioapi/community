@@ -1,8 +1,8 @@
-"""Karrio ShipEngine client proxy."""
+"""Karrio Veho client proxy."""
 
 import karrio.lib as lib
 import karrio.api.proxy as proxy
-import karrio.mappers.shipengine.settings as provider_settings
+import karrio.mappers.veho.settings as provider_settings
 
 
 class Proxy(proxy.Proxy):
@@ -16,7 +16,7 @@ class Proxy(proxy.Proxy):
             method="POST",
             headers={
                 "Content-Type": "application/json",
-                "API-Key": self.settings.api_key,
+                "apikey": self.settings.api_key,
             },
         )
 
@@ -30,16 +30,14 @@ class Proxy(proxy.Proxy):
             method="POST",
             headers={
                 "Content-Type": "application/json",
-                "API-Key": self.settings.api_key,
+                "apikey": self.settings.api_key,
             },
         )
 
         return lib.Deserializable(response, lib.to_dict)
     
     def cancel_shipment(self, request: lib.Serializable) -> lib.Deserializable[str]:
-        # Extract shipment ID from request
-        request_data = lib.to_dict(request.serialize())
-        shipment_id = request_data.get("shipment_identifier")
+        shipment_id = request.serialize().get("shipmentIdentifier")
         
         response = lib.request(
             url=f"{self.settings.server_url}/shipments/{shipment_id}/cancel",
@@ -47,7 +45,7 @@ class Proxy(proxy.Proxy):
             method="POST",
             headers={
                 "Content-Type": "application/json",
-                "API-Key": self.settings.api_key,
+                "apikey": self.settings.api_key,
             },
         )
 
@@ -55,17 +53,17 @@ class Proxy(proxy.Proxy):
     
     def get_tracking(self, request: lib.Serializable) -> lib.Deserializable[str]:
         request_data = request.serialize()
-        tracking_numbers = request_data.get("tracking_numbers", [])
+        tracking_numbers = request_data.get("trackingNumbers", [])
         
         # Make a single request with all tracking numbers
         response = lib.request(
             url=f"{self.settings.server_url}/tracking",
-            data=lib.to_json({"tracking_numbers": tracking_numbers}),
+            data=lib.to_json({"trackingNumbers": tracking_numbers}),
             trace=self.trace_as("json"),
             method="POST",
             headers={
                 "Content-Type": "application/json",
-                "API-Key": self.settings.api_key,
+                "apikey": self.settings.api_key,
             },
         )
 

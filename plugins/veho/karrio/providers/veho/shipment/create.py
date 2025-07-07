@@ -1,15 +1,15 @@
-"""Karrio ShipEngine shipment API implementation."""
+"""Karrio Veho shipment API implementation."""
 
-from karrio.schemas.shipengine import shipment_request as shipengine_req
-from karrio.schemas.shipengine import shipment_response as shipengine_res
+import karrio.schemas.veho.shipment_request as veho_req
+import karrio.schemas.veho.shipment_response as veho_res
 
 import typing
 import karrio.lib as lib
 import karrio.core.units as units
 import karrio.core.models as models
-import karrio.providers.shipengine.error as error
-import karrio.providers.shipengine.utils as provider_utils
-import karrio.providers.shipengine.units as provider_units
+import karrio.providers.veho.error as error
+import karrio.providers.veho.utils as provider_utils
+import karrio.providers.veho.units as provider_units
 
 
 def parse_shipment_response(
@@ -18,7 +18,6 @@ def parse_shipment_response(
 ) -> typing.Tuple[models.ShipmentDetails, typing.List[models.Message]]:
     response = _response.deserialize()
     messages = error.parse_error_response(response, settings)
-
     shipment = _extract_details(response, settings) if "error" not in response else {}
 
     return shipment, messages
@@ -32,13 +31,17 @@ def _extract_details(
     # Handle nested shipment structure
     shipment_data = data.get("shipment", data)
     
-    tracking_number = shipment_data.get("tracking_number", "")
-    shipment_id = shipment_data.get("shipment_id", "")
-    service_code = shipment_data.get("service_code", "")
+    tracking_number = shipment_data.get("trackingNumber", "")
+    shipment_id = shipment_data.get("shipmentId", "")
+    service_code = shipment_data.get("serviceCode", "")
     
-    label_format = shipment_data.get("label_format", "PDF")
-    label_image = shipment_data.get("label_image")
-    invoice_image = shipment_data.get("invoice_image")
+    # Extract label data
+    label_data = shipment_data.get("labelData", {})
+    label_format = label_data.get("format", "PDF")
+    label_image = label_data.get("image")
+    
+    # Extract invoice image
+    invoice_image = shipment_data.get("invoiceImage")
 
     return models.ShipmentDetails(
         carrier_id=settings.carrier_id,
@@ -60,56 +63,49 @@ def shipment_request(
     payload: models.ShipmentRequest,
     settings: provider_utils.Settings,
 ) -> lib.Serializable:
-    """
-    Create a shipment request for the carrier API
-
-    payload: The standardized ShipmentRequest from karrio
-    settings: The carrier connection settings
-
-    Returns a Serializable object that can be sent to the carrier API
-    """
+    """Create a shipment request for the carrier API."""
     shipper = lib.to_address(payload.shipper)
     recipient = lib.to_address(payload.recipient)
-    packages = lib.to_packages(payload.parcels)
+    package = lib.to_packages(payload.parcels).single
+    options = lib.to_shipping_options(payload.options)
     service = provider_units.ShippingService.map(payload.service).value_or_key
 
     request = {
         "shipper": {
-            "address_line1": shipper.address_line1,
+            "addressLine1": shipper.address_line1,
             "city": shipper.city,
-            "postal_code": shipper.postal_code,
-            "country_code": shipper.country_code,
-            "state_code": shipper.state_code,
-            "person_name": shipper.person_name,
-            "company_name": shipper.company_name,
-            "phone_number": shipper.phone_number,
+            "postalCode": shipper.postal_code,
+            "countryCode": shipper.country_code,
+            "stateCode": shipper.state_code,
+            "personName": shipper.person_name,
+            "companyName": shipper.company_name,
+            "phoneNumber": shipper.phone_number,
             "email": shipper.email,
         },
         "recipient": {
-            "address_line1": recipient.address_line1,
+            "addressLine1": recipient.address_line1,
             "city": recipient.city,
-            "postal_code": recipient.postal_code,
-            "country_code": recipient.country_code,
-            "state_code": recipient.state_code,
-            "person_name": recipient.person_name,
-            "company_name": recipient.company_name,
-            "phone_number": recipient.phone_number,
+            "postalCode": recipient.postal_code,
+            "countryCode": recipient.country_code,
+            "stateCode": recipient.state_code,
+            "personName": recipient.person_name,
+            "companyName": recipient.company_name,
+            "phoneNumber": recipient.phone_number,
             "email": recipient.email,
         },
         "packages": [
             {
                 "weight": package.weight.value,
-                "weight_unit": package.weight.unit,
+                "weightUnit": package.weight.unit,
                 "length": package.length.value if package.length else None,
                 "width": package.width.value if package.width else None,
                 "height": package.height.value if package.height else None,
-                "dimension_unit": package.dimension_unit if package.dimension_unit else None,
-                "packaging_type": package.packaging_type or "BOX",
+                "dimensionUnit": package.dimension_unit if package.dimension_unit else None,
+                "packagingType": package.packaging_type or "BOX",
             }
-            for package in packages
         ],
-        "service_code": service,
-        "label_format": payload.label_type or "PDF",
+        "serviceCode": service,
+        "labelFormat": payload.label_type or "PDF",
     }
 
     return lib.Serializable(request, lib.to_dict)

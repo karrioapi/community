@@ -8,7 +8,7 @@ import karrio.providers.shipengine.units as provider_units
 
 
 def parse_shipment_cancel_response(
-    _response: lib.Deserializable[lib.Element],
+    _response: lib.Deserializable[dict],
     settings: provider_utils.Settings,
 ) -> typing.Tuple[models.ConfirmationDetails, typing.List[models.Message]]:
     """
@@ -39,7 +39,7 @@ def parse_shipment_cancel_response(
 
 
 def _extract_cancellation_status(
-    response: lib.Element
+    response: dict
 ) -> bool:
     """
     Extract cancellation success status from the carrier response
@@ -49,13 +49,12 @@ def _extract_cancellation_status(
     Returns True if cancellation was successful, False otherwise
     """
     
-    # Example implementation for XML response:
-    # status_node = lib.find_element("shipment-status", response, first=True)
+    # Example implementation for JSON response:
+    # status = response.get("status")
     # return status_node is not None and status_node.text.lower() == "cancelled"
 
     # For development, always return success
     return True
-    
 
 
 def shipment_cancel_request(
@@ -71,32 +70,9 @@ def shipment_cancel_request(
     Returns a Serializable object that can be sent to the carrier API
     """
     
-    # Create XML request for shipment cancellation
-    # Example implementation:
-    # import karrio.schemas.shipengine.shipment_cancel_request as shipengine_req
-    #
-    # request = shipengine_req.ShipmentCancelRequest(
-    #     AccountNumber=settings.account_number,
-    #     ShipmentReference=payload.shipment_identifier,
-    #     # Add any other required fields
-    # )
-    #
-    # return lib.Serializable(
-    #     request,
-    #     lambda _: lib.to_xml(
-    #         _,
-    #         name_="ShipmentCancelRequest",
-    #         namespacedef_=(
-    #             'xmlns="http://shipengine.com/schema/shipment/cancel"'
-    #         ),
-    #     )
-    # )
+    request = {
+        "shipment_identifier": payload.shipment_identifier,
+    }
 
-    # For development, return a simple XML request
-    request = f"""<?xml version="1.0"?>
-<shipment-cancel-request>
-  <shipment-reference>{payload.shipment_identifier}</shipment-reference>
-</shipment-cancel-request>"""
-
-    return lib.Serializable(request, lambda r: r)
+    return lib.Serializable(request, lib.to_dict)
     

@@ -1,4 +1,4 @@
-"""ShipEngine carrier tracking tests."""
+"""Veho carrier tracking tests."""
 
 import unittest
 from unittest.mock import patch, ANY
@@ -9,8 +9,7 @@ import karrio.lib as lib
 import karrio.core.models as models
 
 
-class TestShipEngineTracking(unittest.TestCase):
-
+class TestVehoTracking(unittest.TestCase):
     def setUp(self):
         self.maxDiff = None
         self.TrackingRequest = models.TrackingRequest(**TrackingPayload)
@@ -20,8 +19,8 @@ class TestShipEngineTracking(unittest.TestCase):
         self.assertEqual(lib.to_dict(request.serialize()), TrackingRequest)
 
     def test_get_tracking(self):
-        with patch("karrio.mappers.shipengine.proxy.lib.request") as mock:
-            mock.return_value = "<r></r>"
+        with patch("karrio.mappers.veho.proxy.lib.request") as mock:
+            mock.return_value = "{}"
             karrio.Tracking.fetch(self.TrackingRequest).from_(gateway)
             self.assertEqual(
                 mock.call_args[1]["url"],
@@ -29,7 +28,7 @@ class TestShipEngineTracking(unittest.TestCase):
             )
 
     def test_parse_tracking_response(self):
-        with patch("karrio.mappers.shipengine.proxy.lib.request") as mock:
+        with patch("karrio.mappers.veho.proxy.lib.request") as mock:
             mock.return_value = TrackingResponse
             parsed_response = (
                 karrio.Tracking.fetch(self.TrackingRequest).from_(gateway).parse()
@@ -37,7 +36,7 @@ class TestShipEngineTracking(unittest.TestCase):
             self.assertListEqual(lib.to_dict(parsed_response), ParsedTrackingResponse)
 
     def test_parse_error_response(self):
-        with patch("karrio.mappers.shipengine.proxy.lib.request") as mock:
+        with patch("karrio.mappers.veho.proxy.lib.request") as mock:
             mock.return_value = ErrorResponse
             parsed_response = (
                 karrio.Tracking.fetch(self.TrackingRequest).from_(gateway).parse()
@@ -48,25 +47,26 @@ class TestShipEngineTracking(unittest.TestCase):
 if __name__ == "__main__":
     unittest.main()
 
+
 TrackingPayload = {
     "tracking_numbers": ["TRACK123"],
     "reference": "ORDER123"
 }
 
 TrackingRequest = {
-    "tracking_numbers": [
-        "TRACK123"
-    ],
-    "reference": "ORDER123"
+  "trackingNumbers": [
+    "TRACK123"
+  ],
+  "reference": "ORDER123"
 }
 
 TrackingResponse = """{
-  "tracking_info": [
+  "trackingInfo": [
     {
-      "tracking_number": "TRACK123",
+      "trackingNumber": "TRACK123",
       "status": "in_transit",
-      "status_details": "Package is in transit",
-      "estimated_delivery": "2024-04-15",
+      "statusDetails": "Package is in transit",
+      "estimatedDelivery": "2024-04-15",
       "events": [
         {
           "date": "2024-04-12",
@@ -91,8 +91,8 @@ ErrorResponse = """{
 ParsedTrackingResponse = [
     [
         {
-            "carrier_id": "shipengine",
-            "carrier_name": "shipengine",
+            "carrier_id": "veho",
+            "carrier_name": "veho",
             "tracking_number": "TRACK123",
             "events": [
                 {
@@ -114,8 +114,8 @@ ParsedErrorResponse = [
     [],
     [
         {
-            "carrier_id": "shipengine",
-            "carrier_name": "shipengine",
+            "carrier_id": "veho",
+            "carrier_name": "veho",
             "code": "tracking_error",
             "message": "Unable to track shipment",
             "details": {

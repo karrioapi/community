@@ -1,4 +1,4 @@
-"""ShipEngine carrier rate tests."""
+"""Veho carrier rate tests."""
 
 import unittest
 from unittest.mock import patch, ANY
@@ -11,8 +11,7 @@ import karrio.core.models as models
 logger = logging.getLogger(__name__)
 
 
-class TestShipEngineRating(unittest.TestCase):
-
+class TestVehoRating(unittest.TestCase):
     def setUp(self):
         self.maxDiff = None
         self.RateRequest = models.RateRequest(**RatePayload)
@@ -22,8 +21,8 @@ class TestShipEngineRating(unittest.TestCase):
         self.assertEqual(lib.to_dict(request.serialize()), RateRequest)
 
     def test_get_rates(self):
-        with patch("karrio.mappers.shipengine.proxy.lib.request") as mock:
-            mock.return_value = "<r></r>"
+        with patch("karrio.mappers.veho.proxy.lib.request") as mock:
+            mock.return_value = "{}"
             karrio.Rating.fetch(self.RateRequest).from_(gateway)
             self.assertEqual(
                 mock.call_args[1]["url"],
@@ -31,7 +30,7 @@ class TestShipEngineRating(unittest.TestCase):
             )
 
     def test_parse_rate_response(self):
-        with patch("karrio.mappers.shipengine.proxy.lib.request") as mock:
+        with patch("karrio.mappers.veho.proxy.lib.request") as mock:
             mock.return_value = RateResponse
             parsed_response = (
                 karrio.Rating.fetch(self.RateRequest)
@@ -41,7 +40,7 @@ class TestShipEngineRating(unittest.TestCase):
             self.assertListEqual(lib.to_dict(parsed_response), ParsedRateResponse)
 
     def test_parse_error_response(self):
-        with patch("karrio.mappers.shipengine.proxy.lib.request") as mock:
+        with patch("karrio.mappers.veho.proxy.lib.request") as mock:
             mock.return_value = ErrorResponse
             parsed_response = (
                 karrio.Rating.fetch(self.RateRequest)
@@ -53,6 +52,7 @@ class TestShipEngineRating(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
 
 RatePayload = {
     "shipper": {
@@ -90,36 +90,36 @@ RatePayload = {
 
 RateRequest = {
     "shipper": {
-        "address_line1": "123 Test Street",
+        "addressLine1": "123 Test Street",
         "city": "Test City",
-        "postal_code": "12345",
-        "country_code": "US",
-        "state_code": "CA",
-        "person_name": "Test Person",
-        "company_name": "Test Company",
-        "phone_number": "1234567890",
+        "postalCode": "12345",
+        "countryCode": "US",
+        "stateCode": "CA",
+        "personName": "Test Person",
+        "companyName": "Test Company",
+        "phoneNumber": "1234567890",
         "email": "test@example.com"
     },
     "recipient": {
-        "address_line1": "123 Test Street",
+        "addressLine1": "123 Test Street",
         "city": "Test City",
-        "postal_code": "12345",
-        "country_code": "US",
-        "state_code": "CA",
-        "person_name": "Test Person",
-        "company_name": "Test Company",
-        "phone_number": "1234567890",
+        "postalCode": "12345",
+        "countryCode": "US",
+        "stateCode": "CA",
+        "personName": "Test Person",
+        "companyName": "Test Company",
+        "phoneNumber": "1234567890",
         "email": "test@example.com"
     },
     "packages": [
         {
             "weight": 10.0,
-            "weight_unit": "KG",
+            "weightUnit": "KG",
             "length": 10.0,
             "width": 10.0,
             "height": 10.0,
-            "dimension_unit": "CM",
-            "packaging_type": "BOX"
+            "dimensionUnit": "CM",
+            "packagingType": "BOX"
         }
     ]
 }
@@ -127,18 +127,18 @@ RateRequest = {
 RateResponse = """{
   "rates": [
     {
-      "service_code": "express",
-      "service_name": "Express Service",
-      "total_charge": 25.99,
+      "serviceCode": "express",
+      "serviceName": "Express Service",
+      "totalCharge": 25.99,
       "currency": "USD",
-      "transit_days": 2
+      "transitDays": 2
     },
     {
-      "service_code": "ground",
-      "service_name": "Ground Service", 
-      "total_charge": 12.99,
+      "serviceCode": "ground",
+      "serviceName": "Ground Service",
+      "totalCharge": 12.99,
       "currency": "USD",
-      "transit_days": 5
+      "transitDays": 5
     }
   ]
 }"""
@@ -154,8 +154,8 @@ ErrorResponse = """{
 ParsedRateResponse = [
     [
         {
-            "carrier_id": "shipengine",
-            "carrier_name": "shipengine",
+            "carrier_id": "veho",
+            "carrier_name": "veho",
             "service": "express",
             "currency": "USD",
             "total_charge": 25.99,
@@ -165,8 +165,8 @@ ParsedRateResponse = [
             }
         },
         {
-            "carrier_id": "shipengine",
-            "carrier_name": "shipengine",
+            "carrier_id": "veho",
+            "carrier_name": "veho",
             "service": "ground",
             "currency": "USD",
             "total_charge": 12.99,
@@ -183,8 +183,8 @@ ParsedErrorResponse = [
     [],
     [
         {
-            "carrier_id": "shipengine",
-            "carrier_name": "shipengine",
+            "carrier_id": "veho",
+            "carrier_name": "veho",
             "code": "rate_error",
             "message": "Unable to get rates",
             "details": {

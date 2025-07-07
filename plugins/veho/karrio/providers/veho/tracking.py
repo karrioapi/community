@@ -1,15 +1,15 @@
-"""Karrio ShipEngine tracking API implementation."""
+"""Karrio Veho tracking API implementation."""
 
-from karrio.schemas.shipengine import tracking_request as shipengine_req
-from karrio.schemas.shipengine import tracking_response as shipengine_res
+import karrio.schemas.veho.tracking_request as veho_req
+import karrio.schemas.veho.tracking_response as veho_res
 
 import typing
 import karrio.lib as lib
 import karrio.core.units as units
 import karrio.core.models as models
-import karrio.providers.shipengine.error as error
-import karrio.providers.shipengine.utils as provider_utils
-import karrio.providers.shipengine.units as provider_units
+import karrio.providers.veho.error as error
+import karrio.providers.veho.utils as provider_utils
+import karrio.providers.veho.units as provider_units
 
 
 def parse_tracking_response(
@@ -19,8 +19,8 @@ def parse_tracking_response(
     response = _response.deserialize()
     messages = error.parse_error_response(response, settings)
     
-    # Handle the tracking_info array structure
-    tracking_info = response.get("tracking_info", [])
+    # Handle the trackingInfo array structure
+    tracking_info = response.get("trackingInfo", [])
     tracking_details = [
         _extract_details(details, settings)
         for details in tracking_info
@@ -34,10 +34,10 @@ def _extract_details(
     settings: provider_utils.Settings,
 ) -> models.TrackingDetails:
     """Extract tracking details from carrier response data."""
-    tracking_number = data.get("tracking_number", "")
+    tracking_number = data.get("trackingNumber", "")
     status = data.get("status", "")
-    status_details = data.get("status_details", "")
-    estimated_delivery = data.get("estimated_delivery")
+    status_details = data.get("statusDetails", "")
+    estimated_delivery = data.get("estimatedDelivery")
     
     # Extract events
     events = []
@@ -70,7 +70,7 @@ def _extract_details(
                 date=lib.fdate(event["date"]),
                 description=event["description"],
                 code=event["code"],
-                time=event["time"],
+                time=event["time"],  # Keep original time format
                 location=event["location"],
             )
             for event in events
@@ -85,19 +85,12 @@ def tracking_request(
     payload: models.TrackingRequest,
     settings: provider_utils.Settings,
 ) -> lib.Serializable:
-    """
-    Create a tracking request for the carrier API
-
-    payload: The standardized TrackingRequest from karrio
-    settings: The carrier connection settings
-
-    Returns a Serializable object that can be sent to the carrier API
-    """
+    """Create a tracking request for the carrier API."""
     tracking_numbers = payload.tracking_numbers
     reference = payload.reference
 
     request = {
-        "tracking_numbers": tracking_numbers,
+        "trackingNumbers": tracking_numbers,
         "reference": reference,
     }
 
