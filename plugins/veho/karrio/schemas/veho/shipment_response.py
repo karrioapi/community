@@ -1,20 +1,28 @@
-from attr import define, field
-from typing import Optional, List
+import attr
+import typing
 
 
-@define
-class ShipmentLabel:
-    tracking_number: Optional[str] = None
-    label_format: Optional[str] = None
-    label_data: Optional[str] = None
+@attr.s(auto_attribs=True)
+class LabelData:
+    """Veho Label Data structure"""
+    
+    format: typing.Optional[str] = None
+    image: typing.Optional[str] = None
 
 
-@define
+@attr.s(auto_attribs=True)
+class ShipmentData:
+    """Veho Shipment Data structure"""
+    
+    trackingNumber: typing.Optional[str] = None
+    shipmentId: typing.Optional[str] = None
+    labelData: typing.Optional[LabelData] = None
+    invoiceImage: typing.Optional[str] = None
+    serviceCode: typing.Optional[str] = None
+
+
+@attr.s(auto_attribs=True)
 class ShipmentResponse:
-    shipment_id: Optional[str] = None
-    tracking_number: Optional[str] = None
-    labels: Optional[List[ShipmentLabel]] = None
-    total_charge: Optional[float] = None
-    currency: Optional[str] = None
-    service: Optional[str] = None
-    errors: Optional[List[str]] = None 
+    """Veho Shipment Response containing shipment object"""
+    
+    shipment: typing.Optional[ShipmentData] = None

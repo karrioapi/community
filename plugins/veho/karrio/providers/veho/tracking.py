@@ -1,7 +1,7 @@
 """Karrio Veho tracking API implementation."""
 
-import karrio.schemas.veho.tracking_request as veho_req
-import karrio.schemas.veho.tracking_response as veho_res
+import karrio.schemas.veho.tracking_request as veho
+import karrio.schemas.veho.tracking_response as tracking
 
 import typing
 import karrio.lib as lib
@@ -19,11 +19,11 @@ def parse_tracking_response(
     response = _response.deserialize()
     messages = error.parse_error_response(response, settings)
     
-    # Handle the trackingInfo array structure
-    tracking_info = response.get("trackingInfo", [])
+    # Extract tracking info array and convert each item to typed object
+    tracking_info_data = response.get("trackingInfo", []) if isinstance(response, dict) else []
     tracking_details = [
-        _extract_details(details, settings)
-        for details in tracking_info
+        _extract_details(info_data, settings)
+        for info_data in tracking_info_data
     ]
 
     return tracking_details, messages
@@ -33,22 +33,30 @@ def _extract_details(
     data: dict,
     settings: provider_utils.Settings,
 ) -> models.TrackingDetails:
-    """Extract tracking details from carrier response data."""
-    tracking_number = data.get("trackingNumber", "")
-    status = data.get("status", "")
-    status_details = data.get("statusDetails", "")
-    estimated_delivery = data.get("estimatedDelivery")
+    """Extract tracking details from carrier response data using typed objects."""
+    # Convert to typed object
+    tracking_info = lib.to_object(tracking.TrackingInfo, data)
     
-    # Extract events
+    tracking_number = tracking_info.trackingNumber or ""
+    status = tracking_info.status or ""
+    estimated_delivery = tracking_info.estimatedDelivery
+    
+    # Extract events from typed objects
     events = []
-    if "events" in data and data["events"]:
-        for event in data["events"]:
+    if tracking_info.events:
+        for event_data in tracking_info.events:
+            # Convert event to typed object if it's still a dict
+            if isinstance(event_data, dict):
+                event = lib.to_object(tracking.TrackingEvent, event_data)
+            else:
+                event = event_data
+                
             events.append({
-                "date": event.get("date", ""),
-                "time": event.get("time", ""),
-                "code": event.get("code", ""),
-                "description": event.get("description", ""),
-                "location": event.get("location", "")
+                "date": event.date or "",
+                "time": event.time or "",
+                "code": event.code or "",
+                "description": event.description or "",
+                "location": event.location or ""
             })
 
     # Map carrier status to karrio standard tracking status

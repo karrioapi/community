@@ -1,26 +1,31 @@
-from attr import define, field
-from typing import Optional, List
+import attr
+import typing
 
 
-@define
+@attr.s(auto_attribs=True)
 class TrackingEvent:
-    date: Optional[str] = None
-    time: Optional[str] = None
-    status: Optional[str] = None
-    description: Optional[str] = None
-    location: Optional[str] = None
+    """Veho Tracking Event structure"""
+    
+    date: typing.Optional[str] = None
+    time: typing.Optional[str] = None
+    code: typing.Optional[str] = None
+    description: typing.Optional[str] = None
+    location: typing.Optional[str] = None
 
 
-@define
+@attr.s(auto_attribs=True)
 class TrackingInfo:
-    tracking_number: Optional[str] = None
-    status: Optional[str] = None
-    delivered: Optional[bool] = None
-    delivery_date: Optional[str] = None
-    events: Optional[List[TrackingEvent]] = None
+    """Veho Tracking Info structure"""
+    
+    trackingNumber: typing.Optional[str] = None
+    status: typing.Optional[str] = None
+    statusDetails: typing.Optional[str] = None
+    estimatedDelivery: typing.Optional[str] = None
+    events: typing.Optional[typing.List[TrackingEvent]] = None
 
 
-@define
+@attr.s(auto_attribs=True)
 class TrackingResponse:
-    tracking_info: Optional[List[TrackingInfo]] = None
-    errors: Optional[List[str]] = None 
+    """Veho Tracking Response containing trackingInfo array"""
+    
+    trackingInfo: typing.Optional[typing.List[TrackingInfo]] = None

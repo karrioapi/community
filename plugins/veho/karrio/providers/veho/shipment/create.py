@@ -1,7 +1,7 @@
 """Karrio Veho shipment API implementation."""
 
-import karrio.schemas.veho.shipment_request as veho_req
-import karrio.schemas.veho.shipment_response as veho_res
+import karrio.schemas.veho.shipment_request as veho
+import karrio.schemas.veho.shipment_response as shipping
 
 import typing
 import karrio.lib as lib
@@ -27,21 +27,33 @@ def _extract_details(
     data: dict,
     settings: provider_utils.Settings,
 ) -> models.ShipmentDetails:
-    """Extract shipment details from carrier response data."""
-    # Handle nested shipment structure
-    shipment_data = data.get("shipment", data)
+    """Extract shipment details from carrier response data using typed objects."""
+    # Extract shipment data and convert to typed object
+    shipment_data = data.get("shipment", {})
     
-    tracking_number = shipment_data.get("trackingNumber", "")
-    shipment_id = shipment_data.get("shipmentId", "")
-    service_code = shipment_data.get("serviceCode", "")
+    if not shipment_data:
+        return models.ShipmentDetails(
+            carrier_id=settings.carrier_id,
+            carrier_name=settings.carrier_name,
+        )
     
-    # Extract label data
-    label_data = shipment_data.get("labelData", {})
-    label_format = label_data.get("format", "PDF")
-    label_image = label_data.get("image")
+    # Convert to typed object
+    shipment = lib.to_object(shipping.ShipmentData, shipment_data)
+    
+    tracking_number = shipment.trackingNumber or ""
+    shipment_id = shipment.shipmentId or ""
+    service_code = shipment.serviceCode or ""
+    
+    # Extract label data from labelData object
+    label_image = None
+    label_format = "PDF"
+    if shipment.labelData:
+        label_data = lib.to_object(shipping.LabelData, shipment.labelData) if isinstance(shipment.labelData, dict) else shipment.labelData
+        label_image = label_data.image
+        label_format = label_data.format or "PDF"
     
     # Extract invoice image
-    invoice_image = shipment_data.get("invoiceImage")
+    invoice_image = shipment.invoiceImage
 
     return models.ShipmentDetails(
         carrier_id=settings.carrier_id,

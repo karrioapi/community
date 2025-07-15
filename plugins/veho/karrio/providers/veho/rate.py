@@ -1,7 +1,7 @@
 """Karrio Veho rate API implementation."""
 
-import karrio.schemas.veho.rate_request as veho_req
-import karrio.schemas.veho.rate_response as veho_res
+import karrio.schemas.veho.rate_request as veho
+import karrio.schemas.veho.rate_response as rating
 
 import typing
 import karrio.lib as lib
@@ -20,9 +20,9 @@ def parse_rate_response(
 
     messages = error.parse_error_response(response, settings)
     
-    # Handle the rates array structure from test mock
-    rate_objects = response.get("rates", []) if isinstance(response, dict) else []
-    rates = [_extract_details(rate, settings) for rate in rate_objects]
+    # Extract rates array and convert each item to typed object
+    rates_data = response.get("rates", []) if isinstance(response, dict) else []
+    rates = [_extract_details(rate_data, settings) for rate_data in rates_data]
 
     return rates, messages
 
@@ -32,14 +32,17 @@ def _extract_details(
     settings: provider_utils.Settings,
 ) -> models.RateDetails:
     """
-    Extract rate details from rate response data
+    Extract rate details from rate response data using typed objects
     """
-    # Handle test mock structure directly
-    service = data.get("serviceCode", "")
-    service_name = data.get("serviceName", "")
-    total = float(data.get("totalCharge", 0.0))
-    currency = data.get("currency", "USD")
-    transit_days = int(data.get("transitDays", 0))
+    # Convert individual rate item to typed object
+    rate_item = lib.to_object(rating.RateItem, data)
+    
+    # Use typed properties
+    service = rate_item.serviceCode or ""
+    service_name = rate_item.serviceName or ""
+    total = rate_item.totalCharge or 0.0
+    currency = rate_item.currency or "USD"
+    transit_days = int(rate_item.transitDays or 0)
 
     return models.RateDetails(
         carrier_id=settings.carrier_id,

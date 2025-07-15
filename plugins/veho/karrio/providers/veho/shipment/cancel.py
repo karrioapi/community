@@ -1,6 +1,7 @@
 """Karrio Veho shipment cancel API implementation."""
 
-import karrio.schemas.veho.shipment_request as veho_req
+import karrio.schemas.veho.shipment_cancel_request as veho
+import karrio.schemas.veho.shipment_cancel_response as shipping
 
 import typing
 import karrio.lib as lib
@@ -35,8 +36,10 @@ def _extract_details(
     data: dict,
     settings: provider_utils.Settings,
 ) -> models.ConfirmationDetails:
-    """Extract cancellation confirmation details from carrier response data."""
-    success = data.get("success", False)
+    """Extract cancellation confirmation details from carrier response data using typed objects."""
+    # Convert to typed object
+    cancel_response = lib.to_object(shipping.ShipmentCancelResponse, data)
+    success = cancel_response.success or False
     
     return models.ConfirmationDetails(
         carrier_id=settings.carrier_id,
