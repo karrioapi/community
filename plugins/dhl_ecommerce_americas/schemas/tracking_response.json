@@ -1,0 +1,23 @@
+{
+  "header": {
+    "code": 200,
+    "message": "string",
+    "messageDetail": "string"
+  },
+  "body": {
+    "trackingNumber": "string",
+    "status": "string",
+    "events": [
+      {
+        "eventDate": "string",
+        "eventTime": "string", 
+        "eventDescription": "string",
+        "location": "string",
+        "eventCode": "string"
+      }
+    ],
+    "deliveryDate": "string",
+    "deliveryTime": "string",
+    "signedBy": "string"
+  }
+}

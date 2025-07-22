@@ -1,0 +1,16 @@
+{
+  "header": {
+    "code": 0,
+    "message": "string",
+    "messageDetail": "string"
+  },
+  "body": {
+    "errors": [
+      {
+        "errorCode": "string",
+        "errorMessage": "string",
+        "errorDescription": "string"
+      }
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "consigneeAddress": {
+    "postalCode": "string",
+    "city": "string", 
+    "state": "string",
+    "countryCode": "string"
+  },
+  "consignorAddress": {
+    "postalCode": "string",
+    "city": "string",
+    "state": "string", 
+    "countryCode": "string"
+  },
+  "packages": [
+    {
+      "weight": 0.0,
+      "weightUom": "string",
+      "dimensions": {
+        "length": 0.0,
+        "width": 0.0,
+        "height": 0.0,
+        "dimensionUom": "string"
+      }
+    }
+  ],
+  "productCode": "string",
+  "accountNumber": "string"
+}

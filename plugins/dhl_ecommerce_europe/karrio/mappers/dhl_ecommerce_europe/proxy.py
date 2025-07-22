@@ -58,7 +58,11 @@ class Proxy(proxy.Proxy):
         return lib.Deserializable(response, lib.to_dict)
 
     def cancel_shipment(self, request: lib.Serializable) -> lib.Deserializable:
-        shipment_id = request.serialize().get("shipment_id")
+        request_data = request.serialize()
+        if isinstance(request_data, str):
+            import json
+            request_data = json.loads(request_data)
+        shipment_id = request_data.get("shipmentTrackingNumber")
         response = lib.request(
             url=f"{self.settings.server_url}/v1/shipments/{shipment_id}",
             trace=self.trace_as("json"),

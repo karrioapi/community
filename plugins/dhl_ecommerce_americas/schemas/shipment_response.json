@@ -1,0 +1,19 @@
+{
+  "header": {
+    "code": 200,
+    "message": "string",
+    "messageDetail": "string"
+  },
+  "body": {
+    "packageResults": [
+      {
+        "packageId": "string",
+        "trackingNumber": "string",
+        "orderedProductId": "string",
+        "labelImage": "string",
+        "labelFormat": "string",
+        "labelSize": "string"
+      }
+    ]
+  }
+}

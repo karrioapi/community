@@ -1,0 +1,53 @@
+{
+  "header": {
+    "messageType": "LABEL",
+    "messageDateTime": "string",
+    "messageVersion": "1.0",
+    "accessToken": "string"
+  },
+  "body": {
+    "consigneeAddress": {
+      "name": "string",
+      "address1": "string", 
+      "address2": "string",
+      "city": "string",
+      "state": "string",
+      "postalCode": "string",
+      "countryCode": "string",
+      "phoneNumber": "string",
+      "email": "string"
+    },
+    "consignorAddress": {
+      "name": "string",
+      "address1": "string",
+      "address2": "string", 
+      "city": "string",
+      "state": "string",
+      "postalCode": "string",
+      "countryCode": "string",
+      "phoneNumber": "string",
+      "email": "string"
+    },
+    "packages": [
+      {
+        "weight": 0.0,
+        "weightUom": "string",
+        "dimensions": {
+          "length": 0.0,
+          "width": 0.0,
+          "height": 0.0,
+          "dimensionUom": "string"
+        },
+        "packageId": "string",
+        "description": "string"
+      }
+    ],
+    "productCode": "string",
+    "accountNumber": "string",
+    "pickupId": "string",
+    "distributionCenter": "string",
+    "labelFormat": "PNG",
+    "labelSize": "4x6",
+    "orderedProductId": "string"
+  }
+}
