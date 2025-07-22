@@ -1,0 +1,38 @@
+{
+  "shipmentTrackingNumber": "1234567890",
+  "shipmentDetails": [
+    {
+      "service": "EXPRESS_WORLDWIDE",
+      "destinationServiceArea": {
+        "code": "LON",
+        "description": "London"
+      }
+    }
+  ],
+  "packages": [
+    {
+      "referenceNumber": 1,
+      "trackingNumber": "1234567890"
+    }
+  ],
+  "documents": [
+    {
+      "imageFormat": "PDF",
+      "content": "JVBERi0xLjQKJeLjz9MKM...",
+      "typeCode": "label"
+    }
+  ],
+  "shipmentCharges": [
+    {
+      "currencyType": "USD",
+      "pricingDate": "2023-07-01",
+      "billingCharges": [
+        {
+          "serviceTypeCode": "BASE",
+          "chargeAmount": "40.00",
+          "currencyType": "USD"
+        }
+      ]
+    }
+  ]
+}

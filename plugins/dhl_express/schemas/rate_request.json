@@ -1,0 +1,41 @@
+{
+  "plannedShippingDateAndTime": "2023-07-01T10:00:00GMT",
+  "pickup": {
+    "isRequested": false
+  },
+  "productCode": "EXPRESS_WORLDWIDE",
+  "accounts": [
+    {
+      "typeCode": "shipper",
+      "number": "123456789"
+    }
+  ],
+  "customerDetails": {
+    "shipperDetails": {
+      "postalAddress": {
+        "postalCode": "10001",
+        "cityName": "New York",
+        "countryCode": "US",
+        "addressLine1": "123 Main St"
+      }
+    },
+    "receiverDetails": {
+      "postalAddress": {
+        "postalCode": "SW1A 1AA",
+        "cityName": "London",
+        "countryCode": "GB",
+        "addressLine1": "10 Downing St"
+      }
+    }
+  },
+  "packages": [
+    {
+      "weight": 1.5,
+      "dimensions": {
+        "length": 10,
+        "width": 10,
+        "height": 5
+      }
+    }
+  ]
+}

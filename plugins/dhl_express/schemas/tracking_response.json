@@ -1,0 +1,42 @@
+{
+  "shipments": [
+    {
+      "shipmentTrackingNumber": "1234567890",
+      "status": {
+        "statusCode": "transit",
+        "description": "Shipment is in transit"
+      },
+      "estimatedTimeOfDelivery": "2023-07-03T14:00:00",
+      "events": [
+        {
+          "date": "2023-07-01",
+          "time": "10:00:00",
+          "timestamp": "2023-07-01T10:00:00",
+          "typeCode": "PU",
+          "description": "Shipment picked up",
+          "location": {
+            "address": {
+              "addressLocality": "New York",
+              "postalCode": "10001",
+              "countryCode": "US"
+            }
+          }
+        },
+        {
+          "date": "2023-07-02",
+          "time": "15:30:00",
+          "timestamp": "2023-07-02T15:30:00",
+          "typeCode": "DF",
+          "description": "Departed facility",
+          "location": {
+            "address": {
+              "addressLocality": "Newark",
+              "postalCode": "07114",
+              "countryCode": "US"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

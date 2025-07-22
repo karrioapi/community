@@ -1,0 +1,29 @@
+{
+  "products": [
+    {
+      "productName": "DHL Express Worldwide",
+      "productCode": "EXPRESS_WORLDWIDE",
+      "totalPrice": [
+        {
+          "currencyType": "USD",
+          "price": "45.50"
+        }
+      ],
+      "deliveryCapabilities": {
+        "totalTransitDays": "1"
+      },
+      "breakdown": [
+        {
+          "type": "BASE",
+          "price": "40.00",
+          "currencyType": "USD"
+        },
+        {
+          "type": "FUEL",
+          "price": "5.50",
+          "currencyType": "USD"
+        }
+      ]
+    }
+  ]
+}

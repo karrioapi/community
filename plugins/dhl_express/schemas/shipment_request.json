@@ -1,0 +1,91 @@
+{
+  "plannedShippingDateAndTime": "2023-07-01T10:00:00GMT",
+  "pickup": {
+    "isRequested": true,
+    "pickupDetails": {
+      "postalAddress": {
+        "postalCode": "10001",
+        "cityName": "New York",
+        "countryCode": "US",
+        "addressLine1": "123 Main St"
+      }
+    }
+  },
+  "productCode": "EXPRESS_WORLDWIDE",
+  "accounts": [
+    {
+      "typeCode": "shipper",
+      "number": "123456789"
+    }
+  ],
+  "customerDetails": {
+    "shipperDetails": {
+      "postalAddress": {
+        "postalCode": "10001",
+        "cityName": "New York",
+        "countryCode": "US",
+        "addressLine1": "123 Main St"
+      },
+      "contactInformation": {
+        "email": "shipper@example.com",
+        "phone": "+1234567890",
+        "companyName": "Shipper Company",
+        "fullName": "John Doe"
+      }
+    },
+    "receiverDetails": {
+      "postalAddress": {
+        "postalCode": "SW1A 1AA",
+        "cityName": "London",
+        "countryCode": "GB",
+        "addressLine1": "10 Downing St"
+      },
+      "contactInformation": {
+        "email": "receiver@example.com",
+        "phone": "+447123456789",
+        "companyName": "Receiver Company",
+        "fullName": "Jane Smith"
+      }
+    }
+  },
+  "packages": [
+    {
+      "weight": 1.5,
+      "dimensions": {
+        "length": 10,
+        "width": 10,
+        "height": 5
+      }
+    }
+  ],
+  "content": {
+    "packages": [
+      {
+        "weight": 1.5,
+        "customerReferences": [
+          {
+            "value": "REF123",
+            "typeCode": "CU"
+          }
+        ]
+      }
+    ],
+    "isCustomsDeclarable": true,
+    "description": "Sample goods",
+    "invoice": {
+      "number": "INV123",
+      "date": "2023-07-01",
+      "function": "commercial"
+    }
+  },
+  "outputImageProperties": {
+    "printerDPI": 300,
+    "customerLogos": [],
+    "customerBarcode": "",
+    "splitTransportAndWaybillDocLabels": false,
+    "allDocumentsInOneImage": false,
+    "splitDocumentsByPages": false,
+    "splitInvoiceAndReceipt": false,
+    "receiptAndLabelsInOneImage": false
+  }
+}

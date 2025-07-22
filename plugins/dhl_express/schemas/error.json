@@ -1,0 +1,7 @@
+{
+  "status": "ERROR",
+  "title": "Bad Request",
+  "detail": "Invalid request parameters",
+  "instance": "/api/shipments",
+  "additionalDetails": []
+}
