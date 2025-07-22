@@ -1,4 +1,3 @@
-import karrio.schemas.dhl_ecommerce_europe.error as dhl_ecommerce_europe
 import typing
 import karrio.lib as lib
 import karrio.core.models as models
@@ -17,17 +16,17 @@ def parse_error_response(
         ],
         start=[],
     )
-    errors = [lib.to_object(dhl_ecommerce_europe.ErrorElement, res) for res in responses]
+    errors = [res for res in responses]
 
     return [
         models.Message(
             carrier_id=settings.carrier_id,
             carrier_name=settings.carrier_name,
-            code=error.code,
-            message=error.message,
+            code=error.get("code"),
+            message=error.get("message"),
             details={
                 **kwargs,
-                **(dict(parameters=error.parameter) if error.parameter else {}),
+                **(dict(parameters=error.get("parameter")) if error.get("parameter") else {}),
             },
         )
         for error in errors

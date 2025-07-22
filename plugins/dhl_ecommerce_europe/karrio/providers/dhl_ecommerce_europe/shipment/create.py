@@ -1,6 +1,4 @@
 import datetime
-import karrio.schemas.dhl_ecommerce_europe.shipment_request as dhl_ecommerce_europe
-import karrio.schemas.dhl_ecommerce_europe.shipment_response as shipping
 import typing
 import base64
 import karrio.lib as lib
@@ -28,10 +26,10 @@ def _extract_details(
     data: dict,
     settings: provider_utils.Settings,
 ) -> models.ShipmentDetails:
-    shipment = lib.to_object(shipping.ShipmentResponse, data)
+    shipment = data
     label = lib.failsafe(
         lambda: lib.request(
-            url=f"{settings.base_url}/v1/shipments/{shipment.id}/label?format=PDF",
+            url=f"{settings.base_url}/v1/shipments/{data.id}/label?format=PDF",
             decoder=lambda _: base64.encodebytes(_).decode("utf-8"),
         )
     )
@@ -39,11 +37,11 @@ def _extract_details(
     return models.ShipmentDetails(
         carrier_id=settings.carrier_id,
         carrier_name=settings.carrier_name,
-        tracking_number=shipment.id,
-        shipment_identifier=str(shipment.id),
+        tracking_number=data.id,
+        shipment_identifier=str(data.id),
         docs=models.Documents(label=label or ""),
         meta=dict(
-            tracking_number=shipment.tracking_number,
+            tracking_number=data.tracking_number,
             service_name="DHL eCommerce Europe Local Delivery",
         ),
     )

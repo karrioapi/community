@@ -17,7 +17,7 @@ METADATA = metadata.PluginMetadata(
     is_hub=False,
     services=units.ShippingService,
     options=units.ShippingOption,
-    connection_configs=utils.ConnectionConfig,
+    connection_configs=units.ConnectionConfig,
     # Extra info
     website="https://www.dhl.com",
     documentation="https://developer.dhl.com",

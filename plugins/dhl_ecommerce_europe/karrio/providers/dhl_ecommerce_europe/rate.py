@@ -1,4 +1,3 @@
-import karrio.schemas.dhl_ecommerce_europe.rate_response as rating
 import typing
 import datetime
 import karrio.lib as lib
@@ -26,16 +25,16 @@ def _extract_details(
     data: dict,
     settings: provider_utils.Settings,
 ) -> models.RateDetails:
-    product = lib.to_object(rating.Product, data)
+    product = data
     
     # Handle totalPrice robustly - check for dict vs object
     total_price_obj = None
-    if product.totalPrice:
-        for price_item in product.totalPrice:
+    if data.get("totalPrice"):
+        for price_item in data.get("totalPrice"):
             # Handle both dict and object formats
             if isinstance(price_item, dict):
                 if price_item.get("priceType") == "TOTAL":
-                    total_price_obj = lib.to_object(rating.TotalPrice, price_item)
+                    total_price_obj = price_item
                     break
             else:
                 if hasattr(price_item, 'priceType') and price_item.priceType == "TOTAL":
@@ -43,10 +42,10 @@ def _extract_details(
                     break
         
         # If no TOTAL found, use first price
-        if not total_price_obj and product.totalPrice:
-            first_price = product.totalPrice[0]
+        if not total_price_obj and data.get("totalPrice"):
+            first_price = data.get("totalPrice")[0]
             if isinstance(first_price, dict):
-                total_price_obj = lib.to_object(rating.TotalPrice, first_price)
+                total_price_obj = first_price
             else:
                 total_price_obj = first_price
 
@@ -55,7 +54,7 @@ def _extract_details(
     if total_price_obj and hasattr(total_price_obj, 'breakdown') and total_price_obj.breakdown:
         for charge_item in total_price_obj.breakdown:
             if isinstance(charge_item, dict):
-                charge = lib.to_object(rating.PriceBreakdown, charge_item)
+                charge = charge_item
             else:
                 charge = charge_item
             
@@ -68,22 +67,22 @@ def _extract_details(
     return models.RateDetails(
         carrier_id=settings.carrier_id,
         carrier_name=settings.carrier_name,
-        service=product.productCode,
+        service=data.get("productCode"),
         total_charge=lib.to_money(total_price_obj.price if total_price_obj else 0.0),
         currency=(total_price_obj.priceCurrency if total_price_obj else "EUR"),
         transit_days=(
-            lib.to_object(rating.DeliveryCapabilities, product.deliveryCapabilities).totalTransitDays 
-            if product.deliveryCapabilities and isinstance(product.deliveryCapabilities, dict) 
-            else (product.deliveryCapabilities.totalTransitDays if product.deliveryCapabilities else None)
+            data.get("deliveryCapabilities", {}).get("totalTransitDays") 
+            if data.deliveryCapabilities and isinstance(data.deliveryCapabilities, dict) 
+            else (data.deliveryCapabilities.totalTransitDays if data.deliveryCapabilities else None)
         ),
         extra_charges=extra_charges,
         meta=dict(
-            service_name=product.name,
-            product_code=product.productCode,
-            local_product_code=product.localProductCode,
+            service_name=data.name,
+            product_code=data.get("productCode"),
+            local_product_code=data.get("localProductCode"),
             delivery_capabilities=(
-                lib.to_dict(product.deliveryCapabilities) 
-                if product.deliveryCapabilities else None
+                lib.to_dict(data.deliveryCapabilities) 
+                if data.deliveryCapabilities else None
             ),
         ),
     )

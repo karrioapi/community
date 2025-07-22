@@ -1,6 +1,10 @@
 import karrio.lib as lib
 import karrio.core.units as units
 
+class ConnectionConfig(lib.Enum):
+    """DHL eCommerce Europe connection configuration options"""
+    shipping_services = lib.OptionEnum("shipping_services")
+
 
 class PackageType(lib.StrEnum):
     """Carrier specific package types"""

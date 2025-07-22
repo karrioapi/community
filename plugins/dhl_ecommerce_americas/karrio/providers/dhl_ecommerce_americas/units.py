@@ -1,6 +1,10 @@
 import enum
 import karrio.lib as lib
 
+class ConnectionConfig(lib.Enum):
+    """DHL eCommerce Americas connection configuration options"""
+    shipping_services = lib.OptionEnum("shipping_services")
+
 
 class ConnectionConfig(lib.Enum):
     """DHL eCommerce Americas connection configuration options"""
