@@ -10,7 +10,9 @@ import karrio.core.models as models
 
 logger = logging.getLogger(__name__)
 
+
 class TestSendCloudShipment(unittest.TestCase):
+
     def setUp(self):
         self.maxDiff = None
         self.ShipmentRequest = models.ShipmentRequest(**ShipmentPayload)
@@ -75,7 +77,6 @@ class TestSendCloudShipment(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
 
 ShipmentPayload = {
     "shipper": {
@@ -158,30 +159,29 @@ ShipmentCancelRequest = {
     "shipment_identifier": "SHIP123456"
 }
 
-ShipmentResponse = """<?xml version="1.0"?>
-<shipment-response>
-    <tracking-number>1Z999999999999999</tracking-number>
-    <shipment-id>SHIP123456</shipment-id>
-    <label-format>PDF</label-format>
-    <label-image>base64_encoded_label_data</label-image>
-    <invoice-image>base64_encoded_invoice_data</invoice-image>
-    <service-code>express</service-code>
-</shipment-response>"""
+ShipmentResponse = """{
+  "shipment": {
+    "tracking_number": "1Z999999999999999",
+    "shipment_id": "SHIP123456",
+    "label_format": "PDF",
+    "label_image": "base64_encoded_label_data",
+    "invoice_image": "base64_encoded_invoice_data",
+    "service_code": "express"
+  }
+}"""
 
-ShipmentCancelResponse = """<?xml version="1.0"?>
-<shipment-cancel-response>
-    <success>true</success>
-    <message>Shipment successfully cancelled</message>
-</shipment-cancel-response>"""
+ShipmentCancelResponse = """{
+  "success": true,
+  "message": "Shipment successfully cancelled"
+}"""
 
-ErrorResponse = """<?xml version="1.0"?>
-<error-response>
-    <e>
-        <code>shipment_error</code>
-        <message>Unable to create shipment</message>
-        <details>Invalid shipment information provided</details>
-    </e>
-</error-response>"""
+ErrorResponse = """{
+  "error": {
+    "code": "shipment_error",
+    "message": "Unable to create shipment",
+    "details": "Invalid shipment information provided"
+  }
+}"""
 
 ParsedShipmentResponse = [
     {

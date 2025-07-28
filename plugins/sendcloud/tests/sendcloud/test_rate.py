@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class TestSendCloudRating(unittest.TestCase):
+
     def setUp(self):
         self.maxDiff = None
         self.RateRequest = models.RateRequest(**RatePayload)
@@ -52,7 +53,6 @@ class TestSendCloudRating(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
 
 RatePayload = {
     "shipper": {
@@ -124,32 +124,32 @@ RateRequest = {
     ]
 }
 
-RateResponse = """<?xml version="1.0"?>
-<rate-response>
-    <rate>
-        <service-code>express</service-code>
-        <service-name>Express Service</service-name>
-        <total-charge>25.99</total-charge>
-        <currency>USD</currency>
-        <transit-days>2</transit-days>
-    </rate>
-    <rate>
-        <service-code>ground</service-code>
-        <service-name>Ground Service</service-name>
-        <total-charge>12.99</total-charge>
-        <currency>USD</currency>
-        <transit-days>5</transit-days>
-    </rate>
-</rate-response>"""
+RateResponse = """{
+  "rates": [
+    {
+      "service_code": "express",
+      "service_name": "Express Service",
+      "total_charge": 25.99,
+      "currency": "USD",
+      "transit_days": 2
+    },
+    {
+      "service_code": "ground",
+      "service_name": "Ground Service",
+      "total_charge": 12.99,
+      "currency": "USD",
+      "transit_days": 5
+    }
+  ]
+}"""
 
-ErrorResponse = """<?xml version="1.0"?>
-<error-response>
-    <e>
-        <code>rate_error</code>
-        <message>Unable to get rates</message>
-        <details>Invalid address provided</details>
-    <e>
-</error-response>"""
+ErrorResponse = """{
+  "error": {
+    "code": "rate_error",
+    "message": "Unable to get rates",
+    "details": "Invalid address provided"
+  }
+}"""
 
 ParsedRateResponse = [
     [

@@ -5,19 +5,13 @@ import karrio.api.proxy as proxy
 import karrio.providers.sendcloud.utils as provider_utils
 import karrio.mappers.sendcloud.settings as provider_settings
 
-# IMPLEMENTATION INSTRUCTIONS:
-# 1. Import the schema types specific to your carrier API
-# 2. Uncomment and adapt the request examples below to work with your carrier API
-# 3. Replace the stub responses with actual API calls once you've tested with the example data
-# 4. Update URLs, headers, and authentication methods as required by your carrier API
-
 
 class Proxy(proxy.Proxy):
     settings: provider_settings.Settings
 
     def get_rates(self, request: lib.Serializable) -> lib.Deserializable[dict]:
         response = lib.request(
-            url=f"{self.settings.api_url}/parcels",
+            url=f"{self.settings.server_url}/rates",
             data=lib.to_json(request.serialize()),
             trace=self.trace_as("json"),
             method="POST",
@@ -25,15 +19,13 @@ class Proxy(proxy.Proxy):
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {self.settings.access_token}",
             },
-            decoder=provider_utils.default_response_deserializer,
-            on_error=lambda b: provider_utils.default_response_deserializer(b.read()),
         )
 
-        return lib.Deserializable(response, lib.to_dict, request.ctx)
+        return lib.Deserializable(response, lib.to_dict)
     
     def create_shipment(self, request: lib.Serializable) -> lib.Deserializable[dict]:
         response = lib.request(
-            url=f"{self.settings.api_url}/parcels",
+            url=f"{self.settings.server_url}/shipments",
             data=lib.to_json(request.serialize()),
             trace=self.trace_as("json"),
             method="POST",
@@ -41,43 +33,35 @@ class Proxy(proxy.Proxy):
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {self.settings.access_token}",
             },
-            decoder=provider_utils.default_response_deserializer,
-            on_error=lambda b: provider_utils.default_response_deserializer(b.read()),
         )
 
         return lib.Deserializable(response, lib.to_dict)
     
     def cancel_shipment(self, request: lib.Serializable) -> lib.Deserializable[dict]:
-        parcel_id = request.ctx.get("parcel_id") or request.serialize()
+        shipment_id = request.serialize().get("shipment_identifier")
         response = lib.request(
-            url=f"{self.settings.api_url}/parcels/{parcel_id}",
-            data="",
+            url=f"{self.settings.server_url}/shipments/{shipment_id}/cancel",
             trace=self.trace_as("json"),
-            method="DELETE",
+            method="POST",
             headers={
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {self.settings.access_token}",
             },
-            decoder=provider_utils.default_response_deserializer,
-            on_error=lambda b: provider_utils.default_response_deserializer(b.read()),
         )
 
-        return lib.Deserializable(response, lib.to_dict, request.ctx)
+        return lib.Deserializable(response, lib.to_dict)
     
     def get_tracking(self, request: lib.Serializable) -> lib.Deserializable[dict]:
-        tracking_number = request.serialize().get("tracking_number")
+        tracking_numbers = request.serialize().get("tracking_numbers", [])
         response = lib.request(
-            url=f"{self.settings.api_url}/parcels",
-            data="",
+            url=f"{self.settings.server_url}/tracking",
+            data=lib.to_json({"tracking_numbers": tracking_numbers}),
             trace=self.trace_as("json"),
-            method="GET",
+            method="POST",
             headers={
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {self.settings.access_token}",
             },
-            params={"tracking_number": tracking_number},
-            decoder=provider_utils.default_response_deserializer,
-            on_error=lambda b: provider_utils.default_response_deserializer(b.read()),
         )
 
         return lib.Deserializable(response, lib.to_dict)

@@ -229,8 +229,6 @@ def download_label(label_url: str) -> str:
 
 
 def login(settings: Settings, client_id: str=None, client_secret: str=None):
-    import karrio.providers.sendcloud.error as error
-
     result = lib.request(
         url=f"{settings.server_url}/api/v2/auth/token",
         method="POST",
@@ -247,10 +245,10 @@ def login(settings: Settings, client_id: str=None, client_secret: str=None):
     )
 
     response = lib.to_dict(result)
-    messages = error.parse_error_response(response, settings)
-
-    if any(messages):
-        raise errors.ParsedMessagesError(messages)
+    
+    # Check for errors without circular import
+    if "error" in response:
+        raise Exception(f"Authentication failed: {response['error']}")
 
     expiry = datetime.datetime.now() + datetime.timedelta(
         seconds=float(response.get("expires_in", 0))

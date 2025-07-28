@@ -5,6 +5,7 @@ import karrio.core.units as units
 class PackagingType(lib.StrEnum):
     """Veho specific packaging type"""
     PACKAGE = "PACKAGE"
+    BOX = "PACKAGE"  # Map BOX to PACKAGE for Veho API
 
     """Unified Packaging type mapping"""
     envelope = PACKAGE
@@ -17,9 +18,14 @@ class PackagingType(lib.StrEnum):
 
 
 class ShippingService(lib.StrEnum):
-    """Veho specific services"""
+    """Veho specific services based on OpenAPI spec"""
+    veho_next_day = "nextDay"
+    veho_same_day = "sameDay"
+    veho_two_day = "twoDay"
+    veho_value = "vehoValue"
     veho_ground_plus = "groundPlus"
     veho_premium_economy = "premiumEconomy"
+    veho_express_air = "expressAir"
 
 
 class ShippingOption(lib.Enum):
@@ -33,7 +39,7 @@ class ShippingOption(lib.Enum):
 
 def shipping_options_initializer(
     options: dict,
-    package_options: units.ShippingOptions = None,
+    package_options: units.ShippingOptions=None,
 ) -> units.ShippingOptions:
     """
     Apply default values to the given options.
@@ -72,7 +78,12 @@ def is_premium_economy(service: str) -> bool:
 def get_service_name(service: str) -> str:
     """Get the display name for a service"""
     service_names = {
+        ShippingService.veho_next_day: "Veho Next Day",
+        ShippingService.veho_same_day: "Veho Same Day",
+        ShippingService.veho_two_day: "Veho Two Day",
+        ShippingService.veho_value: "Veho Value",
         ShippingService.veho_ground_plus: "Veho Ground Plus",
         ShippingService.veho_premium_economy: "Veho Premium Economy",
+        ShippingService.veho_express_air: "Veho Express Air",
     }
     return service_names.get(service, service)

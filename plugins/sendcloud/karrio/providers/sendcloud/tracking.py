@@ -69,9 +69,9 @@ def _extract_details(
 
 
 def tracking_request(payload: models.TrackingRequest, _) -> lib.Serializable:
-    request = lib.Serializable(
-        dict(tracking_number=payload.tracking_numbers[0] if payload.tracking_numbers else None),
-        lib.to_dict,
-    )
+    request = {
+        "tracking_numbers": payload.tracking_numbers,
+        "reference": payload.reference,
+    }
     
     return lib.Serializable(request, lib.to_dict)

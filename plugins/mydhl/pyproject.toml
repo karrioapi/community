@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "karrio_dhl_ecommerce_europe"
+name = "karrio_mydhl"
 version = "2025.7"
-description = "Karrio - DHL eCommerce Europe Shipping Extension"
+description = "Karrio - MyDHL Express Shipping Extension"
 readme = "README.md"
 requires-python = ">=3.7"
 license = "Apache-2.0"
@@ -25,7 +25,7 @@ dependencies = [
 Homepage = "https://github.com/karrioapi/karrio"
 
 [project.entry-points."karrio.plugins"]
-dhl_ecommerce_europe = "karrio.plugins.dhl_ecommerce_europe:METADATA"
+mydhl = "karrio.plugins.mydhl:METADATA"
 
 [tool.setuptools]
 zip-safe = false
@@ -36,4 +36,4 @@ include-package-data = true
 
 [tool.setuptools.packages.find]
 exclude = ["tests.*", "tests"]
-namespaces = true
+namespaces = true 
