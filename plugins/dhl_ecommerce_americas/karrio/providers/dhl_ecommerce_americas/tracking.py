@@ -8,6 +8,7 @@ import karrio.providers.dhl_ecommerce_americas.utils as provider_utils
 import karrio.providers.dhl_ecommerce_americas.units as provider_units
 import karrio.schemas.dhl_ecommerce_americas.tracking_response as dhl_res
 
+
 def parse_tracking_response(
     _response: lib.Deserializable,
     settings: provider_utils.Settings,
@@ -28,10 +29,11 @@ def parse_tracking_response(
 
     return tracking_details, []
 
+
 def _extract_details(
     data: dict,
     settings: provider_utils.Settings,
-    tracking_number: str = None,
+    tracking_number: str=None,
 ) -> models.TrackingDetails:
     """Extract tracking details from DHL response data"""
 
@@ -97,6 +99,7 @@ def _extract_details(
             delivery_time=tracking_data.deliveryTime if hasattr(tracking_data, 'deliveryTime') else None,
         ),
     )
+
 
 def tracking_request(
     payload: models.TrackingRequest,

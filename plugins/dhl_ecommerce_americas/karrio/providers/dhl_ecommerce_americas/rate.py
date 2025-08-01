@@ -11,6 +11,7 @@ import karrio.providers.dhl_ecommerce_americas.units as provider_units
 import karrio.schemas.dhl_ecommerce_americas.rate_request as dhl_req
 import karrio.schemas.dhl_ecommerce_americas.rate_response as dhl_res
 
+
 def parse_rate_response(
     _response: lib.Deserializable[str],
     settings: provider_utils.Settings,
@@ -29,6 +30,7 @@ def parse_rate_response(
     ]
 
     return rates, messages
+
 
 def _extract_details(
     data: dict,
@@ -63,6 +65,7 @@ def _extract_details(
             delivery_guarantee=rate.deliveryGuarantee if hasattr(rate, 'deliveryGuarantee') else False,
         ),
     )
+
 
 def rate_request(
     payload: models.RateRequest,

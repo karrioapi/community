@@ -10,6 +10,7 @@ import karrio.providers.dhl_ecommerce_americas.units as provider_units
 import karrio.schemas.dhl_ecommerce_americas.shipment_request as dhl_req
 import karrio.schemas.dhl_ecommerce_americas.shipment_response as dhl_res
 
+
 def parse_shipment_response(
     _response: lib.Deserializable,
     settings: provider_utils.Settings,
@@ -29,6 +30,7 @@ def parse_shipment_response(
         shipment = _extract_details(lib.to_dict(package_result), settings)
 
     return shipment, messages
+
 
 def _extract_details(
     data: dict,
@@ -55,6 +57,7 @@ def _extract_details(
             service_name="DHL eCommerce Americas",
         ),
     )
+
 
 def shipment_request(
     payload: models.ShipmentRequest,
