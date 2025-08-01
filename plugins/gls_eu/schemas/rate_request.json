@@ -1,0 +1,42 @@
+{
+    "type": "object",
+    "properties": {
+        "location": {
+            "type": "string",
+            "description": "GLS location code"
+        },
+        "from": {
+            "type": "object",
+            "properties": {
+                "country": {"type": "string"},
+                "zipcode": {"type": "string"}
+            }
+        },
+        "to": {
+            "type": "object", 
+            "properties": {
+                "country": {"type": "string"},
+                "zipcode": {"type": "string"}
+            }
+        },
+        "parcels": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "weight": {"type": "number"},
+                    "length": {"type": "number"},
+                    "width": {"type": "number"},
+                    "height": {"type": "number"}
+                }
+            }
+        },
+        "services": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": ["BUSINESS", "EXPRESS", "FLEX"]
+            }
+        }
+    }
+}

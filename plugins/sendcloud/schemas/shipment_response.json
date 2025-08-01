@@ -1,0 +1,59 @@
+{
+    "type": "object",
+    "properties": {
+        "parcel": {
+            "type": "object",
+            "properties": {
+                "id": {"type": "integer"},
+                "address": {"type": "string"},
+                "address_2": {"type": "string"},
+                "city": {"type": "string"},
+                "company_name": {"type": "string"},
+                "country": {"type": "string"},
+                "data": {"type": "array"},
+                "date_created": {"type": "string"},
+                "email": {"type": "string"},
+                "name": {"type": "string"},
+                "postal_code": {"type": "string"},
+                "reference": {"type": "string"},
+                "shipment": {
+                    "type": "object",
+                    "properties": {
+                        "id": {"type": "integer"},
+                        "name": {"type": "string"}
+                    }
+                },
+                "status": {
+                    "type": "object",
+                    "properties": {
+                        "id": {"type": "integer"},
+                        "message": {"type": "string"}
+                    }
+                },
+                "to_service_point": {"type": "string"},
+                "tracking_number": {"type": "string"},
+                "tracking_url": {"type": "string"},
+                "weight": {"type": "string"},
+                "label": {
+                    "type": "object",
+                    "properties": {
+                        "label_printer": {"type": "string"},
+                        "normal_printer": {
+                            "type": "array",
+                            "items": {"type": "string"}
+                        }
+                    }
+                },
+                "customs_declaration": {
+                    "type": "object",
+                    "properties": {
+                        "contents": {"type": "integer"},
+                        "invoice": {"type": "string"},
+                        "weight": {"type": "integer"},
+                        "value": {"type": "number"}
+                    }
+                }
+            }
+        }
+    }
+}

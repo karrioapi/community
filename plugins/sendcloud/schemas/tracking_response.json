@@ -1,0 +1,38 @@
+{
+    "type": "object",
+    "properties": {
+        "parcel": {
+            "type": "object",
+            "properties": {
+                "id": {"type": "integer"},
+                "tracking_number": {"type": "string"},
+                "tracking_url": {"type": "string"},
+                "status": {
+                    "type": "object",
+                    "properties": {
+                        "id": {"type": "integer"},
+                        "message": {"type": "string"}
+                    }
+                },
+                "carrier": {
+                    "type": "object",
+                    "properties": {
+                        "code": {"type": "string"}
+                    }
+                },
+                "tracking_events": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "timestamp": {"type": "string"},
+                            "location": {"type": "string"},
+                            "description": {"type": "string"},
+                            "status": {"type": "string"}
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

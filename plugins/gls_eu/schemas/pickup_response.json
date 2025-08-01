@@ -1,1 +1,29 @@
- 
+{
+    "type": "object",
+    "properties": {
+        "location": {"type": "string"},
+        "pickup": {
+            "type": "object",
+            "properties": {
+                "id": {"type": "string"},
+                "date": {"type": "string"},
+                "from": {"type": "string"},
+                "to": {"type": "string"},
+                "address": {
+                    "type": "object",
+                    "properties": {
+                        "name1": {"type": "string"},
+                        "street1": {"type": "string"},
+                        "country": {"type": "string"},
+                        "zipcode": {"type": "string"},
+                        "city": {"type": "string"}
+                    }
+                },
+                "status": {
+                    "type": "string",
+                    "enum": ["SCHEDULED", "CONFIRMED", "COMPLETED", "CANCELLED"]
+                }
+            }
+        }
+    }
+}

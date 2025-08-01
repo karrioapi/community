@@ -1,0 +1,57 @@
+{
+    "type": "object",
+    "properties": {
+        "parcel": {
+            "type": "object",
+            "properties": {
+                "name": {"type": "string"},
+                "company_name": {"type": "string"},
+                "address": {"type": "string"},
+                "house_number": {"type": "string"},
+                "city": {"type": "string"},
+                "postal_code": {"type": "string"},
+                "country": {"type": "string"},
+                "email": {"type": "string"},
+                "telephone": {"type": "string"},
+                "weight": {"type": "string"},
+                "height": {"type": "integer"},
+                "length": {"type": "integer"},
+                "width": {"type": "integer"},
+                "shipment": {
+                    "type": "object",
+                    "properties": {
+                        "id": {"type": "integer"}
+                    }
+                },
+                "sender_address": {"type": "integer"},
+                "to_service_point": {"type": "integer"},
+                "customs_declaration": {
+                    "type": "object",
+                    "properties": {
+                        "contents": {"type": "integer"},
+                        "invoice": {"type": "string"},
+                        "weight": {"type": "integer"},
+                        "value": {"type": "number"},
+                        "items": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "description": {"type": "string"},
+                                    "quantity": {"type": "integer"},
+                                    "weight": {"type": "integer"},
+                                    "value": {"type": "number"},
+                                    "hs_code": {"type": "string"},
+                                    "origin_country": {"type": "string"}
+                                }
+                            }
+                        }
+                    }
+                },
+                "order_number": {"type": "string"},
+                "insured_value": {"type": "integer"},
+                "total_insured_value": {"type": "integer"}
+            }
+        }
+    }
+}

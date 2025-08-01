@@ -1,1 +1,38 @@
- 
+{
+    "type": "object",
+    "properties": {
+        "tuNo": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "references": {
+                        "type": "array",
+                        "items": {"type": "string"}
+                    },
+                    "history": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "date": {"type": "string"},
+                                "time": {"type": "string"},
+                                "code": {"type": "string"},
+                                "evtDscr": {"type": "string"},
+                                "address": {
+                                    "type": "object",
+                                    "properties": {
+                                        "name1": {"type": "string"},
+                                        "countryCode": {"type": "string"},
+                                        "zipCode": {"type": "string"},
+                                        "city": {"type": "string"}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,1 +1,60 @@
- 
+{
+    "type": "object",
+    "properties": {
+        "location": {
+            "type": "string",
+            "description": "GLS location code"
+        },
+        "consignments": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "references": {
+                        "type": "array",
+                        "items": {"type": "string"}
+                    },
+                    "product": {
+                        "type": "string",
+                        "enum": ["BUSINESS", "EXPRESS", "FLEX"]
+                    },
+                    "sender": {
+                        "type": "object",
+                        "properties": {
+                            "name1": {"type": "string"},
+                            "name2": {"type": "string"},
+                            "street1": {"type": "string"},
+                            "country": {"type": "string"},
+                            "zipcode": {"type": "string"},
+                            "city": {"type": "string"}
+                        }
+                    },
+                    "consignee": {
+                        "type": "object",
+                        "properties": {
+                            "name1": {"type": "string"},
+                            "name2": {"type": "string"}, 
+                            "street1": {"type": "string"},
+                            "country": {"type": "string"},
+                            "zipcode": {"type": "string"},
+                            "city": {"type": "string"}
+                        }
+                    },
+                    "parcels": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "references": {
+                                    "type": "array",
+                                    "items": {"type": "string"}
+                                },
+                                "weight": {"type": "number"}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
