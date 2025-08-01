@@ -12,11 +12,9 @@ import karrio.providers.bpost.units as provider_units
 class Settings(provider_utils.Settings):
     """Belgian Post connection settings."""
 
-    # required carrier specific properties
     account_id: str
     passphrase: str
 
-    # generic properties
     id: str = None
     test_mode: bool = False
     carrier_id: str = "bpost"

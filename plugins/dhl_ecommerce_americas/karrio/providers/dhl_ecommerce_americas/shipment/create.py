@@ -37,7 +37,6 @@ def _extract_details(
 ) -> models.ShipmentDetails:
     package_result = lib.to_object(shipping.PackageResult, data)
     
-    # Decode label image if it's base64 encoded
     label_data = package_result.labelImage or ""
     
     return models.ShipmentDetails(
@@ -73,7 +72,6 @@ def shipment_request(
     
     service_code = payload.service or provider_units.ShippingService.dhl_parcel_ground.value
     
-    # Get current datetime for message header
     message_datetime = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
     
     request = {

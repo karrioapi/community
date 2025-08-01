@@ -24,7 +24,6 @@ class PackageType(lib.StrEnum):
 class ShippingService(lib.StrEnum):
     """DHL eCommerce Europe specific services"""
 
-    # DHL Parcel Services
     V01PAK = "V01PAK"  # DHL Parcel (DE domestic)
     V02PAK = "V02PAK"  # DHL Parcel International
     V53WPAK = "V53WPAK"  # DHL Europack
@@ -32,7 +31,6 @@ class ShippingService(lib.StrEnum):
     V55PAK = "V55PAK"  # DHL Express Easy
     V66WPI = "V66WPI"  # DHL Express International
     
-    # Legacy mapping
     dhl_ecommerce_europe_parcel = V01PAK
     dhl_ecommerce_europe_express = V55PAK
 

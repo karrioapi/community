@@ -24,7 +24,6 @@ class Proxy(proxy.Proxy):
         return lib.Deserializable(response, lib.to_dict)
 
     def create_shipment(self, request: lib.Serializable) -> lib.Deserializable[str]:
-        # create shipment
         response = lib.request(
             url=f"{self.settings.server_url}/2023-01/shipments",
             data=lib.to_json(request.serialize()),
@@ -116,7 +115,6 @@ class Proxy(proxy.Proxy):
         return lib.Deserializable(response, lib.to_dict)
 
     def create_manifest(self, request: lib.Serializable) -> lib.Deserializable[str]:
-        # create manifest
         response = lib.to_dict(
             lib.request(
                 url=f"{self.settings.server_url}/2023-01/manifests",
@@ -131,10 +129,8 @@ class Proxy(proxy.Proxy):
             )
         )
 
-        # extract manifest url
         manifest_url = lib.failsafe(lambda: response["manifest"]["document"]["url"])
 
-        # download manifest file
         response.update(
             manifest_file=lib.identity(
                 None

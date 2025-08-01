@@ -8,11 +8,9 @@ from karrio.providers.royalmail.utils import Settings as BaseSettings
 class Settings(BaseSettings):
     """Royal Mail connection settings."""
 
-    # Carrier specific properties
     client_id: str
     client_secret: str
 
-    # Base properties
     id: str = None
     test_mode: bool = False
     carrier_id: str = "royalmail"

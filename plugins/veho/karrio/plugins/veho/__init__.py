@@ -1,29 +1,20 @@
-from karrio.core.metadata import PluginMetadata
-
-from karrio.mappers.veho.mapper import Mapper
-from karrio.mappers.veho.proxy import Proxy
-from karrio.mappers.veho.settings import Settings
+import karrio.core.metadata as metadata
+import karrio.mappers.veho as mappers
 import karrio.providers.veho.units as units
-import karrio.providers.veho.utils as utils
 
 
-# This METADATA object is used by Karrio to discover and register this plugin
-# when loaded through Python entrypoints or local plugin directories.
-# The entrypoint is defined in pyproject.toml under [project.entry-points."karrio.plugins"]
-METADATA = PluginMetadata(
+METADATA = metadata.PluginMetadata(
+    status="beta",
     id="veho",
     label="Veho",
-    description="Veho shipping integration for Karrio",
-    # Integrations
-    Mapper=Mapper,
-    Proxy=Proxy,
-    Settings=Settings,
-    # Data Units
-    is_hub=False,
-    options=units.ShippingOption,
+
+    Mapper=mappers.Mapper,
+    Proxy=mappers.Proxy,
+    Settings=mappers.Settings,
+
     services=units.ShippingService,
-    connection_configs=utils.ConnectionConfig,
-    # Extra info
-    website="https://www.shipveho.com",
-    documentation="https://docs.api.shipveho.com",
+    options=units.ShippingOption,
+    connection_configs=units.ConnectionConfig,
+
+    is_hub=False
 )

@@ -1,0 +1,62 @@
+{
+    "type": "object",
+    "properties": {
+        "shipping_methods": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "price": {
+                        "type": "object",
+                        "properties": {
+                            "value": {
+                                "type": "number"
+                            },
+                            "currency": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "transit_time_days": {
+                        "type": "integer"
+                    },
+                    "carrier": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "cost_breakdown": {
+                        "type": "object"
+                    },
+                    "min_weight": {
+                        "type": "number"
+                    },
+                    "max_weight": {
+                        "type": "number"
+                    },
+                    "countries": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "properties": {
+                        "type": "object"
+                    }
+                }
+            }
+        }
+    }
+}

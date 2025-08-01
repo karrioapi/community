@@ -12,7 +12,6 @@ class Settings(core.Settings):
     password: str
     test_mode: bool = False
 
-    # Required core.Settings attributes
     carrier_id: str = "dhl_ecommerce_americas"
     account_country_code: str = "US"
     id: str = None

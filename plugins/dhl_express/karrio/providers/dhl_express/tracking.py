@@ -33,7 +33,6 @@ def _extract_details(
     shipment_data: dict,
     settings: Settings,
 ) -> TrackingDetails:
-    # Extract events
     events = []
     shipment_events = shipment_data.get("events", [])
     
@@ -55,7 +54,6 @@ def _extract_details(
                     )
                 )
 
-    # Extract status
     status = "in_transit"  # default
     shipment_status = shipment_data.get("status")
     if shipment_status:

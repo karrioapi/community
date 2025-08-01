@@ -8,13 +8,11 @@ import karrio.providers.nationex.utils as provider_utils
 class Settings(provider_utils.Settings):
     """Nationex connection settings."""
 
-    # required carrier specific properties
     api_key: str
     customer_id: str
     billing_account: str = None
     language: provider_utils.LanguageEnum = "en"  # type: ignore
 
-    # generic properties
     id: str = None
     test_mode: bool = False
     carrier_id: str = "nationex"

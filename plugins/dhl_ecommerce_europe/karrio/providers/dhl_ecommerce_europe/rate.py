@@ -27,11 +27,9 @@ def _extract_details(
 ) -> models.RateDetails:
     product = data
     
-    # Handle totalPrice robustly - check for dict vs object
     total_price_obj = None
     if data.get("totalPrice"):
         for price_item in data.get("totalPrice"):
-            # Handle both dict and object formats
             if isinstance(price_item, dict):
                 if price_item.get("priceType") == "TOTAL":
                     total_price_obj = price_item
@@ -41,7 +39,6 @@ def _extract_details(
                     total_price_obj = price_item
                     break
         
-        # If no TOTAL found, use first price
         if not total_price_obj and data.get("totalPrice"):
             first_price = data.get("totalPrice")[0]
             if isinstance(first_price, dict):
@@ -49,7 +46,6 @@ def _extract_details(
             else:
                 total_price_obj = first_price
 
-    # Extract extra charges
     extra_charges = []
     if total_price_obj and hasattr(total_price_obj, 'breakdown') and total_price_obj.breakdown:
         for charge_item in total_price_obj.breakdown:
@@ -97,7 +93,6 @@ def rate_request(
     packages = lib.to_packages(payload.parcels)
     services = payload.services or [provider_units.ShippingService.V01PAK.name]
     
-    # Use the first service for the request
     service_code = next(
         (provider_units.ShippingService[s].value for s in services if s in provider_units.ShippingService.__members__),
         provider_units.ShippingService.V01PAK.value

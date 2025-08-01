@@ -1,0 +1,2 @@
+include karrio/providers/sendcloud/metadata.json
+recursive-include karrio *.py

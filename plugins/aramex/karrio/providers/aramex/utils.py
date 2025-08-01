@@ -5,7 +5,6 @@ from karrio.core import Settings as BaseSettings
 class Settings(BaseSettings):
     """Aramex connection settings."""
 
-    # Carrier specific properties
     username: str
     password: str
     account_pin: str

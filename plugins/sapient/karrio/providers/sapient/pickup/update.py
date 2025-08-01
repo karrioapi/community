@@ -53,18 +53,15 @@ def pickup_update_request(
         payload.options,
         option_type=lib.units.create_enum(
             "PickupOptions",
-            # fmt: off
             {
                 "sapient_shipment_id": lib.OptionEnum("shipment_id"),
                 "sapient_carrier_code": lib.OptionEnum("sapient_carrier_code"),
                 "sapient_slot_reservation_id": lib.OptionEnum("SlotReservationId"),
                 "sapient_bring_my_label": lib.OptionEnum("BringMyLabel", bool),
             },
-            # fmt: on
         ),
     )
 
-    # map data to convert karrio model to sapient specific type
     request = sapient.PickupRequestType(
         SlotDate=payload.pickup_date,
         SlotReservationId=options.sapient_slot_reservation_id.state,

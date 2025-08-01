@@ -1,4 +1,3 @@
-
 from karrio.core.metadata import Metadata
 
 from karrio.mappers.nationex.mapper import Mapper
@@ -11,10 +10,8 @@ METADATA = Metadata(
     status="beta",
     id="nationex",
     label="Nationex",
-    # Integrations
     Mapper=Mapper,
     Proxy=Proxy,
     Settings=Settings,
-    # Data Units
     is_hub=False
 )

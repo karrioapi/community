@@ -37,7 +37,6 @@ def _extract_details(
     settings: provider_utils.Settings,
 ) -> models.ConfirmationDetails:
     """Extract cancellation confirmation details from carrier response data using typed objects."""
-    # Convert to typed object
     cancel_response = lib.to_object(shipping.ShipmentCancelResponse, data)
     success = cancel_response.success or False
     
@@ -62,19 +61,9 @@ def shipment_cancel_request(
     Returns a Serializable object that can be sent to the carrier API
     """
     
-    # Create JSON request for shipment cancellation
-    # Example implementation:
-    # import karrio.schemas.veho.shipment_cancel_request as veho_req
     #
-    # request = veho_req.ShipmentCancelRequestType(
-    #     shipmentId=payload.shipment_identifier,
-    #     accountNumber=settings.account_number,
-    #     # Add any other required fields
-    # )
     #
-    # return lib.Serializable(request, lib.to_dict)
 
-    # For development, return a simple JSON request
     request = {
         "shipmentIdentifier": payload.shipment_identifier,
     }

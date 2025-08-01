@@ -13,7 +13,6 @@ class Settings(core.Settings):
 
     @property
     def proxy(self):
-        # Add proxy for using hay_post API in test mode
         if self.test_mode:
             return "username:passowrd@host:port"
         return None

@@ -8,7 +8,6 @@ from karrio.providers.aramex.utils import Settings as BaseSettings
 class Settings(BaseSettings):
     """Aramex connection settings."""
 
-    # Carrier specific properties
     username: str
     password: str
     account_pin: str
@@ -16,7 +15,6 @@ class Settings(BaseSettings):
     account_number: str
     account_country_code: str
 
-    # Base properties
     id: str = None
     test_mode: bool = False
     carrier_id: str = "aramex"

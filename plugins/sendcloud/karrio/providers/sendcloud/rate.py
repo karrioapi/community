@@ -1,14 +1,15 @@
-"""
-SendCloud Rate Provider - API v2/v3 JSON Implementation
-"""
+"""Karrio Sendcloud rating API implementation."""
+
+import karrio.schemas.sendcloud.rate_request as sendcloud
+import karrio.schemas.sendcloud.rate_response as rating
+
 import typing
 import karrio.lib as lib
+import karrio.core.units as units
 import karrio.core.models as models
 import karrio.providers.sendcloud.error as error
 import karrio.providers.sendcloud.utils as provider_utils
 import karrio.providers.sendcloud.units as provider_units
-import karrio.schemas.sendcloud.parcel_request as sendcloud
-import karrio.schemas.sendcloud.parcel_response as shipping
 
 
 def parse_rate_response(
@@ -16,85 +17,99 @@ def parse_rate_response(
     settings: provider_utils.Settings,
 ) -> typing.Tuple[typing.List[models.RateDetails], typing.List[models.Message]]:
     response = _response.deserialize()
-    errors = error.parse_error_response(response, settings)
-    rates = _extract_details(response, settings) if "rates" in response else []
 
-    return rates, errors
+    messages = error.parse_error_response(response, settings)
+    rates = [
+        _extract_details(rate, settings) 
+        for rate in response.get("shipping_methods", [])
+    ]
+
+    return rates, messages
 
 
 def _extract_details(
-    response: dict,
+    data: dict,
     settings: provider_utils.Settings,
-) -> typing.List[models.RateDetails]:
-    rates = []
+) -> models.RateDetails:
+    details = lib.to_object(rating.ShippingMethodType, data)
     
-    for rate_data in response.get("rates", []):
-        # Handle test mock structure directly
-        service = rate_data.get("service_code", "")
-        service_name = rate_data.get("service_name", "")
-        total = float(rate_data.get("total_charge", 0.0))
-        currency = rate_data.get("currency", "USD")
-        transit_days = int(rate_data.get("transit_days", 0))
-
-        rates.append(
-            models.RateDetails(
-                carrier_id=settings.carrier_id,
-                carrier_name=settings.carrier_name,
-                service=service,
-                total_charge=total,
-                currency=currency,
-                transit_days=transit_days,
-                meta=dict(
-                    service_name=service_name,
-                ),
-            )
-        )
+    service_name = details.name or "Unknown Service"
+    service_code = details.id or "unknown"
+    total_charge = details.price.value if details.price else 0.0
+    currency = details.price.currency if details.price else "EUR"
     
-    return rates
+    charges = []
+    
+    if details.cost_breakdown:
+        for charge_type, amount in details.cost_breakdown.items():
+            if amount and amount > 0:
+                charges.append(
+                    models.ChargeDetails(
+                        name=charge_type.replace("_", " ").title(),
+                        amount=lib.to_money(amount),
+                        currency=currency,
+                    )
+                )
+
+    return models.RateDetails(
+        carrier_id=settings.carrier_id,
+        carrier_name=settings.carrier_name,
+        service=service_code,
+        total_charge=lib.to_money(total_charge),
+        currency=currency,
+        transit_days=details.transit_time_days,
+        extra_charges=charges,
+        meta=dict(
+            service_name=service_name,
+            service_code=service_code,
+            carrier_id=details.carrier.id if details.carrier else None,
+            carrier_name=details.carrier.name if details.carrier else None,
+            min_weight=details.min_weight,
+            max_weight=details.max_weight,
+            countries=details.countries or [],
+            properties=details.properties or {},
+        ),
+    )
 
 
-def rate_request(payload: models.RateRequest, settings: provider_utils.Settings) -> lib.Serializable:
-    """Create a rate request for the carrier API."""
+def rate_request(
+    payload: models.RateRequest,
+    settings: provider_utils.Settings,
+) -> lib.Serializable:
     shipper = lib.to_address(payload.shipper)
     recipient = lib.to_address(payload.recipient)
     packages = lib.to_packages(payload.parcels)
-    package = packages.single
     
-    # Create simple request structure that matches test expectations
-    request = {
-        "shipper": {
-            "address_line1": shipper.address_line1,
-            "city": shipper.city,
-            "postal_code": shipper.postal_code,
-            "country_code": shipper.country_code,
-            "state_code": shipper.state_code,
-            "person_name": shipper.person_name,
-            "company_name": shipper.company_name,
-            "phone_number": shipper.phone_number,
-            "email": shipper.email,
-        },
-        "recipient": {
-            "address_line1": recipient.address_line1,
-            "city": recipient.city,
-            "postal_code": recipient.postal_code,
-            "country_code": recipient.country_code,
-            "state_code": recipient.state_code,
-            "person_name": recipient.person_name,
-            "company_name": recipient.company_name,
-            "phone_number": recipient.phone_number,
-            "email": recipient.email,
-        },
-        "packages": [
-            {
-                "weight": package.weight.value,
-                "weight_unit": package.weight.unit,
-                "length": package.length.value if package.length else None,
-                "width": package.width.value if package.width else None,
-                "height": package.height.value if package.height else None,
-                "dimension_unit": package.dimension_unit if package.dimension_unit else None,
-                "packaging_type": package.packaging_type or "BOX",
-            }
-        ],
-    }
+    options = lib.to_shipping_options(
+        payload.options,
+        package_options=packages.options,
+        initializer=provider_units.shipping_options_initializer,
+    )
+
+    total_weight = sum(
+        package.weight.value * (1000 if package.weight.unit == "KG" else 1)
+        for package in packages
+    )
+
+    request = sendcloud.RateRequestType(
+        to_country=recipient.country_code,
+        to_postal_code=recipient.postal_code,
+        from_country=shipper.country_code,
+        from_postal_code=shipper.postal_code,
+        weight=total_weight,
+        weight_unit="gram",
+        length=max(package.length.CM for package in packages) if packages else 10,
+        width=max(package.width.CM for package in packages) if packages else 10,
+        height=max(package.height.CM for package in packages) if packages else 10,
+        declared_value=lib.to_money(
+            sum(
+                item.value_amount or 0
+                for package in packages
+                for item in package.items
+            ) or 1.0
+        ),
+        declared_value_currency=options.currency.state or "EUR",
+        service_point_id=options.sendcloud_service_point_id.state,
+    )
 
     return lib.Serializable(request, lib.to_dict)

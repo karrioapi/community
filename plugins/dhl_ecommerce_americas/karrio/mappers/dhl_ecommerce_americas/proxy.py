@@ -28,8 +28,6 @@ class Proxy(proxy.Proxy):
             data = lib.to_dict(response)
             return data.get("authToken", "")
         except Exception as e:
-            # If authentication fails, return empty token
-            # Error will be handled in the actual API call
             return ""
 
     def get_rates(self, request: lib.Serializable) -> lib.Deserializable:
@@ -70,7 +68,6 @@ class Proxy(proxy.Proxy):
     def create_shipment(self, request: lib.Serializable) -> lib.Deserializable:
         token = self._get_access_token()
         
-        # Set access token in request header
         request_data = request.serialize()
         if "header" in request_data:
             request_data["header"]["accessToken"] = token

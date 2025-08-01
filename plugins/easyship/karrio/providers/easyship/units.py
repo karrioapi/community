@@ -63,7 +63,6 @@ class PackagingType(lib.StrEnum):
 class ShippingOption(lib.Enum):
     """Carrier specific options"""
 
-    # fmt: off
     easyship_box_slug = lib.OptionEnum("box_slug")
     easyship_courier_id = lib.OptionEnum("courier_id")
     easyship_eei_reference = lib.OptionEnum("eei_reference")
@@ -76,7 +75,6 @@ class ShippingOption(lib.Enum):
     easyship_seller_notes = lib.OptionEnum("seller_notes")
     easyship_sender_address_id = lib.OptionEnum("sender_address_id")
     easyship_return_address_id = lib.OptionEnum("return_address_id")
-    # fmt: on
 
 
 def shipping_options_initializer(

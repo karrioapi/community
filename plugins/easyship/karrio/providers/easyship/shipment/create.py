@@ -92,7 +92,6 @@ def shipment_request(
     )
     label_type = provider_units.LabelFormat.map(payload.label_type)
 
-    # map data to convert karrio model to easyship specific type
     request = easyship.ShipmentRequestType(
         buyer_regulatory_identifiers=lib.identity(
             easyship.BuyerRegulatoryIdentifiersType(

@@ -10,7 +10,6 @@ import karrio.providers.tge.utils as provider_utils
 class Settings(provider_utils.Settings):
     """TGE connection settings."""
 
-    # required carrier specific properties
     username: str
     password: str
     api_key: str
@@ -22,7 +21,6 @@ class Settings(provider_utils.Settings):
     sscc_count: int = None
     shipment_count: int = None
 
-    # generic properties
     id: str = None
     test_mode: bool = False
     carrier_id: str = "tge"

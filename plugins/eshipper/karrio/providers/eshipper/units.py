@@ -105,7 +105,6 @@ class TrackingStatus(lib.Enum):
 def to_carrier_code(carrierDTO: typing.Dict[str, str]) -> str:
     _code = lib.to_snake_case((carrierDTO or {}).get("name") or "eshipper")
 
-    # map carrier names to their corresponding Karrio code
     return KARRIO_CARRIER_MAPPING.get(_code, _code)
 
 

@@ -1,0 +1,102 @@
+[
+    {
+        "id": "1",
+        "name": "Sendcloud Standard",
+        "service_name": "Standard",
+        "carrier_name": "Sendcloud",
+        "countries": [
+            "NL",
+            "BE",
+            "DE",
+            "FR",
+            "ES",
+            "IT",
+            "AT",
+            "LU",
+            "DK",
+            "SE",
+            "FI",
+            "NO",
+            "PL",
+            "CZ",
+            "SK",
+            "HU",
+            "SI",
+            "HR",
+            "EE",
+            "LV",
+            "LT",
+            "RO",
+            "BG",
+            "GR",
+            "CY",
+            "MT",
+            "PT",
+            "IE"
+        ]
+    },
+    {
+        "id": "2",
+        "name": "Sendcloud Express",
+        "service_name": "Express",
+        "carrier_name": "Sendcloud",
+        "countries": [
+            "NL",
+            "BE",
+            "DE",
+            "FR",
+            "ES",
+            "IT",
+            "AT",
+            "LU",
+            "DK",
+            "SE",
+            "FI",
+            "NO",
+            "PL",
+            "CZ",
+            "SK",
+            "HU",
+            "SI",
+            "HR",
+            "EE",
+            "LV",
+            "LT",
+            "RO",
+            "BG",
+            "GR",
+            "CY",
+            "MT",
+            "PT",
+            "IE"
+        ]
+    },
+    {
+        "id": "3",
+        "name": "Sendcloud One Day",
+        "service_name": "One Day",
+        "carrier_name": "Sendcloud",
+        "countries": [
+            "NL",
+            "BE",
+            "DE",
+            "FR",
+            "ES",
+            "IT",
+            "AT",
+            "LU"
+        ]
+    },
+    {
+        "id": "4",
+        "name": "Sendcloud Same Day",
+        "service_name": "Same Day",
+        "carrier_name": "Sendcloud",
+        "countries": [
+            "NL",
+            "BE",
+            "DE",
+            "FR"
+        ]
+    }
+]

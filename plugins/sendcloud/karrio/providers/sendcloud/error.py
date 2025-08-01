@@ -1,4 +1,4 @@
-"""Karrio SendCloud error parser."""
+"""Karrio Sendcloud error parser."""
 
 import typing
 import karrio.lib as lib
@@ -11,74 +11,52 @@ def parse_error_response(
     settings: provider_utils.Settings,
     **kwargs,
 ) -> typing.List[models.Message]:
-    errors: list = []
+    errors = response.get("error", {})
     
-    # Check for error in response
-    if isinstance(response, dict) and "error" in response:
-        error_data = response["error"]
-        errors.append(
-            models.Message(
-                carrier_id=settings.carrier_id,
-                carrier_name=settings.carrier_name,
-                code=error_data.get("code", ""),
-                message=error_data.get("message", ""),
-                details=dict(
-                    details=error_data.get("details", ""),
-                    **kwargs
-                ),
-            )
-        )
-
-    return errors
-
-
-def parse_validation_error(
-    response: dict,
-    settings: provider_utils.Settings,
-) -> typing.List[models.Message]:
-    """
-    Parse SendCloud validation errors specifically
-    """
-    messages = []
-    
-    if "error" in response and "details" in response["error"]:
-        for detail in response["error"]["details"]:
-            if isinstance(detail, dict) and "field" in detail:
-                field = detail["field"]
-                message = detail.get("message", "Validation failed")
-                
-                validation_error = models.Message(
+    if isinstance(errors, dict):
+        if "message" in errors:
+            return [
+                models.Message(
                     carrier_id=settings.carrier_id,
                     carrier_name=settings.carrier_name,
-                    code=f"VALIDATION_{field.upper()}",
-                    message=f"Validation error for {field}: {message}",
-                    details=detail,
+                    code=errors.get("code", "unknown"),
+                    message=errors.get("message", "Unknown error"),
+                    details=errors,
                 )
-                messages.append(validation_error)
+            ]
+        elif "errors" in errors:
+            return [
+                models.Message(
+                    carrier_id=settings.carrier_id,
+                    carrier_name=settings.carrier_name,
+                    code=error.get("code", "unknown"),
+                    message=error.get("message", "Unknown error"),
+                    details=error,
+                )
+                for error in errors["errors"]
+            ]
     
-    return messages
-
-
-def parse_authentication_error(
-    response: dict,
-    settings: provider_utils.Settings,
-) -> typing.List[models.Message]:
-    """
-    Parse SendCloud authentication errors specifically
-    """
-    if "error" in response:
-        error_data = response["error"]
-        code = error_data.get("code", "AUTH_ERROR")
-        message = error_data.get("message", "Authentication failed")
-        
+    if isinstance(errors, list):
         return [
             models.Message(
                 carrier_id=settings.carrier_id,
                 carrier_name=settings.carrier_name,
-                code=str(code),
-                message=f"Authentication error: {message}",
-                details=error_data,
+                code=error.get("code", "unknown"),
+                message=error.get("message", "Unknown error"),
+                details=error,
             )
+            for error in errors
         ]
     
+    if kwargs.get("status_code") and kwargs.get("status_code") != 200:
+        return [
+            models.Message(
+                carrier_id=settings.carrier_id,
+                carrier_name=settings.carrier_name,
+                code=str(kwargs.get("status_code", "unknown")),
+                message=response.get("message", "HTTP error"),
+                details=response,
+            )
+        ]
+
     return []

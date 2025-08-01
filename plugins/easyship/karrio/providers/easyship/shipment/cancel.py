@@ -33,7 +33,6 @@ def shipment_cancel_request(
     settings: provider_utils.Settings,
 ) -> lib.Serializable:
 
-    # map data to convert karrio model to easyship specific type
     request = dict(easyship_shipment_id=payload.shipment_identifier)
 
     return lib.Serializable(request, lib.to_dict)

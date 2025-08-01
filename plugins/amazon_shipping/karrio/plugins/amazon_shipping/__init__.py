@@ -7,11 +7,9 @@ METADATA = metadata.PluginMetadata(
     status="beta",
     id="amazon_shipping",
     label="AmazonShipping",
-    # Integrations
     Mapper=mappers.Mapper,
     Proxy=mappers.Proxy,
     Settings=mappers.Settings,
-    # Data Units
     services=units.Service,
     has_intl_accounts=True,
 )

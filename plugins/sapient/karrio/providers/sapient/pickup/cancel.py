@@ -37,16 +37,13 @@ def pickup_cancel_request(
         payload.options,
         option_type=lib.units.create_enum(
             "PickupOptions",
-            # fmt: off
             {
                 "sapient_carrier_code": lib.OptionEnum("sapient_carrier_code"),
                 "sapient_shipment_id": lib.OptionEnum("sapient_shipment_id"),
             },
-            # fmt: on
         ),
     )
 
-    # map data to convert karrio model to sapient specific type
     request = dict(
         shipmentId=options.sapient_shipment_id.state,
         carrier_code=lib.identity(

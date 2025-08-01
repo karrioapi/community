@@ -7,10 +7,8 @@ METADATA = metadata.PluginMetadata(
     id="dicom",
     label="Dicom",
 
-    # Integrations
     Mapper=mappers.Mapper,
     Proxy=mappers.Proxy,
     Settings=mappers.Settings,
 
-    # Data Units
 )

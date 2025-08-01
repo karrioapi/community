@@ -14,7 +14,6 @@ class ConnectionConfig(lib.Enum):
 class DHLService(lib.StrEnum):
     """DHL eCommerce Americas service codes."""
     
-    # Domestic US Services
     dhl_parcel_ground = "DHLParcelGround"
     dhl_parcel_expedited = "DHLParcelExpedited"
     dhl_parcel_expedited_max = "DHLParcelExpeditedMax"
@@ -23,7 +22,6 @@ class DHLService(lib.StrEnum):
     dhl_marketing_parcel_ground = "DHLMarketingParcelGround"
     dhl_marketing_parcel_expedited = "DHLMarketingParcelExpedited"
     
-    # International Services  
     dhl_parcel_international_direct = "DHLParcelInternationalDirect"
     dhl_parcel_international_standard = "DHLParcelInternationalStandard"
     dhl_packet_international = "DHLPacketInternational"
@@ -34,7 +32,6 @@ class DHLService(lib.StrEnum):
     dhl_parcel_international_direct_smb = "DHLParcelInternationalDirectSMB"
     dhl_parcel_international_standard_smb = "DHLParcelInternationalStandardSMB"
     
-    # Return Services
     dhl_smart_mail_parcel_return_ground = "DHLSmartMailParcelReturnGround"
     dhl_smart_mail_parcel_return_plus = "DHLSmartMailParcelReturnPlus"
     dhl_smart_mail_parcel_return_light = "DHLSmartMailParcelReturnLight"
@@ -53,7 +50,6 @@ class DHLOption(lib.StrEnum):
     print_custom_1 = "print_custom_1"
 
 
-# Service mapping for API
 ShippingService = DHLService
 ShippingOption = DHLOption
 
@@ -72,7 +68,6 @@ def shipping_options_initializer(
     return _options
 
 
-# Legacy support
 TrackingStatus = lib.units.TrackingStatus
 PackagingUnit = lib.units.PackagingUnit
 WeightUnit = lib.units.WeightUnit

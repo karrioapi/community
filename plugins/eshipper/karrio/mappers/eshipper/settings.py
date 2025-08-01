@@ -8,11 +8,9 @@ import karrio.providers.eshipper.utils as provider_utils
 class Settings(provider_utils.Settings):
     """eShipper connection settings."""
 
-    # required carrier specific properties
     principal: str
     credential: str
 
-    # generic properties
     id: str = None
     test_mode: bool = False
     carrier_id: str = "eshipper"

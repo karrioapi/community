@@ -8,11 +8,9 @@ METADATA = metadata.PluginMetadata(
     status="production-ready",
     id="sapient",
     label="SAPIENT",
-    # Integrations
     Mapper=mappers.Mapper,
     Proxy=mappers.Proxy,
     Settings=mappers.Settings,
-    # Data Units
     is_hub=True,
     options=units.ShippingOption,
     services=units.ShippingService,

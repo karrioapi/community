@@ -16,7 +16,6 @@ def parse_rate_response(
     response = _response.deserialize()
     messages = error.parse_error_response(response, settings)
     
-    # Handle both direct rates array and nested structure
     rates_data = []
     if isinstance(response, dict):
         if "body" in response and "rates" in response["body"]:
@@ -40,7 +39,6 @@ def _extract_details(
 ) -> models.RateDetails:
     rate = lib.to_object(rating.Rate, data)
     
-    # Extract extra charges
     extra_charges = []
     if rate.charges:
         for charge_item in rate.charges:
@@ -80,7 +78,6 @@ def rate_request(
     packages = lib.to_packages(payload.parcels)
     services = payload.services or [provider_units.ShippingService.dhl_parcel_ground.value]
     
-    # Use the first service for the request
     service_code = next(
         (provider_units.ShippingService[s].value for s in services if s in provider_units.ShippingService.__members__),
         provider_units.ShippingService.dhl_parcel_ground.value

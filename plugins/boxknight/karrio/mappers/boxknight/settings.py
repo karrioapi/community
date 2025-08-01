@@ -10,11 +10,9 @@ import karrio.providers.boxknight.utils as provider_utils
 class Settings(provider_utils.Settings):
     """BoxKnight connection settings."""
 
-    # required carrier specific properties
     username: str
     password: str
 
-    # generic properties
     id: str = None
     test_mode: bool = False
     carrier_id: str = "boxknight"

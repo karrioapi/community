@@ -50,7 +50,6 @@ class Settings(core.Settings):
     def next_shipment_identifiers(
         self, options: lib.units.Options, package_count: int
     ) -> typing.Tuple[str, list, int, int]:
-        # get state from cache
         cache_key = f"{self.carrier_name}|{self.api_key}"
         state = self.connection_cache.get(cache_key) or {}
 
@@ -83,7 +82,6 @@ class Settings(core.Settings):
                 for _, __ in enumerate(range(package_count), start=1)
             ]
 
-        # save in cache
         _sscc_count = sscc_count + package_count
         _shipment_count = shipment_count + package_count
 
@@ -118,7 +116,6 @@ def next_pickup_date(
 ) -> datetime.datetime:
     date = lib.to_date(date_str)
 
-    # return next business day
     if date.weekday() == 5:
         return date + datetime.timedelta(days=3)
 

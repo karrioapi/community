@@ -7,7 +7,6 @@ This module provides address validation using the AddressComplete API.
 from karrio.core.metadata import PluginMetadata
 from karrio.validators.addresscomplete import Validator
 
-# Export the metadata for this validator
 METADATA = PluginMetadata(
     label="Canada Post AddressComplete",
     Validator=Validator,

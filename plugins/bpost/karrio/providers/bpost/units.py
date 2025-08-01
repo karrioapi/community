@@ -53,8 +53,6 @@ class ConnectionConfig(lib.Enum):
 class ShippingService(lib.StrEnum):
     """Carrier specific services"""
 
-    # fmt: off
-    # nationalBox > atHome
     bpack_24h_pro = "bpack 24h Pro"
     bpack_24h_business = "bpack 24h business"
     bpack_bus = "bpack Bus"
@@ -62,24 +60,18 @@ class ShippingService(lib.StrEnum):
     bpack_easy_retour = "bpack Easy Retour"
     bpack_xl = "bpack XL"
 
-    # nationalBox > atBpost
     bpack_bpost = "bpack@bpost"
 
-    # nationalBox > at24-7
     bpack_24_7 = "bpack 24/7"
 
-    # internationalBox > international
     bpack_world_business = "bpack World Business"
     bpack_world_express_pro = "bpack World Express Pro"
     bpack_europe_business = "bpack Europe Business"
     bpack_world_easy_return = "bpack World Easy Return"
 
-    # internationalBox > atIntPugo
     bpack_bpost_international = "bpack@bpost international"
 
-    # internationalBox > atIntlParcelDepot
     bpack_24_7_international = "bpack 24/7 international"
-    # fmt: on
 
     @classmethod
     def method(cls, svc: str, is_international: bool) -> str:
@@ -130,7 +122,6 @@ class ShippingService(lib.StrEnum):
 class ShippingOption(lib.Enum):
     """Carrier specific options"""
 
-    # fmt: off
     bpost_info_distributed = lib.OptionEnum("infoDistributed")
     bpost_info_next_day = lib.OptionEnum("infoNextDay")
     bpost_info_reminder = lib.OptionEnum("infoReminder")
@@ -148,7 +139,6 @@ class ShippingOption(lib.Enum):
     bpost_full_service = lib.OptionEnum("fullService", bool)
     bpost_door_step_plus_service = lib.OptionEnum("doorStepPlusService")
     bpost_ultra_late_in_evening_delivery = lib.OptionEnum("ultraLateInEveningDelivery", bool)
-    # fmt: on
 
     """ Custom options """
 

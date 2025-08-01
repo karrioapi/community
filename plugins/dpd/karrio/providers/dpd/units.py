@@ -56,17 +56,8 @@ class ShippingOption(lib.Enum):
     dpd_order_type = lib.OptionEnum("orderType")
     dpd_saturday_delivery = lib.OptionEnum("saturdayDelivery", bool)
     dpd_ex_works_delivery = lib.OptionEnum("exWorksDelivery", bool)
-    # dpd_guarantee = lib.OptionEnum("guarantee", bool)
     dpd_tyres = lib.OptionEnum("tyres", bool)
-    # dpd_personal_delivery = lib.OptionEnum("personalDelivery", bool)
-    # dpd_pickup = lib.OptionEnum("pickup", bool)
     dpd_parcel_shop_delivery = lib.OptionEnum("parcelShopDelivery")
-    # dpd_predict = lib.OptionEnum("predict", bool)
-    # dpd_personal_delivery_notification = lib.OptionEnum("personalDeliveryNotification", bool)
-    # dpd_proactive_notification = lib.OptionEnum("proactiveNotification", bool)
-    # dpd_delivery = lib.OptionEnum("delivery", bool)
-    # dpd_invoice_address = lib.OptionEnum("invoiceAddress")
-    # dpd_country_specific_service = lib.OptionEnum("countrySpecificService")
 
     """ Unified Option type mapping """
     saturday_delivery = dpd_saturday_delivery
@@ -237,7 +228,6 @@ DEFAULT_NL_SERVICES = [
         domicile=True,
         international=True,
         zones=[
-            # The Netherlands
             models.ServiceZone(
                 label="2shop", max_weight=1.00, min_weight=0.00, rate=4.25
             ),
@@ -256,7 +246,6 @@ DEFAULT_NL_SERVICES = [
             models.ServiceZone(
                 label="2home", max_weight=20.0, min_weight=10.0, rate=9.50
             ),
-            # Belgium
             models.ServiceZone(
                 label="2shop", max_weight=1.00, min_weight=0.00, rate=4.25
             ),

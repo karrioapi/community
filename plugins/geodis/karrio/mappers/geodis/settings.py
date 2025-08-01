@@ -12,13 +12,11 @@ import karrio.providers.geodis.units as provider_units
 class Settings(provider_utils.Settings):
     """GEODIS connection settings."""
 
-    # required carrier specific properties
     api_key: str
     identifier: str
     code_client: str = None
     language: provider_utils.LanguageEnum = "fr"  # type: ignore
 
-    # generic properties
     id: str = None
     test_mode: bool = False
     carrier_id: str = "geodis"

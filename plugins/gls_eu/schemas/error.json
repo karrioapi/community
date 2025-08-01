@@ -1,0 +1,9 @@
+{
+    "errors": [
+        {
+            "code": "INVALID_ZIPCODE",
+            "message": "Invalid postal code provided",
+            "field": "addresses.delivery.zipcode"
+        }
+    ]
+}

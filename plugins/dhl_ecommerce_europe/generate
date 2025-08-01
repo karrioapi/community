@@ -1,3 +1,4 @@
+#!/bin/bash
 SCHEMAS=./schemas
 LIB_MODULES=./karrio/schemas/dhl_ecommerce_europe
 find "${LIB_MODULES}" -name "*.py" -exec rm -r {} \;

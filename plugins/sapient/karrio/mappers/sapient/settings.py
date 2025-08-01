@@ -12,13 +12,11 @@ import karrio.providers.sapient.units as provider_units
 class Settings(provider_utils.Settings):
     """SAPIENT connection settings."""
 
-    # Add carrier specific API connection properties here
     client_id: str
     client_secret: str
     shipping_account_id: str
     sapient_carrier_code: provider_utils.SapientCarrierCode = "RM"  # type: ignore
 
-    # generic properties
     id: str = None
     test_mode: bool = False
     carrier_id: str = "sapient"

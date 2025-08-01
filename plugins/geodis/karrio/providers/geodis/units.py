@@ -105,7 +105,6 @@ def shipping_options_initializer(
 
 
 LABTEST_RATE_SHEET = [
-    # weight, 1001, 1002, 1003, 1007
     (0.5, 49, 45, 53, 57),
     (1, 52, 49, 58.25, 62.33),
     (2, 56.85, 52.3, 65.52, 73.55),

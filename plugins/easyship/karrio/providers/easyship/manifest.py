@@ -63,7 +63,6 @@ def manifest_request(
         ),
     )
 
-    # map data to convert karrio model to easyship specific type
     request = easyship.ManifestRequestType(
         courier_account_id=options.easyship_courier_account_id.state,
         shipment_ids=payload.shipment_identifiers,

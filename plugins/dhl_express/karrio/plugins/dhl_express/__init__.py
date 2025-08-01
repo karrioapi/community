@@ -9,16 +9,13 @@ METADATA = metadata.PluginMetadata(
     id="dhl_express",
     label="DHL Express",
     description="DHL Express MyDHL API shipping integration for Karrio",
-    # Integrations
     Mapper=mappers.Mapper,
     Proxy=mappers.Proxy,
     Settings=mappers.Settings,
-    # Data Units
     is_hub=False,
     services=units.ShippingService,
     options=units.ShippingOption,
     connection_configs=units.ConnectionConfig,
-    # Extra info
     website="https://www.dhl.com",
     documentation="https://developer.dhl.com/api-reference/dhl-express-mydhl-api",
 )

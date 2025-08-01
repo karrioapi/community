@@ -1,0 +1,28 @@
+{
+  "type": "object",
+  "properties": {
+    "url": {"type": "string"},
+    "shipmentTrackingNumber": {"type": "string"},
+    "packages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "referenceNumber": {"type": "string"},
+          "trackingNumber": {"type": "string"},
+          "trackingUrl": {"type": "string"}
+        }
+      }
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "content": {"type": "string"},
+          "typeCode": {"type": "string"}
+        }
+      }
+    }
+  }
+}

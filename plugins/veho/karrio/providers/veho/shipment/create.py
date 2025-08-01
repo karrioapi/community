@@ -28,7 +28,6 @@ def _extract_details(
     settings: provider_utils.Settings,
 ) -> models.ShipmentDetails:
     """Extract shipment details from carrier response data using typed objects."""
-    # Extract shipment data and convert to typed object
     shipment_data = data.get("shipment", {})
     
     if not shipment_data:
@@ -37,14 +36,12 @@ def _extract_details(
             carrier_name=settings.carrier_name,
         )
     
-    # Convert to typed object
     shipment = lib.to_object(shipping.ShipmentData, shipment_data)
     
     tracking_number = shipment.trackingNumber or ""
     shipment_id = shipment.shipmentId or ""
     service_code = shipment.serviceCode or ""
     
-    # Extract label data from labelData object
     label_image = None
     label_format = "PDF"
     if shipment.labelData:
@@ -52,7 +49,6 @@ def _extract_details(
         label_image = label_data.image
         label_format = label_data.format or "PDF"
     
-    # Extract invoice image
     invoice_image = shipment.invoiceImage
 
     return models.ShipmentDetails(

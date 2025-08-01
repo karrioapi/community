@@ -8,11 +8,9 @@ METADATA = metadata.PluginMetadata(
     id="easypost",
     label="EasyPost",
     is_hub=True,
-    # Integrations
     Mapper=mappers.Mapper,
     Proxy=mappers.Proxy,
     Settings=mappers.Settings,
-    # Data Units
     options=units.ShippingOption,
     services=units.Service,
     hub_carriers=units.CarrierId.to_dict(),

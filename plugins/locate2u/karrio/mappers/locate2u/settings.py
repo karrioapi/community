@@ -13,7 +13,6 @@ import karrio.providers.locate2u.units as provider_units
 class Settings(provider_utils.Settings):
     """Locate2u connection settings."""
 
-    # required carrier specific properties
     client_id: str = None
     client_secret: str = None
 

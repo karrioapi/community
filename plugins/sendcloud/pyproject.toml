@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "karrio_sendcloud"
-version = "2025.7"
-description = "Karrio - SendCloud Shipping Extension"
+version = "2025.5rc1"
+description = "Karrio - Sendcloud Shipping Extension"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.7"
 license = "Apache-2.0"
 authors = [
     {name = "karrio", email = "hello@karrio.io"}
@@ -25,7 +25,7 @@ dependencies = [
 Homepage = "https://github.com/karrioapi/karrio"
 
 [project.entry-points."karrio.plugins"]
-sendcloud = "karrio.plugins.sendcloud"
+sendcloud = "karrio.plugins.sendcloud:METADATA"
 
 [tool.setuptools]
 zip-safe = false
@@ -37,3 +37,6 @@ include-package-data = true
 [tool.setuptools.packages.find]
 exclude = ["tests.*", "tests"]
 namespaces = true
+
+[tool.setuptools.package-data]
+"karrio.providers.sendcloud" = ["metadata.json"]

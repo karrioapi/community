@@ -4,14 +4,12 @@ import typing
 
 
 @attr.s(auto_attribs=True)
-class ErrorDetail:
+class ErrorType:
     code: typing.Optional[str] = None
     message: typing.Optional[str] = None
-    field: typing.Optional[str] = None
 
 
 @attr.s(auto_attribs=True)
-class ErrorResponse:
-    error: typing.Dict[str, typing.Any]
-    message: typing.Optional[str] = None
-    errors: typing.Optional[typing.List[ErrorDetail]] = jstruct.JList[ErrorDetail] 
+class ErrorResponseType:
+    error: typing.Optional[ErrorType] = None
+    errors: typing.Optional[typing.List[ErrorType]] = jstruct.JList[ErrorType]

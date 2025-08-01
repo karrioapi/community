@@ -28,16 +28,13 @@ def _extract_details(
 ) -> models.TrackingDetails:
     shipment = data
     
-    # Determine delivery status - handle both dict and object status
     delivered = False
     status = "in_transit"
     
     if data.status:
-        # Handle dict status
         if isinstance(data.status, dict):
             status_code = data.status.get("statusCode", "").lower()
         else:
-            # Handle object status 
             status_code = getattr(data.status, 'statusCode', '').lower()
             
         if status_code in ["delivered", "ok"]:
@@ -48,7 +45,6 @@ def _extract_details(
         else:
             status = "in_transit"
 
-    # Extract events - handle both dict and object events
     events = []
     if data.events:
         for event_data in data.events:
@@ -65,7 +61,6 @@ def _extract_details(
                 location=f"{event_data.location.address.addressLocality}, {event_data.location.address.postalCode}, {event_data.location.address.countryCode}" if event_data.location and event_data.location.address else None,
             ))
 
-    # Safe tracking URL generation
     tracking_url = getattr(settings, 'tracking_url', None)
     carrier_tracking_link = None
     if tracking_url and data.shipmentTrackingNumber:

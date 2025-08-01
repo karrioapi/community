@@ -1,0 +1,92 @@
+{
+  "type": "object",
+  "properties": {
+    "plannedShippingDateAndTime": {"type": "string"},
+    "pickup": {
+      "type": "object",
+      "properties": {
+        "isRequested": {"type": "boolean"}
+      }
+    },
+    "productCode": {"type": "string"},
+    "accounts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "typeCode": {"type": "string"},
+          "number": {"type": "string"}
+        }
+      }
+    },
+    "customerDetails": {
+      "type": "object",
+      "properties": {
+        "shipperDetails": {
+          "type": "object",
+          "properties": {
+            "postalAddress": {
+              "type": "object",
+              "properties": {
+                "postalCode": {"type": "string"},
+                "cityName": {"type": "string"},
+                "countryCode": {"type": "string"},
+                "addressLine1": {"type": "string"}
+              }
+            },
+            "contactInformation": {
+              "type": "object",
+              "properties": {
+                "companyName": {"type": "string"},
+                "fullName": {"type": "string"}
+              }
+            }
+          }
+        },
+        "receiverDetails": {
+          "type": "object",
+          "properties": {
+            "postalAddress": {
+              "type": "object",
+              "properties": {
+                "postalCode": {"type": "string"},
+                "cityName": {"type": "string"},
+                "countryCode": {"type": "string"},
+                "addressLine1": {"type": "string"}
+              }
+            },
+            "contactInformation": {
+              "type": "object",
+              "properties": {
+                "companyName": {"type": "string"},
+                "fullName": {"type": "string"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "content": {
+      "type": "object",
+      "properties": {
+        "packages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "weight": {"type": "number"},
+              "dimensions": {
+                "type": "object",
+                "properties": {
+                  "length": {"type": "number"},
+                  "width": {"type": "number"},
+                  "height": {"type": "number"}
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

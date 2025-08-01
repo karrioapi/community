@@ -13,7 +13,6 @@ def parse_error_response(
 ) -> typing.List[models.Message]:
     errors: list = []
     
-    # Check for error in response
     if isinstance(response, dict) and "error" in response:
         error_data = response["error"]
         errors.append(

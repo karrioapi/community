@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+ROOT="../../../../"
+SCHEMAS=./schemas
+LIB_MODULES=./karrio/schemas/gls_eu
+find "${LIB_MODULES}" -name "*.py" -exec rm -r {} \;
+touch "${LIB_MODULES}/__init__.py"
+
+generate_schema() {
+    echo "Generating $1..."
+    "${ROOT}/bin/cli" codegen generate "$1" "$2" --no-nice-property-names --no-append-type-suffix
+}
+
+generate_schema "${SCHEMAS}/shipment_request.json" "${LIB_MODULES}/shipment_request.py"
+generate_schema "${SCHEMAS}/shipment_response.json" "${LIB_MODULES}/shipment_response.py"
+generate_schema "${SCHEMAS}/tracking_response.json" "${LIB_MODULES}/tracking_response.py"
+generate_schema "${SCHEMAS}/pickup_request.json" "${LIB_MODULES}/pickup_request.py"
+generate_schema "${SCHEMAS}/pickup_response.json" "${LIB_MODULES}/pickup_response.py"
+generate_schema "${SCHEMAS}/error.json" "${LIB_MODULES}/error.py" 

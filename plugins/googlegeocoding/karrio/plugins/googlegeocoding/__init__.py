@@ -7,7 +7,6 @@ This module provides address validation using the Google Geocode API.
 from karrio.core.metadata import PluginMetadata
 from karrio.validators.googlegeocoding import Validator
 
-# Export the metadata for this validator
 METADATA = PluginMetadata(
     label="Google Geocode",
     Validator=Validator,

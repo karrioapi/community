@@ -27,7 +27,6 @@ def parse_shipment_response(
 
 
 def _extract_shipment_details(data: dict, settings: Settings) -> ShipmentDetails:
-    # Extract label from documents
     documents = data.get("documents", [])
     label_content = documents[0].get("content") if documents else None
     

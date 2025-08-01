@@ -1,0 +1,29 @@
+{
+    "location": "DE_12345_001",
+    "consignments": [
+        {
+            "id": "123456789",
+            "references": [
+                "REF123"
+            ],
+            "product": "BUSINESS",
+            "labels": [
+                {
+                    "consignment_id": "123456789",
+                    "format": "PDF",
+                    "data": "base64encodedlabeldata"
+                }
+            ],
+            "parcels": [
+                {
+                    "id": "987654321",
+                    "references": [
+                        "PARCEL123"
+                    ],
+                    "weight": 5.5,
+                    "tracking_link": "https://gls-group.eu/tracking?match=987654321"
+                }
+            ]
+        }
+    ]
+}

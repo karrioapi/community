@@ -1,0 +1,46 @@
+{
+    "type": "object",
+    "properties": {
+        "to_country": {
+            "type": "string"
+        },
+        "to_postal_code": {
+            "type": "string"
+        },
+        "from_country": {
+            "type": "string"
+        },
+        "from_postal_code": {
+            "type": "string"
+        },
+        "weight": {
+            "type": "number"
+        },
+        "weight_unit": {
+            "type": "string"
+        },
+        "length": {
+            "type": "number"
+        },
+        "width": {
+            "type": "number"
+        },
+        "height": {
+            "type": "number"
+        },
+        "declared_value": {
+            "type": "number"
+        },
+        "declared_value_currency": {
+            "type": "string"
+        },
+        "service_point_id": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "to_country",
+        "from_country",
+        "weight"
+    ]
+}

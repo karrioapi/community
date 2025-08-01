@@ -4,7 +4,6 @@ from karrio.core import Settings as BaseSettings
 class Settings(BaseSettings):
     """Royal Mail connection settings."""
 
-    # Carrier specific properties
     client_id: str
     client_secret: str
 

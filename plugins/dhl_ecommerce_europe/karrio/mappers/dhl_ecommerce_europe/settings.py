@@ -8,12 +8,10 @@ import karrio.providers.dhl_ecommerce_europe.utils as provider_utils
 class Settings(provider_utils.Settings):
     """DHL eCommerce Europe connection settings."""
 
-    # required carrier specific properties
     username: str
     password: str
     account_number: str = None
 
-    # generic properties
     id: str = None
     test_mode: bool = False
     carrier_id: str = "dhl_ecommerce_europe"

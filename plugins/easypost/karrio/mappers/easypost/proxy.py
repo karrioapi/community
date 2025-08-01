@@ -28,7 +28,6 @@ class Proxy(base.Proxy):
             if "error" in response:
                 return response
 
-            # retrieve rate with the selected service.
             rate_id = next(
                 (
                     rate["id"]

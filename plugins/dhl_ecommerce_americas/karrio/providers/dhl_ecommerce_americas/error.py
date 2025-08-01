@@ -11,11 +11,9 @@ def parse_error_response(
     **kwargs,
 ) -> typing.List[models.Message]:
     
-    # Handle different error response formats
     errors = []
     
     if isinstance(response, dict):
-        # Standard DHL error format with header/body
         if "header" in response and response["header"].get("code", 200) != 200:
             header = response["header"]
             errors.append(models.Message(
@@ -26,7 +24,6 @@ def parse_error_response(
                 details={"messageDetail": header.get("messageDetail", "")},
             ))
         
-        # Body-level errors
         if "body" in response and "errors" in response["body"]:
             error_details = response["body"]["errors"]
             for error_item in error_details:
@@ -43,7 +40,6 @@ def parse_error_response(
                     details={"description": error_obj.errorDescription or ""},
                 ))
         
-        # Direct error format
         if "errors" in response:
             error_details = response["errors"]
             for error_item in error_details:
@@ -60,7 +56,6 @@ def parse_error_response(
                     details={"description": error_obj.errorDescription or ""},
                 ))
         
-        # Simple error format
         if "error" in response:
             error_info = response["error"]
             if isinstance(error_info, str):

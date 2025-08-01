@@ -1031,7 +1031,6 @@ def shipping_options_initializer(
     if package_options is not None:
         options.update(package_options.content)
 
-    # Define carrier option filter.
     def items_filter(key: str) -> bool:
         return key in ShippingOption  # type:ignore
 

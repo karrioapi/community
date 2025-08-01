@@ -7,7 +7,6 @@ from karrio.core.settings import Settings as BaseSettings
 class Settings(BaseSettings):
     """Dicom connection settings."""
 
-    # Carrier specific properties
     username: str
     password: str
     billing_account: str = None

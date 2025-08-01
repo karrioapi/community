@@ -53,7 +53,6 @@ class PackagingType(lib.StrEnum):
 class ShippingService(lib.StrEnum):
     """Carrier specific services"""
 
-    # fmt: off
     sapient_royal_mail_hm_forces_mail = "BF1"
     sapient_royal_mail_hm_forces_signed_for = "BF2"
     sapient_royal_mail_hm_forces_special_delivery_500 = "BF7"
@@ -249,7 +248,6 @@ class ShippingService(lib.StrEnum):
     sapient_royal_mail_international_business_mail_large_letter_zero_sort_priority = "WG1"
     sapient_royal_mail_international_business_mail_large_letter_zero_sort_priority_machine = "WG4"
     sapient_royal_mail_international_business_mail_letters_zero_sort_priority = "WP1"
-    # fmt: on
 
     @classmethod
     def carrier(cls, value: str) -> dict:
@@ -267,7 +265,6 @@ class ShippingService(lib.StrEnum):
 class ShippingOption(lib.Enum):
     """Carrier specific options"""
 
-    # sapient_option = lib.OptionEnum("code")
     sapient_CL1 = lib.OptionEnum("CL1", float)
     sapient_CL2 = lib.OptionEnum("CL2", float)
     sapient_CL3 = lib.OptionEnum("CL3", float)

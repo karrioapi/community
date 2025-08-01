@@ -92,7 +92,6 @@ def shipment_request(
     ).astimezone(datetime.timezone.utc)
     shipping_date = lib.to_next_business_datetime(utc_shipping_date, "%Y-%m-%d")
 
-    # map data to convert karrio model to sapient specific type
     request = sapient.ShipmentRequestType(
         ShipmentInformation=sapient.ShipmentInformationType(
             ContentType=lib.identity("DOX" if packages.is_document else "NDX"),

@@ -8,7 +8,6 @@ import karrio.providers.tnt.utils as provider_utils
 class Settings(provider_utils.Settings):
     """TNT connection settings."""
 
-    # Carrier specific properties
     username: str
     password: str
     account_number: str = None
@@ -16,7 +15,6 @@ class Settings(provider_utils.Settings):
     metadata: dict = {}
     config: dict = {}
 
-    # Base properties
     id: str = None
     test_mode: bool = False
     carrier_id: str = "tnt"

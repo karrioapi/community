@@ -9,11 +9,9 @@ def parse_error_response(response: List[dict], settings: Settings) -> List[Messa
 
 def _extract_error(carrier_error: dict, settings: Settings) -> Message:
     return Message(
-        # context info
         carrier_name=settings.carrier_name,
         carrier_id=settings.carrier_id,
 
-        # carrier error info
         code=carrier_error.get('Code'),
         message=carrier_error.get('Message')
     )

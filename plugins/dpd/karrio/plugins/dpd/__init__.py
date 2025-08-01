@@ -7,11 +7,9 @@ METADATA = metadata.PluginMetadata(
     status="beta",
     id="dpd",
     label="DPD",
-    # Integrations
     Mapper=mappers.Mapper,
     Proxy=mappers.Proxy,
     Settings=mappers.Settings,
-    # Data Units
     is_hub=False,
     services=units.ShippingService,
     options=units.ShippingOption,

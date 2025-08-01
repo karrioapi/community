@@ -12,7 +12,6 @@ class Settings(core.Settings):
     account_number: str = None
     test_mode: bool = False
     
-    # Override parent properties
     carrier_id: str = "dhl_express"
 
     @property

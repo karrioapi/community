@@ -99,7 +99,6 @@ def rate_request(
         or getattr(getattr(payload, "customs", None), "incoterm", None)
     )
 
-    # map data to convert karrio model to easyship specific type
     request = easyship.RateRequestType(
         courier_selection=lib.identity(
             easyship.CourierSelectionType(

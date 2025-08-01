@@ -28,7 +28,6 @@ from karrio.providers.amazon_shipping import (
 class Mapper(BaseMapper):
     settings: Settings
 
-    # Request Mappers
 
     def create_rate_request(self, payload: RateRequest) -> Serializable:
         return rate_request(payload, self.settings)
@@ -44,7 +43,6 @@ class Mapper(BaseMapper):
     def create_tracking_request(self, payload: TrackingRequest) -> Serializable:
         return tracking_request(payload, self.settings)
 
-    # Response Parsers
 
     def parse_rate_response(
         self, response: Deserializable

@@ -8,16 +8,13 @@ METADATA = metadata.PluginMetadata(
     id="hay_post",
     label="HayPost",
 
-    # Integrations
     Mapper=mappers.Mapper,
     Proxy=mappers.Proxy,
     Settings=mappers.Settings,
 
-    # Data Units
     services=units.ShippingService,
     options=units.ShippingOption,
     connection_configs=units.ConnectionConfig,
-    # package_presets=units.PackagePresets,  # Enum of parcel presets/templates
 
     is_hub=False
 )

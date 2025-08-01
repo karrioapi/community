@@ -23,7 +23,6 @@ class Proxy(proxy.Proxy):
         return lib.Deserializable(response, lib.to_dict)
 
     def get_tracking(self, request: lib.Serializable) -> lib.Deserializable:
-        # Handle both list and dict tracking requests
         serialized = request.serialize()
         if isinstance(serialized, list):
             tracking_numbers = serialized

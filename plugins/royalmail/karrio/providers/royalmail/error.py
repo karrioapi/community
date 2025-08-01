@@ -9,10 +9,8 @@ def parse_error_response(response: List[dict], settings: Settings) -> List[Messa
 
     return [
         Message(
-            # context info
             carrier_name=settings.carrier_name,
             carrier_id=settings.carrier_id,
-            # carrier error info
             code=str(error.httpCode),
             message=error.httpMessage,
             details=dict(information=error.moreInformation, errors=error.errors),

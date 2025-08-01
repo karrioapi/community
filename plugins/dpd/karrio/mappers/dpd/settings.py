@@ -14,13 +14,11 @@ import karrio.universal.mappers.rating_proxy as rating_proxy
 class Settings(provider_utils.Settings, rating_proxy.RatingMixinSettings):
     """DPD connection settings."""
 
-    # required carrier specific properties
     delis_id: str
     password: str
     depot: str = None
     message_language: str = "en_EN"
 
-    # generic properties
     id: str = None
     test_mode: bool = False
     carrier_id: str = "dpd"

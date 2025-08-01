@@ -12,7 +12,6 @@ def parse_error_response(
     responses: typing.List[dict] = []
     
     if isinstance(response, dict):
-        # Handle various DHL Express error formats
         if "status" in response and response.get("status") != "SUCCESS":
             responses.append({
                 "code": response.get("status"),
@@ -29,7 +28,6 @@ def parse_error_response(
                 "detail": error.get("detail", "")
             })
         elif response.get("message"):
-            # Handle simple error response
             responses.append({
                 "code": "ERROR",
                 "message": response.get("message"),

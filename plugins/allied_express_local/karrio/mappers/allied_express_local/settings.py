@@ -8,13 +8,11 @@ import karrio.providers.allied_express_local.utils as utils
 class Settings(utils.Settings):
     """Allied Express Local connection settings."""
 
-    # required carrier specific properties
     username: str
     password: str
     account: str = None
     service_type: utils.AlliedServiceType = "R"  # type: ignore
 
-    # generic properties
     id: str = None
     test_mode: bool = False
     carrier_id: str = "allied_express_local"

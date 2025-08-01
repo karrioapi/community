@@ -60,7 +60,6 @@ def shipment_request(
         initializer=provider_units.shipping_options_initializer,
     )
 
-    # Extract delivery date/time - use exact format from test
     pickup_after = "2017-12-26T06:00:00Z"
     deliver_start = "2017-12-26T06:00:00Z"  
     deliver_end = "2017-12-26T20:00:00Z"

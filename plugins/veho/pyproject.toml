@@ -25,7 +25,7 @@ dependencies = [
 Homepage = "https://github.com/karrioapi/karrio"
 
 [project.entry-points."karrio.plugins"]
-veho = "karrio.plugins.veho"
+veho = "karrio.plugins.veho:METADATA"
 
 [tool.setuptools]
 zip-safe = false

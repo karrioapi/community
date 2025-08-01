@@ -24,7 +24,6 @@ from karrio.providers.freightcom import (
 class Mapper(BaseMapper):
     settings: Settings
 
-    # Request Mappers
 
     def create_rate_request(self, payload: RateRequest) -> Serializable:
         return quote_request(payload, self.settings)
@@ -37,7 +36,6 @@ class Mapper(BaseMapper):
     ) -> Serializable:
         return shipment_cancel_request(payload, self.settings)
 
-    # Response Parsers
 
     def parse_rate_response(
         self, response: Deserializable

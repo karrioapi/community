@@ -1,7 +1,5 @@
 """Karrio Easyship tracking API implementation."""
 
-# import karrio.schemas.easyship.tracking_request as easyship
-# import karrio.schemas.easyship.tracking_response as tracking
 import karrio.schemas.easyship.shipment_response as shipping
 
 import typing

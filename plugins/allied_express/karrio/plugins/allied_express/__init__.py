@@ -8,11 +8,9 @@ METADATA = metadata.PluginMetadata(
     status="beta",
     id="allied_express",
     label="Allied Express",
-    # Integrations
     Mapper=mappers.Mapper,
     Proxy=mappers.Proxy,
     Settings=mappers.Settings,
-    # Data Units
     is_hub=False,
     services=units.ShippingService,
     options=units.ShippingOption,

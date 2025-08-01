@@ -94,7 +94,6 @@ def shipping_options_initializer(
 ) -> Options:
     _options = options.copy()
 
-    # Apply package options if specified.
     if package_options is not None:
         _options.update(package_options.content)
 

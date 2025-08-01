@@ -19,7 +19,6 @@ def parse_tracking_response(
     response = _response.deserialize()
     messages = error.parse_error_response(response, settings)
     
-    # Extract tracking info array and convert each item to typed object
     tracking_info_data = response.get("trackingInfo", []) if isinstance(response, dict) else []
     tracking_details = [
         _extract_details(info_data, settings)
@@ -34,18 +33,15 @@ def _extract_details(
     settings: provider_utils.Settings,
 ) -> models.TrackingDetails:
     """Extract tracking details from carrier response data using typed objects."""
-    # Convert to typed object
     tracking_info = lib.to_object(tracking.TrackingInfo, data)
     
     tracking_number = tracking_info.trackingNumber or ""
     status = tracking_info.status or ""
     estimated_delivery = tracking_info.estimatedDelivery
     
-    # Extract events from typed objects
     events = []
     if tracking_info.events:
         for event_data in tracking_info.events:
-            # Convert event to typed object if it's still a dict
             if isinstance(event_data, dict):
                 event = lib.to_object(tracking.TrackingEvent, event_data)
             else:
@@ -59,7 +55,6 @@ def _extract_details(
                 "location": event.location or ""
             })
 
-    # Map carrier status to karrio standard tracking status
     mapped_status = next(
         (
             status_enum.name

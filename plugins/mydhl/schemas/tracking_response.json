@@ -1,0 +1,39 @@
+{
+  "type": "object",
+  "properties": {
+    "shipments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "shipmentTrackingNumber": {"type": "string"},
+          "status": {"type": "string"},
+          "shipmentTimestamp": {"type": "string"},
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "date": {"type": "string"},
+                "time": {"type": "string"},
+                "typeCode": {"type": "string"},
+                "description": {"type": "string"},
+                "location": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "object",
+                      "properties": {
+                        "addressLocality": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

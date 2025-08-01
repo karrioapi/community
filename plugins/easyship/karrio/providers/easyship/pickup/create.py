@@ -73,7 +73,6 @@ def pickup_request(
         else options.shipment_identifiers.state
     )
 
-    # map data to convert karrio model to easyship specific type
     request = easyship.PickupRequestType(
         easyship_shipment_ids=easyship_shipment_ids,
         time_slot_id=options.easyship_time_slot_id.state,

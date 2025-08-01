@@ -1,0 +1,32 @@
+{
+  "type": "object",
+  "properties": {
+    "products": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "productName": {"type": "string"},
+          "productCode": {"type": "string"},
+          "totalPrice": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "currencyType": {"type": "string"},
+                "priceCurrency": {"type": "string"}
+              }
+            }
+          },
+          "deliveryCapabilities": {
+            "type": "object",
+            "properties": {
+              "deliveryTypeCode": {"type": "string"},
+              "estimatedDeliveryDateAndTime": {"type": "string"}
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -29,7 +29,6 @@ class PackageType(lib.StrEnum):
 class ShippingService(lib.StrEnum):
     """DHL Express specific services"""
 
-    # DHL Express Services
     dhl_express_worldwide = "EXPRESS_WORLDWIDE"
     dhl_express_9_00 = "EXPRESS_9_00"
     dhl_express_12_00 = "EXPRESS_12_00"
@@ -39,7 +38,6 @@ class ShippingService(lib.StrEnum):
     dhl_express_same_day = "EXPRESS_SAME_DAY"
     dhl_express_documents = "EXPRESS_DOCUMENTS"
     
-    # Legacy mapping
     express_worldwide = dhl_express_worldwide
     express_12_00 = dhl_express_12_00
     express_9_00 = dhl_express_9_00

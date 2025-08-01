@@ -8,11 +8,9 @@ import karrio.providers.veho.utils as provider_utils
 class Settings(provider_utils.Settings):
     """Veho connection settings."""
 
-    # Add carrier specific API connection properties here
     api_key: str
     account_number: str = None
 
-    # generic properties
     id: str = None
     test_mode: bool = False
     carrier_id: str = "veho"

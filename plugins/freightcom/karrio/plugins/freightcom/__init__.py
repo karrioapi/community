@@ -8,11 +8,9 @@ METADATA = metadata.PluginMetadata(
     id="freightcom",
     label="Freightcom",
     is_hub=True,
-    # Integrations
     Mapper=mappers.Mapper,
     Proxy=mappers.Proxy,
     Settings=mappers.Settings,
-    # Data Units
     options=units.ShippingOption,
     services=units.ShippingService,
     hub_carriers=units.CARRIER_IDS,

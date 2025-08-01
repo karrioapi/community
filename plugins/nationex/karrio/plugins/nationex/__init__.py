@@ -7,10 +7,8 @@ METADATA = metadata.PluginMetadata(
     status="beta",
     id="nationex",
     label="Nationex",
-    # Integrations
     Mapper=mappers.Mapper,
     Proxy=mappers.Proxy,
     Settings=mappers.Settings,
-    # Data Units
     is_hub=False
 )

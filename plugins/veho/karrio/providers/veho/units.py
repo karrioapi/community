@@ -1,3 +1,4 @@
+import attr
 import karrio.lib as lib
 import karrio.core.units as units
 
@@ -87,3 +88,8 @@ def get_service_name(service: str) -> str:
         ShippingService.veho_express_air: "Veho Express Air",
     }
     return service_names.get(service, service)
+
+
+@attr.s(auto_attribs=True)  
+class ConnectionConfig(lib.Enum):
+    pass

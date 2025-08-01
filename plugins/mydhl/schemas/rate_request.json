@@ -1,0 +1,53 @@
+{
+  "type": "object",
+  "properties": {
+    "customerDetails": {
+      "type": "object",
+      "properties": {
+        "shipperDetails": {
+          "type": "object",
+          "properties": {
+            "postalCode": {"type": "string"},
+            "cityName": {"type": "string"},
+            "countryCode": {"type": "string"}
+          }
+        },
+        "receiverDetails": {
+          "type": "object", 
+          "properties": {
+            "postalCode": {"type": "string"},
+            "cityName": {"type": "string"},
+            "countryCode": {"type": "string"}
+          }
+        }
+      }
+    },
+    "accounts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "typeCode": {"type": "string"},
+          "number": {"type": "string"}
+        }
+      }
+    },
+    "packages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "weight": {"type": "number"},
+          "dimensions": {
+            "type": "object",
+            "properties": {
+              "length": {"type": "number"},
+              "width": {"type": "number"},
+              "height": {"type": "number"}
+            }
+          }
+        }
+      }
+    }
+  }
+}

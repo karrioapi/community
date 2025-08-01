@@ -31,7 +31,6 @@ def _extract_details(
 ) -> models.TrackingDetails:
     tracking_data = lib.to_object(dhl_tracking.Body, data)
     
-    # Determine delivery status
     delivered = False
     status = "in_transit"
     
@@ -47,7 +46,6 @@ def _extract_details(
         else:
             status = "in_transit"
 
-    # Extract events
     events = []
     if tracking_data.events:
         for event_data in tracking_data.events:
@@ -64,12 +62,10 @@ def _extract_details(
                 location=event.location or "",
             ))
 
-    # Parse delivery date
     estimated_delivery = None
     if tracking_data.deliveryDate:
         estimated_delivery = lib.fdate(tracking_data.deliveryDate, "%Y-%m-%d")
 
-    # Safe tracking URL generation
     tracking_url = getattr(settings, 'tracking_url', None)
     carrier_tracking_link = None
     if tracking_url and tracking_data.trackingNumber:
