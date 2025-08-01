@@ -1,19 +1,8 @@
-import karrio.core.metadata as metadata
-import karrio.mappers.gls_eu as mappers
-import karrio.providers.gls_eu.units as units
-
-METADATA = metadata.PluginMetadata(
-    status="beta",
-    id="gls_eu",
-    label="GLS EU",
-
-    Mapper=mappers.Mapper,
-    Proxy=mappers.Proxy,
-    Settings=mappers.Settings,
-
-    services=units.ShippingService,
-    options=units.ShippingOption,
-    connection_configs=units.ConnectionConfig,
-
-    is_hub=False
-) 
+from karrio.providers.gls_eu.shipment.create import (
+    parse_shipment_response,
+    shipment_request,
+)
+from karrio.providers.gls_eu.shipment.cancel import (
+    parse_shipment_cancel_response,
+    shipment_cancel_request,
+)
