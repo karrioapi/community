@@ -4,32 +4,28 @@ import typing
 
 
 @attr.s(auto_attribs=True)
-class PackageResult:
-    packageId: typing.Optional[str] = None
-    trackingNumber: typing.Optional[str] = None
-    labelImage: typing.Optional[str] = None
-    labelFormat: typing.Optional[str] = None
-
-
-@attr.s(auto_attribs=True)
-class ShipmentBody:
-    orderedProductId: typing.Optional[str] = None
-    packageResults: typing.Optional[typing.List[PackageResult]] = jstruct.JList[PackageResult]
-
-
-@attr.s(auto_attribs=True)
-class ShipmentHeader:
+class ShipmentResponseHeaderType:
     code: typing.Optional[int] = None
     message: typing.Optional[str] = None
+    messageDetail: typing.Optional[str] = None
 
 
 @attr.s(auto_attribs=True)
-class ShipmentResponse:
-    header: typing.Optional[ShipmentHeader] = jstruct.JStruct[ShipmentHeader]
-    body: typing.Optional[ShipmentBody] = jstruct.JStruct[ShipmentBody]
+class PackageResultType:
+    packageId: typing.Optional[str] = None
+    trackingNumber: typing.Optional[str] = None
+    orderedProductId: typing.Optional[str] = None
+    labelImage: typing.Optional[str] = None
+    labelFormat: typing.Optional[str] = None
+    labelSize: typing.Optional[str] = None
 
 
 @attr.s(auto_attribs=True)
-class CancelResponse:
-    header: typing.Optional[ShipmentHeader] = jstruct.JStruct[ShipmentHeader]
-    body: typing.Optional[dict] = None 
+class ShipmentResponseBodyType:
+    packageResults: typing.Optional[typing.List[PackageResultType]] = jstruct.JList[PackageResultType]
+
+
+@attr.s(auto_attribs=True)
+class ShipmentResponseType:
+    header: typing.Optional[ShipmentResponseHeaderType] = jstruct.JStruct[ShipmentResponseHeaderType]
+    body: typing.Optional[ShipmentResponseBodyType] = jstruct.JStruct[ShipmentResponseBodyType]

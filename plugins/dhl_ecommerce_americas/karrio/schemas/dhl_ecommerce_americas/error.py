@@ -4,25 +4,25 @@ import typing
 
 
 @attr.s(auto_attribs=True)
-class ErrorDetail:
-    errorCode: typing.Optional[str] = None
-    errorMessage: typing.Optional[str] = None
-    errorDescription: typing.Optional[str] = None
-
-
-@attr.s(auto_attribs=True)
-class ErrorBody:
-    errors: typing.Optional[typing.List[ErrorDetail]] = jstruct.JList[ErrorDetail]
-
-
-@attr.s(auto_attribs=True)
-class ErrorHeader:
+class ErrorHeaderType:
     code: typing.Optional[int] = None
     message: typing.Optional[str] = None
     messageDetail: typing.Optional[str] = None
 
 
 @attr.s(auto_attribs=True)
-class ErrorResponse:
-    header: typing.Optional[ErrorHeader] = jstruct.JStruct[ErrorHeader]
-    body: typing.Optional[ErrorBody] = jstruct.JStruct[ErrorBody] 
+class ErrorDetailType:
+    errorCode: typing.Optional[str] = None
+    errorMessage: typing.Optional[str] = None
+    errorDescription: typing.Optional[str] = None
+
+
+@attr.s(auto_attribs=True)
+class ErrorBodyType:
+    errors: typing.Optional[typing.List[ErrorDetailType]] = jstruct.JList[ErrorDetailType]
+
+
+@attr.s(auto_attribs=True)
+class ErrorResponseType:
+    header: typing.Optional[ErrorHeaderType] = jstruct.JStruct[ErrorHeaderType]
+    body: typing.Optional[ErrorBodyType] = jstruct.JStruct[ErrorBodyType]

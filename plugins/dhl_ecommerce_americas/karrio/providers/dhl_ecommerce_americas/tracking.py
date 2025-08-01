@@ -1,101 +1,106 @@
-import karrio.schemas.dhl_ecommerce_americas.tracking_response as dhl_tracking
+"""Karrio DHL eCommerce Americas tracking API implementation."""
+
 import typing
 import karrio.lib as lib
-import karrio.core.units as units
 import karrio.core.models as models
 import karrio.providers.dhl_ecommerce_americas.error as error
 import karrio.providers.dhl_ecommerce_americas.utils as provider_utils
 import karrio.providers.dhl_ecommerce_americas.units as provider_units
-
+import karrio.schemas.dhl_ecommerce_americas.tracking_response as dhl_res
 
 def parse_tracking_response(
-    _response: lib.Deserializable[dict],
+    _response: lib.Deserializable,
     settings: provider_utils.Settings,
 ) -> typing.Tuple[typing.List[models.TrackingDetails], typing.List[models.Message]]:
     response = _response.deserialize()
-    messages = error.parse_error_response(response, settings)
-    
+
     tracking_details = []
-    if isinstance(response, dict):
-        if "body" in response:
-            tracking_details.append(_extract_details(response["body"], settings))
-        elif "trackingNumber" in response:
-            tracking_details.append(_extract_details(response, settings))
+    for tracking_number, tracking_data in response:
+        if not tracking_data:
+            continue
 
-    return tracking_details, messages
+        # Convert to typed object using generated schema
+        tracking_response = lib.to_object(dhl_res.TrackingResponseType, tracking_data)
+        
+        if tracking_response.body:
+            detail = _extract_details(lib.to_dict(tracking_response.body), settings, tracking_number)
+            tracking_details.append(detail)
 
+    return tracking_details, []
 
 def _extract_details(
     data: dict,
     settings: provider_utils.Settings,
+    tracking_number: str = None,
 ) -> models.TrackingDetails:
-    tracking_data = lib.to_object(dhl_tracking.Body, data)
+    """Extract tracking details from DHL response data"""
+
+    # Convert the DHL data to a proper object for easy attribute access
+    tracking_data = lib.to_object(dhl_res.TrackingResponseBodyType, data)
+
+    # Use TrackingStatus enum for proper status mapping
+    status = provider_units.TrackingStatus.map(tracking_data.status or "IN_TRANSIT")
+    delivered = status == provider_units.TrackingStatus.delivered.value
+
+    # Functional event processing with proper error handling
+    events = [
+        models.TrackingEvent(
+            date=lib.fdate(event.eventDate, "%Y-%m-%d") if hasattr(event, 'eventDate') and event.eventDate else None,
+            description=event.eventDescription if hasattr(event, 'eventDescription') else "No description",
+            code=event.eventCode if hasattr(event, 'eventCode') else "",
+            time=lib.flocaltime(
+                f"{event.eventDate}T{event.eventTime}",
+                "%Y-%m-%dT%H:%M:%S"
+            ) if all([
+                hasattr(event, 'eventDate'),
+                hasattr(event, 'eventTime'),
+                event.eventDate,
+                event.eventTime
+            ]) else None,
+            location=event.location if hasattr(event, 'location') else "",
+        )
+        for event in (tracking_data.events or [])
+    ]
+
+    # Safe delivery date parsing
+    estimated_delivery = (
+        lib.fdate(tracking_data.deliveryDate, "%Y-%m-%d")
+        if hasattr(tracking_data, 'deliveryDate') and tracking_data.deliveryDate
+        else None
+    )
+
+    # Build tracking link
+    tracking_number_to_use = tracking_number or (
+        tracking_data.trackingNumber if hasattr(tracking_data, 'trackingNumber') else ""
+    )
     
-    delivered = False
-    status = "in_transit"
-    
-    if tracking_data.status:
-        status_lower = tracking_data.status.lower()
-        if status_lower in ["delivered", "delivered_to_recipient"]:
-            delivered = True
-            status = "delivered"
-        elif status_lower in ["in_transit", "shipped"]:
-            status = "in_transit"
-        elif status_lower in ["out_for_delivery"]:
-            status = "out_for_delivery"
-        else:
-            status = "in_transit"
-
-    events = []
-    if tracking_data.events:
-        for event_data in tracking_data.events:
-            if isinstance(event_data, dict):
-                event = lib.to_object(dhl_tracking.Event, event_data)
-            else:
-                event = event_data
-                
-            events.append(models.TrackingEvent(
-                date=lib.fdate(event.eventDate, "%Y-%m-%d"),
-                description=event.eventDescription or "No description",
-                code=event.eventCode or "",
-                time=lib.flocaltime(f"{event.eventDate}T{event.eventTime}", "%Y-%m-%dT%H:%M:%S"),
-                location=event.location or "",
-            ))
-
-    estimated_delivery = None
-    if tracking_data.deliveryDate:
-        estimated_delivery = lib.fdate(tracking_data.deliveryDate, "%Y-%m-%d")
-
-    tracking_url = getattr(settings, 'tracking_url', None)
-    carrier_tracking_link = None
-    if tracking_url and tracking_data.trackingNumber:
-        try:
-            carrier_tracking_link = tracking_url.format(tracking_data.trackingNumber)
-        except:
-            carrier_tracking_link = f"https://track.dhl.com/tracking?lang=en&id={tracking_data.trackingNumber}"
+    carrier_tracking_link = (
+        f"https://track.dhl.com/tracking?lang=en&id={tracking_number_to_use}"
+        if tracking_number_to_use
+        else None
+    )
 
     return models.TrackingDetails(
         carrier_id=settings.carrier_id,
         carrier_name=settings.carrier_name,
-        tracking_number=tracking_data.trackingNumber,
+        tracking_number=tracking_number_to_use,
         status=status,
         delivered=delivered,
         estimated_delivery=estimated_delivery,
         events=events,
         info=models.TrackingInfo(
             carrier_tracking_link=carrier_tracking_link,
-            signed_by=tracking_data.signedBy,
+            signed_by=tracking_data.signedBy if hasattr(tracking_data, 'signedBy') else None,
         ),
         meta=dict(
-            delivery_date=tracking_data.deliveryDate,
-            delivery_time=tracking_data.deliveryTime,
+            delivery_date=tracking_data.deliveryDate if hasattr(tracking_data, 'deliveryDate') else None,
+            delivery_time=tracking_data.deliveryTime if hasattr(tracking_data, 'deliveryTime') else None,
         ),
     )
-
 
 def tracking_request(
     payload: models.TrackingRequest,
     settings: provider_utils.Settings,
 ) -> lib.Serializable:
-    request = payload.tracking_numbers
-    return lib.Serializable(request)
+    """Create a tracking request object."""
+    return lib.Serializable(payload.tracking_numbers)

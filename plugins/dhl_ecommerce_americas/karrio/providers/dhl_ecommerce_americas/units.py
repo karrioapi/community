@@ -1,17 +1,57 @@
-import enum
 import karrio.lib as lib
+import karrio.core.units as units
+
+PRESET_DEFAULTS = dict(
+    dimension_unit="IN",
+    weight_unit="LB",
+)
+
+MeasurementOptions = lib.units.MeasurementOptionsType(
+    quant=0.1,
+    min_lb=0.01,
+    min_in=0.01,
+)
+
+
+class PackagePresets(lib.Enum):
+    """
+    Note that dimensions are in IN and weight in LB
+    """
+    dhl_small_box = lib.units.PackagePreset(
+        **dict(width=8.0, height=6.0, length=4.0), **PRESET_DEFAULTS
+    )
+    dhl_medium_box = lib.units.PackagePreset(
+        **dict(width=12.0, height=9.0, length=6.0), **PRESET_DEFAULTS
+    )
+    dhl_large_box = lib.units.PackagePreset(
+        **dict(width=18.0, height=12.0, length=8.0), **PRESET_DEFAULTS
+    )
+
+
+class LabelType(lib.Enum):
+    PNG_4x6 = ("PNG", "4x6")
+    PNG_4x8 = ("PNG", "4x8")
+    PDF_4x6 = ("PDF", "4x6")
+
+    """ Unified Label type mapping """
+    PDF = PDF_4x6
+    PNG = PNG_4x6
+
+
+class PaymentType(lib.StrEnum):
+    account = "Account"
+    sender = account
+    recipient = account
+    third_party = account
+
 
 class ConnectionConfig(lib.Enum):
-    """DHL eCommerce Americas connection configuration options"""
-    shipping_services = lib.OptionEnum("shipping_services")
+    shipping_options = lib.OptionEnum("shipping_options", list)
+    shipping_services = lib.OptionEnum("shipping_services", list)
+    label_type = lib.OptionEnum("label_type", LabelType)
 
 
-class ConnectionConfig(lib.Enum):
-    """DHL eCommerce Americas connection configuration options"""
-    shipping_services = lib.OptionEnum("shipping_services")
-
-
-class DHLService(lib.StrEnum):
+class ShippingService(lib.StrEnum):
     """DHL eCommerce Americas service codes."""
     
     dhl_parcel_ground = "DHLParcelGround"
@@ -22,6 +62,7 @@ class DHLService(lib.StrEnum):
     dhl_marketing_parcel_ground = "DHLMarketingParcelGround"
     dhl_marketing_parcel_expedited = "DHLMarketingParcelExpedited"
     
+    # International services
     dhl_parcel_international_direct = "DHLParcelInternationalDirect"
     dhl_parcel_international_standard = "DHLParcelInternationalStandard"
     dhl_packet_international = "DHLPacketInternational"
@@ -32,43 +73,53 @@ class DHLService(lib.StrEnum):
     dhl_parcel_international_direct_smb = "DHLParcelInternationalDirectSMB"
     dhl_parcel_international_standard_smb = "DHLParcelInternationalStandardSMB"
     
+    # Return services
     dhl_smart_mail_parcel_return_ground = "DHLSmartMailParcelReturnGround"
     dhl_smart_mail_parcel_return_plus = "DHLSmartMailParcelReturnPlus"
     dhl_smart_mail_parcel_return_light = "DHLSmartMailParcelReturnLight"
 
 
-class DHLOption(lib.StrEnum):
+class ShippingOption(lib.Enum):
     """DHL eCommerce Americas shipping options."""
     
-    signature_required = "SignatureRequired"
-    adult_signature = "AdultSignature"
-    delivery_confirmation = "DeliveryConfirmation"
-    insurance = "Insurance"
-    saturday_delivery = "SaturdayDelivery"
-    delivery_duty_paid = "DDP"
-    delivery_duty_unpaid = "DDU"
-    print_custom_1 = "print_custom_1"
+    dhl_signature_required = lib.OptionEnum("signature_required", bool)
+    dhl_adult_signature = lib.OptionEnum("adult_signature", bool)
+    dhl_delivery_confirmation = lib.OptionEnum("delivery_confirmation", bool)
+    dhl_insurance = lib.OptionEnum("insurance", float)
+    dhl_saturday_delivery = lib.OptionEnum("saturday_delivery", bool)
+    dhl_delivery_duty_paid = lib.OptionEnum("delivery_duty_paid", bool)
+    dhl_delivery_duty_unpaid = lib.OptionEnum("delivery_duty_unpaid", bool)
 
-
-ShippingService = DHLService
-ShippingOption = DHLOption
+    """Unified Option type mapping"""
+    insurance = dhl_insurance
+    signature_confirmation = dhl_signature_required
+    saturday_delivery = dhl_saturday_delivery
 
 
 def shipping_options_initializer(
     options: dict,
-    package_options: dict = None,
-) -> dict:
-    """Initialize shipping options for DHL eCommerce Americas."""
-    
-    _options = options.copy()
-    
+    package_options: units.ShippingOptions = None,
+) -> units.ShippingOptions:
+    """Apply default values to the given options."""
     if package_options is not None:
-        _options.update(package_options)
+        options.update(package_options.content)
 
-    return _options
+    def items_filter(key: str) -> bool:
+        return key in ShippingOption
+
+    return units.ShippingOptions(options, ShippingOption, items_filter=items_filter)
 
 
-TrackingStatus = lib.units.TrackingStatus
-PackagingUnit = lib.units.PackagingUnit
-WeightUnit = lib.units.WeightUnit
-DimensionUnit = lib.units.DimensionUnit
+class TrackingStatus(lib.Enum):
+    on_hold = ["ON_HOLD", "EXCEPTION"]
+    delivered = ["DELIVERED", "FINAL_DELIVERY"]
+    in_transit = ["IN_TRANSIT", "PROCESSED", "SHIPMENT_INFORMATION_RECEIVED"]
+    delivery_failed = ["DELIVERY_FAILED", "RETURNED_TO_SENDER"]
+    out_for_delivery = ["OUT_FOR_DELIVERY", "WITH_DELIVERY_COURIER"]
+    delivery_delayed = ["DELIVERY_DELAYED"]
+    pickup_failed = ["PICKUP_FAILED"]
+
+
+# Legacy aliases for backward compatibility
+DHLService = ShippingService
+DHLOption = ShippingOption
