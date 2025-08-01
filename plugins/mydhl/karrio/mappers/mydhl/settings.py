@@ -1,16 +1,20 @@
+"""Karrio MyDHL client settings."""
+
 import attr
-import karrio.lib as lib
+import karrio.providers.mydhl.utils as provider_utils
+
 
 @attr.s(auto_attribs=True)
-class Settings(lib.Settings):
+class Settings(provider_utils.Settings):
+    """MyDHL connection settings."""
+
     username: str
     password: str
     account_number: str = None
-    
-    @property
-    def carrier_name(self):
-        return "mydhl"
-    
-    @property
-    def server_url(self):
-        return "https://express.api.dhl.com"
+
+    id: str = None
+    test_mode: bool = False
+    carrier_id: str = "mydhl"
+    account_country_code: str = None
+    metadata: dict = {}
+    config: dict = {}
