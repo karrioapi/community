@@ -54,7 +54,7 @@ RatePayload = {
     "shipper": {
         "city": "MELBOURNE",
         "state_code": "VIC",
-        "postal_code": "3000",
+        "postal_code": "3002",
         "country_code": "AU",
     },
     "recipient": {
@@ -140,7 +140,7 @@ RateRequest = {
                 "ConsignorParty": {
                     "PhysicalAddress": {
                         "CountryCode": "AU",
-                        "PostalCode": "3000",
+                        "PostalCode": "3002",
                         "StateCode": "VIC",
                         "Suburb": "MELBOURNE",
                     }
