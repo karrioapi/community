@@ -1,33 +1,35 @@
 {
-  "tuNo": [
-    {
-      "references": ["REF123"],
-      "history": [
+    "tuNo": [
         {
-          "date": "2024-07-01",
-          "time": "10:15",
-          "code": "IN_TRANSIT",
-          "evtDscr": "Departed facility",
-          "address": {
-            "name1": "GLS Depot Berlin",
-            "countryCode": "DE",
-            "zipCode": "10115",
-            "city": "Berlin"
-          }
-        },
-        {
-          "date": "2024-07-02",
-          "time": "09:05",
-          "code": "OUT_FOR_DELIVERY",
-          "evtDscr": "With delivery courier",
-          "address": {
-            "name1": "GLS Local",
-            "countryCode": "DE",
-            "zipCode": "10117",
-            "city": "Berlin"
-          }
+            "references": [
+                "REF123"
+            ],
+            "history": [
+                {
+                    "date": "2024-07-01",
+                    "time": "10:15",
+                    "code": "IN_TRANSIT",
+                    "evtDscr": "Departed facility",
+                    "address": {
+                        "name1": "GLS Depot Berlin",
+                        "countryCode": "DE",
+                        "zipCode": "10115",
+                        "city": "Berlin"
+                    }
+                },
+                {
+                    "date": "2024-07-02",
+                    "time": "09:05",
+                    "code": "OUT_FOR_DELIVERY",
+                    "evtDscr": "With delivery courier",
+                    "address": {
+                        "name1": "GLS Local",
+                        "countryCode": "DE",
+                        "zipCode": "10117",
+                        "city": "Berlin"
+                    }
+                }
+            ]
         }
-      ]
-    }
-  ]
+    ]
 }

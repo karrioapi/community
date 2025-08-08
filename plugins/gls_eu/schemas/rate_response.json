@@ -1,16 +1,25 @@
 {
-  "products": [
-    {
-      "id": "BUSINESS",
-      "name": "Business Parcel",
-      "country": "DE",
-      "costs": [
-        { "amount": 8.99, "currency": "EUR" }
-      ],
-      "transitTime": { "minTransitTime": 2, "maxTransitTime": 4 },
-      "services": [
-        { "id": "FLEX", "name": "Flex Delivery" }
-      ]
-    }
-  ]
+    "products": [
+        {
+            "id": "BUSINESS",
+            "name": "Business Parcel",
+            "country": "DE",
+            "costs": [
+                {
+                    "amount": 8.99,
+                    "currency": "EUR"
+                }
+            ],
+            "transitTime": {
+                "minTransitTime": 2,
+                "maxTransitTime": 4
+            },
+            "services": [
+                {
+                    "id": "FLEX",
+                    "name": "Flex Delivery"
+                }
+            ]
+        }
+    ]
 }

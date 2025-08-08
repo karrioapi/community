@@ -1,23 +1,33 @@
 {
-  "location": "DE_12345_001",
-  "pickup": {
-    "date": "2024-07-05",
-    "from": "0900",
-    "to": "1700",
-    "address": {
-      "name1": "Sender GmbH",
-      "name2": "Warehouse 1",
-      "street1": "Musterstrasse 12",
-      "country": "DE",
-      "zipcode": "10115",
-      "city": "Berlin",
-      "contact": "Max Mustermann",
-      "phone": "+49 30 123456",
-      "email": "ops@sender.de"
-    },
-    "parcels": [
-      { "weight": 5.2, "references": ["ORDER-1001"] },
-      { "weight": 2.8, "references": ["ORDER-1002"] }
-    ]
-  }
+    "location": "DE_12345_001",
+    "pickup": {
+        "date": "2024-07-05",
+        "from": "0900",
+        "to": "1700",
+        "address": {
+            "name1": "Sender GmbH",
+            "name2": "Warehouse 1",
+            "street1": "Musterstrasse 12",
+            "country": "DE",
+            "zipcode": "10115",
+            "city": "Berlin",
+            "contact": "Max Mustermann",
+            "phone": "+49 30 123456",
+            "email": "ops@sender.de"
+        },
+        "parcels": [
+            {
+                "weight": 5.2,
+                "references": [
+                    "ORDER-1001"
+                ]
+            },
+            {
+                "weight": 2.8,
+                "references": [
+                    "ORDER-1002"
+                ]
+            }
+        ]
+    }
 }

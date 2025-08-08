@@ -1,28 +1,35 @@
 {
-  "location": "DE_12345_001",
-  "consignments": [
-    {
-      "references": ["ORDER-1001"],
-      "product": "BUSINESS",
-      "sender": {
-        "name1": "Sender GmbH",
-        "name2": "Warehouse 1",
-        "street1": "Musterstrasse 12",
-        "country": "DE",
-        "zipcode": "10115",
-        "city": "Berlin"
-      },
-      "consignee": {
-        "name1": "Receiver BV",
-        "name2": "Attn: Logistics",
-        "street1": "Damrak 1",
-        "country": "NL",
-        "zipcode": "1011AB",
-        "city": "Amsterdam"
-      },
-      "parcels": [
-        { "references": ["PARCEL-1"], "weight": 5.5 }
-      ]
-    }
-  ]
+    "location": "DE_12345_001",
+    "consignments": [
+        {
+            "references": [
+                "ORDER-1001"
+            ],
+            "product": "BUSINESS",
+            "sender": {
+                "name1": "Sender GmbH",
+                "name2": "Warehouse 1",
+                "street1": "Musterstrasse 12",
+                "country": "DE",
+                "zipcode": "10115",
+                "city": "Berlin"
+            },
+            "consignee": {
+                "name1": "Receiver BV",
+                "name2": "Attn: Logistics",
+                "street1": "Damrak 1",
+                "country": "NL",
+                "zipcode": "1011AB",
+                "city": "Amsterdam"
+            },
+            "parcels": [
+                {
+                    "references": [
+                        "PARCEL-1"
+                    ],
+                    "weight": 5.5
+                }
+            ]
+        }
+    ]
 }

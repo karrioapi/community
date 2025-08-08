@@ -1,17 +1,17 @@
 {
-  "location": "DE_12345_001",
-  "pickup": {
-    "id": "PK123456",
-    "date": "2024-07-05",
-    "from": "0900",
-    "to": "1700",
-    "address": {
-      "name1": "Sender GmbH",
-      "street1": "Musterstrasse 12",
-      "country": "DE",
-      "zipcode": "10115",
-      "city": "Berlin"
-    },
-    "status": "CONFIRMED"
-  }
+    "location": "DE_12345_001",
+    "pickup": {
+        "id": "PK123456",
+        "date": "2024-07-05",
+        "from": "0900",
+        "to": "1700",
+        "address": {
+            "name1": "Sender GmbH",
+            "street1": "Musterstrasse 12",
+            "country": "DE",
+            "zipcode": "10115",
+            "city": "Berlin"
+        },
+        "status": "CONFIRMED"
+    }
 }

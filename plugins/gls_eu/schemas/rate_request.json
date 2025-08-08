@@ -1,9 +1,22 @@
 {
-  "location": "DE_12345_001",
-  "from": { "country": "DE", "zipcode": "10115" },
-  "to":   { "country": "NL", "zipcode": "1011AB" },
-  "parcels": [
-    { "weight": 5.5, "length": 30, "width": 20, "height": 10 }
-  ],
-  "services": ["BUSINESS"]
+    "location": "DE_12345_001",
+    "from": {
+        "country": "DE",
+        "zipcode": "10115"
+    },
+    "to": {
+        "country": "NL",
+        "zipcode": "1011AB"
+    },
+    "parcels": [
+        {
+            "weight": 5.5,
+            "length": 30,
+            "width": 20,
+            "height": 10
+        }
+    ],
+    "services": [
+        "BUSINESS"
+    ]
 }
