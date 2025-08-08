@@ -1,29 +1,17 @@
 {
-    "type": "object",
-    "properties": {
-        "location": {"type": "string"},
-        "pickup": {
-            "type": "object",
-            "properties": {
-                "id": {"type": "string"},
-                "date": {"type": "string"},
-                "from": {"type": "string"},
-                "to": {"type": "string"},
-                "address": {
-                    "type": "object",
-                    "properties": {
-                        "name1": {"type": "string"},
-                        "street1": {"type": "string"},
-                        "country": {"type": "string"},
-                        "zipcode": {"type": "string"},
-                        "city": {"type": "string"}
-                    }
-                },
-                "status": {
-                    "type": "string",
-                    "enum": ["SCHEDULED", "CONFIRMED", "COMPLETED", "CANCELLED"]
-                }
-            }
-        }
-    }
+  "location": "DE_12345_001",
+  "pickup": {
+    "id": "PK123456",
+    "date": "2024-07-05",
+    "from": "0900",
+    "to": "1700",
+    "address": {
+      "name1": "Sender GmbH",
+      "street1": "Musterstrasse 12",
+      "country": "DE",
+      "zipcode": "10115",
+      "city": "Berlin"
+    },
+    "status": "CONFIRMED"
+  }
 }

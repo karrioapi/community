@@ -1,60 +1,28 @@
 {
-    "type": "object",
-    "properties": {
-        "location": {
-            "type": "string",
-            "description": "GLS location code"
-        },
-        "consignments": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "references": {
-                        "type": "array",
-                        "items": {"type": "string"}
-                    },
-                    "product": {
-                        "type": "string",
-                        "enum": ["BUSINESS", "EXPRESS", "FLEX"]
-                    },
-                    "sender": {
-                        "type": "object",
-                        "properties": {
-                            "name1": {"type": "string"},
-                            "name2": {"type": "string"},
-                            "street1": {"type": "string"},
-                            "country": {"type": "string"},
-                            "zipcode": {"type": "string"},
-                            "city": {"type": "string"}
-                        }
-                    },
-                    "consignee": {
-                        "type": "object",
-                        "properties": {
-                            "name1": {"type": "string"},
-                            "name2": {"type": "string"}, 
-                            "street1": {"type": "string"},
-                            "country": {"type": "string"},
-                            "zipcode": {"type": "string"},
-                            "city": {"type": "string"}
-                        }
-                    },
-                    "parcels": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "references": {
-                                    "type": "array",
-                                    "items": {"type": "string"}
-                                },
-                                "weight": {"type": "number"}
-                            }
-                        }
-                    }
-                }
-            }
-        }
+  "location": "DE_12345_001",
+  "consignments": [
+    {
+      "references": ["ORDER-1001"],
+      "product": "BUSINESS",
+      "sender": {
+        "name1": "Sender GmbH",
+        "name2": "Warehouse 1",
+        "street1": "Musterstrasse 12",
+        "country": "DE",
+        "zipcode": "10115",
+        "city": "Berlin"
+      },
+      "consignee": {
+        "name1": "Receiver BV",
+        "name2": "Attn: Logistics",
+        "street1": "Damrak 1",
+        "country": "NL",
+        "zipcode": "1011AB",
+        "city": "Amsterdam"
+      },
+      "parcels": [
+        { "references": ["PARCEL-1"], "weight": 5.5 }
+      ]
     }
+  ]
 }

@@ -1,3 +1,4 @@
+import base64
 import karrio.lib as lib
 import karrio.core as core
 
@@ -15,10 +16,14 @@ class Settings(core.Settings):
 
     @property
     def server_url(self):
-        return "https://api.gls-eu.com/v1"
+        return (
+            "https://sandbox.api.gls-eu.com/v1" if self.test_mode else "https://api.gls-eu.com/v1"
+        )
 
     @property
     def connection_config(self) -> lib.units.Options:
+        from karrio.providers.gls_eu.units import ConnectionConfig
+
         return lib.to_connection_config(
             self.config or {},
             option_type=ConnectionConfig,
@@ -26,7 +31,8 @@ class Settings(core.Settings):
 
     @property
     def authorization(self):
-        return f"{self.username}:{self.password}"
+        pair = f"{self.username}:{self.password}"
+        return base64.b64encode(pair.encode("utf-8")).decode("ascii")
 
 
 class ConnectionConfig(lib.Enum):

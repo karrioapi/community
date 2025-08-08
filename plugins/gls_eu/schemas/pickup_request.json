@@ -1,44 +1,23 @@
 {
-    "type": "object",
-    "properties": {
-        "location": {
-            "type": "string",
-            "description": "GLS location code"
-        },
-        "pickup": {
-            "type": "object",
-            "properties": {
-                "date": {"type": "string", "format": "date"},
-                "from": {"type": "string", "pattern": "^[0-9]{4}$"},
-                "to": {"type": "string", "pattern": "^[0-9]{4}$"},
-                "address": {
-                    "type": "object",
-                    "properties": {
-                        "name1": {"type": "string"},
-                        "name2": {"type": "string"},
-                        "street1": {"type": "string"},
-                        "country": {"type": "string"},
-                        "zipcode": {"type": "string"},
-                        "city": {"type": "string"},
-                        "contact": {"type": "string"},
-                        "phone": {"type": "string"},
-                        "email": {"type": "string"}
-                    }
-                },
-                "parcels": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "weight": {"type": "number"},
-                            "references": {
-                                "type": "array",
-                                "items": {"type": "string"}
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+  "location": "DE_12345_001",
+  "pickup": {
+    "date": "2024-07-05",
+    "from": "0900",
+    "to": "1700",
+    "address": {
+      "name1": "Sender GmbH",
+      "name2": "Warehouse 1",
+      "street1": "Musterstrasse 12",
+      "country": "DE",
+      "zipcode": "10115",
+      "city": "Berlin",
+      "contact": "Max Mustermann",
+      "phone": "+49 30 123456",
+      "email": "ops@sender.de"
+    },
+    "parcels": [
+      { "weight": 5.2, "references": ["ORDER-1001"] },
+      { "weight": 2.8, "references": ["ORDER-1002"] }
+    ]
+  }
 }

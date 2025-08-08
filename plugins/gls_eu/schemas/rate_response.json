@@ -1,43 +1,16 @@
 {
-    "type": "object",
-    "properties": {
-        "products": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "id": {"type": "string"},
-                    "name": {"type": "string"},
-                    "country": {"type": "string"},
-                    "costs": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "amount": {"type": "number"},
-                                "currency": {"type": "string"}
-                            }
-                        }
-                    },
-                    "transitTime": {
-                        "type": "object",
-                        "properties": {
-                            "minTransitTime": {"type": "integer"},
-                            "maxTransitTime": {"type": "integer"}
-                        }
-                    },
-                    "services": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "id": {"type": "string"},
-                                "name": {"type": "string"}
-                            }
-                        }
-                    }
-                }
-            }
-        }
+  "products": [
+    {
+      "id": "BUSINESS",
+      "name": "Business Parcel",
+      "country": "DE",
+      "costs": [
+        { "amount": 8.99, "currency": "EUR" }
+      ],
+      "transitTime": { "minTransitTime": 2, "maxTransitTime": 4 },
+      "services": [
+        { "id": "FLEX", "name": "Flex Delivery" }
+      ]
     }
+  ]
 }
