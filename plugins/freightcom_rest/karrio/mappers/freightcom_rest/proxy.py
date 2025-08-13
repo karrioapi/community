@@ -51,11 +51,11 @@ class Proxy(proxy.Proxy):
         response = self._send_request(
                 path="/shipment", request=lib.Serializable(request.value, lib.to_json)
             )
+        response_dict = lib.failsafe(lambda: lib.to_dict(response)) or {}
+        shipment_id = response_dict.get('id')
 
-        shipment_id = lib.to_dict(response).get('id')
         if not shipment_id:
-            return lib.Deserializable(response, lib.to_dict)
-
+            return lib.Deserializable(response if response else "{}", lib.to_dict)
 
         # Step 2: retry because api return empty bytes if done to fast
         time.sleep(1)
