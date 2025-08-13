@@ -343,7 +343,7 @@ def shipment_request(
                             num_units=item.quantity,
                             unit_price=freightcom_rest_req.TotalCostType(
                                 currency=item.value_currency,
-                                value=str(item.value_amount)
+                                value=str(int(item.value_amount * 100))
                             ),
                             description=item.description
                         ) for item in customs.commodities
