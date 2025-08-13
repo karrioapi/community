@@ -343,16 +343,19 @@ def shipment_request(
                             num_units=item.quantity,
                             unit_price=freightcom_rest_req.TotalCostType(
                                 currency=item.value_currency,
+                                # the api expect to be a whole number like 16900 for 169.00
                                 value=str(int(item.value_amount * 100))
                             ),
                             description=item.description
                         ) for item in customs.commodities
                     ],
                     tax_recipient=freightcom_rest_req.TaxRecipientType(
-                        type=provider_units.PaymentType.map(
-                                customs.duty.paid_by
-                            ).value
-                        or "shipper",
+                        # they require it to be receiver
+                        # type=provider_units.PaymentType.map(
+                        #         customs.duty.paid_by
+                        #     ).value
+                        # or "shipper",
+                        type = "receiver",
                         name=customs.duty_billing_address.company_name or customs.duty.person_name,
                         address=freightcom_rest_req.AddressType(
                             address_line_1=customs.duty_billing_address.address_line1,
