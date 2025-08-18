@@ -350,12 +350,11 @@ def shipment_request(
                         ) for item in customs.commodities
                     ],
                     tax_recipient=freightcom_rest_req.TaxRecipientType(
-                        # they require it to be receiver
-                        # type=provider_units.PaymentType.map(
-                        #         customs.duty.paid_by
-                        #     ).value
-                        # or "shipper",
-                        type = "receiver",
+                        # they require it to be receiver, has to be enabled in the api
+                        type=provider_units.PaymentType.map(
+                                customs.duty.paid_by
+                            ).value
+                        or "receiver",
                         name=customs.duty_billing_address.company_name or customs.duty.person_name,
                         address=freightcom_rest_req.AddressType(
                             address_line_1=customs.duty_billing_address.address_line1,
