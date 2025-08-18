@@ -129,7 +129,7 @@ def shipment_request(
                 or options.connection_config.mailer_id.state
             ),
             ShippingLocationId=None,
-            Reference1=payload.reference,
+            Reference1=lib.text(payload.reference, max=30),
             DepartmentNumber=None,
             EoriNumber=customs.options.eori_number.state,
             VatNumber=lib.identity(
