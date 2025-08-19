@@ -1,5 +1,6 @@
 """Karrio SAPIENT shipment API implementation."""
 
+from re import L
 import karrio.schemas.sapient.shipment_requests as sapient
 import karrio.schemas.sapient.shipment_response as shipping
 
@@ -112,12 +113,12 @@ def shipment_request(
         ),
         Shipper=sapient.ShipperType(
             Address=sapient.AddressType(
-                ContactName=shipper.contact or "N/A",
-                CompanyName=shipper.company_name,
+                ContactName=lib.text(shipper.contact or "N/A", max=40),
+                CompanyName=lib.text(shipper.company_name, max=40),
                 ContactEmail=shipper.email,
                 ContactPhone=shipper.phone_number,
-                Line1=shipper.address_line1,
-                Line2=shipper.address_line2,
+                Line1=lib.text(shipper.address_line1, max=40),
+                Line2=lib.text(shipper.address_line2, max=40),
                 Line3=None,
                 Town=shipper.city,
                 Postcode=shipper.postal_code,
@@ -138,12 +139,12 @@ def shipment_request(
         ),
         Destination=sapient.DestinationType(
             Address=sapient.AddressType(
-                ContactName=recipient.contact or "N/A",
-                CompanyName=recipient.company_name,
+                ContactName=lib.text(recipient.contact or "N/A", max=40),
+                CompanyName=lib.text(recipient.company_name, max=40),
                 ContactEmail=recipient.email,
                 ContactPhone=recipient.phone_number,
-                Line1=recipient.address_line1,
-                Line2=recipient.address_line2,
+                Line1=lib.text(recipient.address_line1, max=40),
+                Line2=lib.text(recipient.address_line2, max=40),
                 Line3=None,
                 Town=recipient.city,
                 Postcode=recipient.postal_code,
@@ -170,12 +171,12 @@ def shipment_request(
         ReturnToSender=lib.identity(
             sapient.ReturnToSenderType(
                 Address=sapient.AddressType(
-                    ContactName=return_address.contact or "N/A",
-                    CompanyName=return_address.company_name,
+                    ContactName=lib.text(return_address.contact or "N/A", max=40),
+                    CompanyName=lib.text(return_address.company_name, max=40),
                     ContactEmail=return_address.email,
                     ContactPhone=return_address.phone_number,
-                    Line1=return_address.address_line1,
-                    Line2=return_address.address_line2,
+                    Line1=lib.text(return_address.address_line1, max=40),
+                    Line2=lib.text(return_address.address_line2, max=40),
                     Line3=None,
                     Town=return_address.city,
                     Postcode=return_address.postal_code,
@@ -217,7 +218,7 @@ def shipment_request(
                 HSCode=item.hs_code,
                 CountryOfOrigin=item.origin_country,
             )
-            for index, item in enumerate(commodities, start=1)
+            for item in commodities
         ],
         Customs=lib.identity(
             sapient.CustomsType(
