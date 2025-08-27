@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "karrio_hay_post"
-version = "2025.5rc18"
+version = "2025.5rc19"
 description = "Karrio - HayPost Shipping Extension"
 readme = "README.md"
 requires-python = ">=3.7"
