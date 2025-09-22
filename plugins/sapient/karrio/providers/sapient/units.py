@@ -282,8 +282,13 @@ class ShippingOption(lib.Enum):
     sapient_safeplace_location = lib.OptionEnum("Safeplace")
 
     """ Custom options """
+    sapient_airn = lib.OptionEnum("Airn")
     sapient_ebay_vtn = lib.OptionEnum("EbayVtn")
+    sapient_reference_2 = lib.OptionEnum("Reference2")
     sapient_container_id = lib.OptionEnum("ContainerId")
+    sapient_shipping_charges = lib.OptionEnum("ShippingCharges", float)
+    sapient_quoted_landed_cost = lib.OptionEnum("QuotedLandedCost", float)
+    export_licence_required = lib.OptionEnum("ExportLicenceRequired", bool)
     sapient_business_transaction_type = lib.OptionEnum("BusinessTransactionType")
 
     """ Unified Option type mapping """

@@ -108,6 +108,7 @@ class ShipperType:
     ShippingAccountId: typing.Optional[str] = None
     ShippingLocationId: typing.Optional[str] = None
     Reference1: typing.Optional[str] = None
+    Reference2: typing.Optional[str] = None
     DepartmentNumber: typing.Optional[str] = None
     EoriNumber: typing.Optional[str] = None
     VatNumber: typing.Optional[str] = None

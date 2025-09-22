@@ -29,6 +29,7 @@
       "ShippingAccountId": "32d2fe85-4b8e-4061-98d8-4942275a5ebd",
       "ShippingLocationId": "e15f4578-9a15-46cd-9347-820efc963cd5",
       "Reference1": "OrderRef56",
+      "Reference2": "OrderRef56",
       "DepartmentNumber": "0123456789",
       "EoriNumber": "GB213456789000",
       "VatNumber": "GB213456789"

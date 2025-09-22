@@ -131,6 +131,7 @@ def shipment_request(
             ),
             ShippingLocationId=None,
             Reference1=lib.text(payload.reference, max=30),
+            Reference2=lib.text(options.sapient_reference_2.state, max=30),
             DepartmentNumber=None,
             EoriNumber=customs.options.eori_number.state,
             VatNumber=lib.identity(
@@ -209,13 +210,13 @@ def shipment_request(
         ],
         Items=[
             sapient.ItemType(
-                SkuCode=item.sku,
+                SkuCode=lib.text(item.sku, max=30),
                 PackageOccurrence=None,
                 Quantity=item.quantity,
                 Description=lib.text(item.title or item.description, max=35),
                 Value=item.value_amount,
                 Weight=item.weight,
-                HSCode=item.hs_code,
+                HSCode=lib.text(item.hs_code, max=13),
                 CountryOfOrigin=item.origin_country,
             )
             for item in commodities
@@ -228,12 +229,12 @@ def shipment_request(
                 Incoterms=customs.incoterm,
                 PreRegistrationNumber=customs.options.sapient_pre_registration_number.state,
                 PreRegistrationType=customs.options.sapient_pre_registration_type.state,
-                ShippingCharges=None,
+                ShippingCharges=options.sapient_shipping_charges.state,
                 OtherCharges=options.insurance.state,
-                QuotedLandedCost=None,
+                QuotedLandedCost=options.sapient_quoted_landed_cost.state,
                 InvoiceNumber=customs.invoice,
                 InvoiceDate=lib.fdate(customs.invoice_date, "%Y-%m-%d"),
-                ExportLicenceRequired=None,
+                ExportLicenceRequired=options.export_licence_required.state,
                 Airn=customs.options.sapient_airn.state,
             )
             if payload.customs and is_intl
