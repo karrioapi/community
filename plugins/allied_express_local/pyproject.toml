@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "karrio_allied_express_local"
-version = "2025.5rc20"
+version = "2025.5rc21"
 description = "Karrio - Allied Express Local Shipping Extension"
 readme = "README.md"
 requires-python = ">=3.7"
