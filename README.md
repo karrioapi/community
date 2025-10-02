@@ -1,4 +1,6 @@
 # Karrio Community Plugins
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fkarrioapi%2Fcommunity.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fkarrioapi%2Fcommunity?ref=badge_shield)
+
 
 Welcome to the Karrio Community Plugins repository! This is a public collection of community-contributed plugins that extend Karrio's functionality. Think of it as a "poor-man's plugin marketplace" where developers can share and discover useful shipping integrations and tools.
 
@@ -80,6 +82,9 @@ Welcome to the Karrio Community Plugins repository! This is a public collection 
       - [Google Geocoding](#google-geocoding)
   - [License](#license)
   - [Support](#support)
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fkarrioapi%2Fcommunity.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fkarrioapi%2Fcommunity?ref=badge_large)
 
 ### Utility Plugins
 
