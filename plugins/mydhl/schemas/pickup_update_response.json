@@ -1,8 +1,0 @@
-{
-  "dispatchConfirmationNumber": "PRG999126012345",
-  "readyByTime": "10:00",
-  "nextPickupDate": "2019-08-05",
-  "warnings": [
-    "Pickup updated but pickup is not scheduled on the requested pickup date"
-  ]
-}
