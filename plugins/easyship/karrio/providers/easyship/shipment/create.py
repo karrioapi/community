@@ -34,8 +34,10 @@ def _extract_details(
     settings: provider_utils.Settings,
     ctx: dict,
 ) -> models.ShipmentDetails:
-    details = lib.to_object(shipping.ShipmentType, data["shipment"])
-    label_document = next(
+    details: shipping.ShipmentType = lib.to_object(
+        shipping.ShipmentType, data["shipment"]
+    )
+    label_document: shipping.ShippingDocumentType = next(
         (_ for _ in details.shipping_documents if _.category == "label"), None
     )
     label_type = (label_document.format or ctx.get("label_type") or "PDF").upper()
