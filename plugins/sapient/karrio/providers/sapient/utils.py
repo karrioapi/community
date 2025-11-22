@@ -92,7 +92,14 @@ def login(settings: Settings):
         on_error=parse_error_response,
     )
 
-    response = lib.to_dict(result)
+    # Handle case where result is a plain string (error response)
+    # instead of JSON - parse_error_response may return non-JSON strings
+    response = lib.failsafe(lambda: lib.to_dict(result)) or {}
+
+    # If we couldn't parse as JSON, treat the result as an error message
+    if not response and isinstance(result, str):
+        response = {"error": result}
+
     messages = error.parse_error_response(response, settings)
 
     if any(messages):
@@ -114,9 +121,11 @@ def parse_error_response(response):
     """Parse the error response from the SAPIENT API."""
     content = lib.failsafe(lambda: lib.decode(response.read()))
 
+    # If we have content, try to return it as-is (likely already JSON string)
     if any(content or ""):
         return content
 
+    # If no content, create a JSON error object
     return lib.to_json(
         dict(Errors=[dict(ErrorCode=str(response.code), Message=response.reason)])
     )
