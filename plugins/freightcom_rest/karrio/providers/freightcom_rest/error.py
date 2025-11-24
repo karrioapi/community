@@ -21,7 +21,11 @@ def parse_error_response(
         models.Message(
             carrier_id=settings.carrier_id,
             carrier_name=settings.carrier_name,
-            message=error.get("message"),
+            message=(
+                error.get("message") + ": " + "; ".join((error.get("details", {}) or error.get("data", {})).values())
+                if (error.get("details", {}) or error.get("data", {}))
+                else error.get("message")
+            ),
             details={
                 **kwargs,
                 **(error.get('data', {}))
