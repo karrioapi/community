@@ -22,7 +22,7 @@ def parse_error_response(
             carrier_id=settings.carrier_id,
             carrier_name=settings.carrier_name,
             message=(
-                error.get("message") + ": " + "; ".join((error.get("details", {}) or error.get("data", {})).values())
+                error.get("message") + ": " + "; ".join(f"{k.replace('details.', '')}: {v}" for k, v in (error.get("details", {}) or error.get("data", {})).items())
                 if (error.get("details", {}) or error.get("data", {}))
                 else error.get("message")
             ),
