@@ -173,7 +173,6 @@ def shipment_request(
     packaging_type = provider_units.PackagingType.map(
         packages.package_type or "small_box"
     ).value
-    is_package_or_courierpak = packaging_type in ["package", "courier-pak"]
 
     ship_datetime = lib.to_next_business_datetime(
         options.shipping_date.state or datetime.datetime.now(),
@@ -347,7 +346,7 @@ def shipment_request(
                     ] if customs and customs.commodities else [],
                     request_guaranteed_customs_charges=options.request_guaranteed_customs_charges.state if hasattr(options, 'request_guaranteed_customs_charges') else None
                 )
-                if is_ca_to_us and is_package_or_courierpak and customs and customs.commodities
+                if is_ca_to_us and customs and any(customs.commodities)
                 else None
             ),
         ),
