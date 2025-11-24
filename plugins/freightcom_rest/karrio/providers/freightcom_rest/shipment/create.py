@@ -322,7 +322,32 @@ def shipment_request(
                     ) for parcel in packages
                 ] if packaging_type == "courier-pak" else [],
             ),
-            reference_codes=[payload.reference] if payload.reference else []
+            reference_codes=[payload.reference] if payload.reference else [],
+            customs_data=(
+                freightcom_rest_req.CustomsDataType(
+                    products=[
+                        freightcom_rest_req.ProductType(
+                            product_name=item.description,
+                            weight=freightcom_rest_req.WeightType(
+                                unit="kg" if item.weight_unit.upper() == "KG" else "lb",
+                                value=lib.to_decimal(item.weight)
+                            ),
+                            hs_code=item.hs_code,
+                            country_of_origin=item.origin_country,
+                            num_units=item.quantity,
+                            unit_price=freightcom_rest_req.TotalCostType(
+                                currency=item.value_currency,
+                                value=str(int(item.value_amount * 100))
+                            ),
+                            description=item.description,
+                            fda_regulated="no"
+                        ) for item in customs.commodities
+                    ] if customs and customs.commodities else [],
+                    request_guaranteed_customs_charges=options.request_guaranteed_customs_charges.state if hasattr(options, 'request_guaranteed_customs_charges') else None
+                )
+                if is_intl and customs and customs.commodities
+                else None
+            ),
         ),
         customs_invoice=(
             freightcom_rest_req.CustomsInvoiceType(
@@ -346,7 +371,8 @@ def shipment_request(
                                 # the api expect to be a whole number like 16900 for 169.00
                                 value=str(int(item.value_amount * 100))
                             ),
-                            description=item.description
+                            description=item.description,
+                            fda_regulated="no"
                         ) for item in customs.commodities
                     ],
                     tax_recipient=freightcom_rest_req.TaxRecipientType(

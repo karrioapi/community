@@ -22,6 +22,14 @@ class BrokerType:
 
 
 @attr.s(auto_attribs=True)
+class ProductCompositionAllocationType:
+    provided: typing.Optional[bool] = None
+    steel_percentage: typing.Optional[int] = None
+    aluminum_percentage: typing.Optional[int] = None
+    copper_percentage: typing.Optional[int] = None
+
+
+@attr.s(auto_attribs=True)
 class TotalCostType:
     currency: typing.Optional[str] = None
     value: typing.Optional[int] = None
@@ -42,6 +50,11 @@ class ProductType:
     num_units: typing.Optional[int] = None
     unit_price: typing.Optional[TotalCostType] = jstruct.JStruct[TotalCostType]
     description: typing.Optional[str] = None
+    cusma_included: typing.Optional[bool] = None
+    non_auto_parts: typing.Optional[bool] = None
+    fda_regulated: typing.Optional[str] = None
+    product_composition_allocation: typing.Optional[ProductCompositionAllocationType] = jstruct.JStruct[ProductCompositionAllocationType]
+    product_composition_allocation_zero: typing.Optional[bool] = None
 
 
 @attr.s(auto_attribs=True)
@@ -81,6 +94,12 @@ class CustomsInvoiceType:
     source: typing.Optional[str] = None
     broker: typing.Optional[BrokerType] = jstruct.JStruct[BrokerType]
     details: typing.Optional[CustomsInvoiceDetailsType] = jstruct.JStruct[CustomsInvoiceDetailsType]
+
+
+@attr.s(auto_attribs=True)
+class CustomsDataType:
+    products: typing.Optional[typing.List[ProductType]] = jstruct.JList[ProductType]
+    request_guaranteed_customs_charges: typing.Optional[bool] = None
 
 
 @attr.s(auto_attribs=True)
@@ -215,6 +234,7 @@ class ShipmentRequestDetailsType:
     packaging_properties: typing.Optional[PackagingPropertiesType] = jstruct.JStruct[PackagingPropertiesType]
     insurance: typing.Optional[InsuranceType] = jstruct.JStruct[InsuranceType]
     reference_codes: typing.Optional[typing.List[str]] = None
+    customs_data: typing.Optional[CustomsDataType] = jstruct.JStruct[CustomsDataType]
 
 
 @attr.s(auto_attribs=True)
@@ -222,6 +242,14 @@ class DispatchDetailsType:
     date: typing.Optional[DateType] = jstruct.JStruct[DateType]
     ready_at: typing.Optional[ReadyType] = jstruct.JStruct[ReadyType]
     ready_until: typing.Optional[ReadyType] = jstruct.JStruct[ReadyType]
+
+
+@attr.s(auto_attribs=True)
+class PaperlessCustomsDocumentType:
+    type: typing.Optional[str] = None
+    type_other_name: typing.Optional[str] = None
+    file_name: typing.Optional[str] = None
+    file_base64: typing.Optional[str] = None
 
 
 @attr.s(auto_attribs=True)
@@ -239,8 +267,10 @@ class PickupDetailsType:
 class ShipmentRequestType:
     unique_id: typing.Optional[str] = None
     payment_method_id: typing.Optional[str] = None
+    customs_and_duties_payment_method_id: typing.Optional[str] = None
     service_id: typing.Optional[str] = None
     details: typing.Optional[ShipmentRequestDetailsType] = jstruct.JStruct[ShipmentRequestDetailsType]
     customs_invoice: typing.Optional[CustomsInvoiceType] = jstruct.JStruct[CustomsInvoiceType]
     pickup_details: typing.Optional[PickupDetailsType] = jstruct.JStruct[PickupDetailsType]
     dispatch_details: typing.Optional[DispatchDetailsType] = jstruct.JStruct[DispatchDetailsType]
+    paperless_customs_documents: typing.Optional[typing.List[PaperlessCustomsDocumentType]] = jstruct.JList[PaperlessCustomsDocumentType]

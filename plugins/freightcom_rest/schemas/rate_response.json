@@ -41,7 +41,23 @@
         }
       ],
       "transit_time_days": 5,
-      "transit_time_not_available": true
+      "transit_time_not_available": true,
+      "paperless": true,
+      "customs_charge_data": {
+        "duties_and_taxes_surcharge_keys": [
+          "string"
+        ],
+        "guarantee_fee_surcharge_keys": [
+          "string"
+        ],
+        "carrier_and_government_fees_surcharge_keys": [
+          "string"
+        ],
+        "processing_fees_surcharge_keys": [
+          "string"
+        ],
+        "is_rate_guaranteed": true
+      }
     }
   ]
 }

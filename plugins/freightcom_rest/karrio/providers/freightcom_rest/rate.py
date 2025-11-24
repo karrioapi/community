@@ -70,7 +70,6 @@ def _extract_details(
         *((tax.type, tax.amount.value, tax.amount.currency) for tax in rate.taxes),
     ]
 
-
     return models.RateDetails(
         carrier_id=settings.carrier_id,
         carrier_name=settings.carrier_name,
@@ -90,7 +89,11 @@ def _extract_details(
         meta=dict(
             service_name=service_name,
             rate_provider=rate_provider,
-            # Add any other useful metadata from the carrier response
+            request_guaranteed_customs_charges=(
+                rate.customs_charge_data.is_rate_guaranteed
+                if hasattr(rate, 'customs_charge_data') and rate.customs_charge_data and hasattr(rate.customs_charge_data, 'is_rate_guaranteed')
+                else None
+            ),
         ),
     )
 
@@ -119,6 +122,13 @@ def rate_request(
     )
 
     # Create the carrier-specific request object
+    is_intl = shipper.country_code != recipient.country_code
+    customs = lib.to_customs_info(
+        payload.customs,
+        shipper=payload.shipper,
+        recipient=payload.recipient,
+        weight_unit=packages.weight_unit,
+    ) if payload.customs else None
 
     packaging_type = provider_units.PackagingType.map(packages.package_type or "small_box").value
     ship_datetime = lib.to_next_business_datetime(
@@ -246,7 +256,32 @@ def rate_request(
                 )
             ),
             reference_codes=[payload.reference] if any(payload.reference or "") else []
-        )
+        ),
+        customs_data=(
+            freightcom_rest_req.CustomsDataType(
+                products=[
+                    freightcom_rest_req.ProductType(
+                        product_name=item.description,
+                        weight=freightcom_rest_req.WeightType(
+                            unit="kg" if item.weight_unit.upper() == "KG" else "lb",
+                            value=lib.to_decimal(item.weight)
+                        ),
+                        hs_code=item.hs_code,
+                        country_of_origin=item.origin_country,
+                        num_units=item.quantity,
+                        unit_price=freightcom_rest_req.TotalCostType(
+                            currency=item.value_currency,
+                            value=str(int(item.value_amount * 100))
+                        ),
+                        description=item.description,
+                        fda_regulated="no"
+                    ) for item in customs.commodities
+                ] if customs and customs.commodities else [],
+                request_guaranteed_customs_charges=options.request_guaranteed_customs_charges.state if hasattr(options, 'request_guaranteed_customs_charges') else None
+            )
+            if is_intl and customs and customs.commodities
+            else None
+        ),
     )
     return lib.Serializable(request, lib.to_dict)
 

@@ -1,6 +1,7 @@
 {
   "unique_id": "string",
   "payment_method_id": "string",
+  "customs_and_duties_payment_method_id": "string",
   "service_id": "string",
   "details": {
     "origin": {
@@ -163,7 +164,32 @@
     },
     "reference_codes": [
       "string"
-    ]
+    ],
+    "customs_data": {
+      "products": [
+        {
+          "hs_code": "string",
+          "country_of_origin": "CA",
+          "num_units": 1,
+          "unit_price": {
+            "currency": "CAD",
+            "value": "4250"
+          },
+          "description": "string",
+          "cusma_included": true,
+          "non_auto_parts": true,
+          "fda_regulated": "yes",
+          "product_composition_allocation": {
+            "provided": true,
+            "steel_percentage": 1,
+            "aluminum_percentage": 1,
+            "copper_percentage": 1
+          },
+          "product_composition_allocation_zero": true
+        }
+      ],
+      "request_guaranteed_customs_charges": true
+    }
   },
   "customs_invoice": {
     "source": "details",
@@ -222,7 +248,17 @@
             "currency": "CAD",
             "value": "4250"
           },
-          "description": "string"
+          "description": "string",
+          "cusma_included": true,
+          "non_auto_parts": true,
+          "fda_regulated": "yes",
+          "product_composition_allocation": {
+            "provided": true,
+            "steel_percentage": 1,
+            "aluminum_percentage": 1,
+            "copper_percentage": 1
+          },
+          "product_composition_allocation_zero": true
         }
       ]
     }
@@ -263,5 +299,13 @@
       "hour": 15,
       "minute": 6
     }
-  }
+  },
+  "paperless_customs_documents": [
+    {
+      "type": "cusma-form",
+      "type_other_name": "string",
+      "file_name": "string",
+      "file_base64": "string"
+    }
+  ]
 }
