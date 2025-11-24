@@ -257,32 +257,27 @@ def rate_request(
                 pallet_service_details=freightcom_rest_req.PalletServiceDetailsType() if packaging_type == "pallet" else None,
                 )
             ),
-            reference_codes=[payload.reference] if any(payload.reference or "") else []
-        ),
-        customs_data=(
-            freightcom_rest_req.CustomsDataType(
-                products=[
-                    freightcom_rest_req.ProductType(
-                        product_name=item.description,
-                        weight=freightcom_rest_req.WeightType(
-                            unit="kg" if item.weight_unit.upper() == "KG" else "lb",
-                            value=lib.to_decimal(item.weight)
-                        ),
-                        hs_code=item.hs_code,
-                        country_of_origin=item.origin_country,
-                        num_units=item.quantity,
-                        unit_price=freightcom_rest_req.TotalCostType(
-                            currency=item.value_currency,
-                            value=str(int(item.value_amount * 100))
-                        ),
-                        description=item.description,
-                        fda_regulated="no"
-                    ) for item in customs.commodities
-                ] if customs and customs.commodities else [],
-                request_guaranteed_customs_charges=options.request_guaranteed_customs_charges.state if hasattr(options, 'request_guaranteed_customs_charges') else None
-            )
-            if is_ca_to_us and is_package_or_courierpak and customs and customs.commodities
-            else None
+            reference_codes=[payload.reference] if any(payload.reference or "") else [],
+            customs_data=(
+                freightcom_rest_req.CustomsDataType(
+                    products=[
+                        freightcom_rest_req.ProductType(
+                            hs_code=item.hs_code,
+                            country_of_origin=item.origin_country,
+                            num_units=item.quantity,
+                            unit_price=freightcom_rest_req.TotalCostType(
+                                currency=item.value_currency,
+                                value=str(int(item.value_amount * 100))
+                            ),
+                            description=item.description,
+                            fda_regulated="no"
+                        ) for item in customs.commodities
+                    ] if customs and customs.commodities else [],
+                    request_guaranteed_customs_charges=options.request_guaranteed_customs_charges.state if hasattr(options, 'request_guaranteed_customs_charges') else None
+                )
+                if is_ca_to_us and is_package_or_courierpak and customs and customs.commodities
+                else None
+            ),
         ),
     )
     return lib.Serializable(request, lib.to_dict)
