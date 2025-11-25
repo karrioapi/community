@@ -58,6 +58,24 @@ class Settings(core.Settings):
 
         return new_auth.get("id")
 
+    @property
+    def customs_and_duties_payment_method(self):
+
+        if not self.connection_config.customs_and_duties_payment_method.state:
+            raise Exception(f"Customs and duties payment method type not set")
+        cache_key = f"payment|{self.carrier_name}|{self.connection_config.customs_and_duties_payment_method.state}|{self.api_key}"
+
+        payment = self.connection_cache.get(cache_key) or {}
+        payment_id = payment.get("id")
+
+        if payment_id:
+            return payment_id
+
+        self.connection_cache.set(cache_key, lambda: get_customs_payment_id(self))
+        new_auth = self.connection_cache.get(cache_key)
+
+        return new_auth.get("id")
+
 
 def download_document_to_base64(file_url: str) -> str:
     return lib.request(
@@ -95,13 +113,44 @@ def get_payment_id(settings: Settings) -> dict:
     except Exception as e:
         raise
 
+def get_customs_payment_id(settings: Settings) -> dict:
+
+    try:
+        from karrio.mappers.freightcom_rest.proxy import Proxy
+
+        proxy = Proxy(settings)
+        response = proxy._get_payments_methods()
+        methods = response.deserialize()
+
+        selected_method = next((
+            method for method in methods
+            if settings.connection_config.customs_and_duties_payment_method.type.map(
+            method.get('type')).name == settings.connection_config.customs_and_duties_payment_method.state
+        ), None)
+
+
+        if not selected_method:
+            raise Exception(f"Customs payment method {settings.connection_config.customs_and_duties_payment_method.state} not found in API")
+
+        return selected_method
+
+    except Exception as e:
+        raise
+
 
 class PaymentMethodType(lib.StrEnum):
     net_terms = "net-terms"
     credit_card = "credit-card"
 
+class CustomsPaymentMethodType(lib.StrEnum):
+    """Payment method type for customs and duties (credit-card only)"""
+    credit_card = "credit-card"
+
 class ConnectionConfig(lib.Enum):
     """Carrier specific connection configs"""
     payment_method_type = lib.OptionEnum("payment_method_type", PaymentMethodType)
+    customs_and_duties_payment_method = lib.OptionEnum("customs_and_duties_payment_method", CustomsPaymentMethodType)
+    request_guaranteed_customs_charges = lib.OptionEnum("request_guaranteed_customs_charges", bool, default=True)
     shipping_options = lib.OptionEnum("shipping_options", list)
     shipping_services = lib.OptionEnum("shipping_services", list)
+

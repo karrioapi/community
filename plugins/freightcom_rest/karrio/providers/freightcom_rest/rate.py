@@ -124,11 +124,17 @@ def rate_request(
     # Create the carrier-specific request object
     is_intl = shipper.country_code != recipient.country_code
     is_ca_to_us = shipper.country_code == "CA" and recipient.country_code == "US"
+    
     customs = lib.to_customs_info(
         payload.customs,
         shipper=payload.shipper,
         recipient=payload.recipient,
         weight_unit=packages.weight_unit,
+    )
+    commodities = lib.identity(
+        (customs.commodities if any(customs.commodities) else packages.items)
+        if any(packages.items) or any(customs.commodities)
+        else []
     )
 
     packaging_type = provider_units.PackagingType.map(packages.package_type or "small_box").value
@@ -262,19 +268,19 @@ def rate_request(
                     products=[
                         freightcom_rest_req.ProductType(
                             hs_code=item.hs_code,
-                            country_of_origin=item.origin_country,
-                            num_units=item.quantity,
+                            country_of_origin=item.origin_country or shipper.country_code,
+                            num_units=item.quantity or 1,
                             unit_price=freightcom_rest_req.TotalCostType(
-                                currency=item.value_currency,
-                                value=str(int(item.value_amount * 100))
+                                currency=item.value_currency or "CAD",
+                                value=str(int((item.value_amount or 0) * 100))
                             ),
-                            description=item.description,
+                            description=item.description or item.title,
                             fda_regulated="no"
-                        ) for item in customs.commodities
-                    ] if customs and customs.commodities else [],
-                    request_guaranteed_customs_charges=options.request_guaranteed_customs_charges.state if hasattr(options, 'request_guaranteed_customs_charges') else None
+                        ) for item in (list(commodities) if is_ca_to_us else [])
+                    ],
+                    request_guaranteed_customs_charges=settings.connection_config.request_guaranteed_customs_charges.state or True
                 )
-                if is_ca_to_us and customs and any(customs.commodities)
+                if is_ca_to_us and len(commodities) > 0
                 else None
             ),
         ),
