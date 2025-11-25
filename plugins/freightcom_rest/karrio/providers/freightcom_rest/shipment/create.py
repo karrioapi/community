@@ -213,9 +213,23 @@ def shipment_request(
     if not payment_method_id:
         raise Exception("No payment method found need to be set in config")
 
+    # Check if it's DDP (Delivered Duty Paid)
+    is_ddp = (
+        customs and (
+            customs.incoterm == "DDP" or
+            (customs.duty and customs.duty.paid_by == "sender")
+        )
+    ) if customs else False
+
+    # For DDP shipments with Net Terms, need credit card for customs/duties payment
+    customs_and_duties_payment_method_id = None
+    if is_ddp and settings.connection_config.payment_method_type.state == provider_utils.PaymentMethodType.net_terms.value:
+        customs_and_duties_payment_method_id = settings.customs_and_duties_payment_method
+
     request = freightcom_rest_req.ShipmentRequestType(
         unique_id=str(uuid.uuid4()),
         payment_method_id=payment_method_id,
+        customs_and_duties_payment_method_id=customs_and_duties_payment_method_id,
         service_id=provider_units.ShippingService.map(payload.service).value_or_key,
         details=freightcom_rest_req.ShipmentRequestDetailsType(
             origin=freightcom_rest_req.DestinationType(
@@ -377,11 +391,14 @@ def shipment_request(
                         ) for item in customs.commodities
                     ],
                     tax_recipient=freightcom_rest_req.TaxRecipientType(
-                        # they require it to be receiver, has to be enabled in the api
-                        type=provider_units.PaymentType.map(
+                        # For DDP shipments, tax recipient must be 'shipper'
+                        type="shipper" if is_ddp else (
+                            provider_units.PaymentType.map(
                                 customs.duty.paid_by
                             ).value
-                        or "receiver",
+                            if customs.duty and customs.duty.paid_by
+                            else "receiver"
+                        ),
                         name=customs.duty_billing_address.company_name or customs.duty.person_name,
                         address=freightcom_rest_req.AddressType(
                             address_line_1=customs.duty_billing_address.address_line1,
