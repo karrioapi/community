@@ -25,7 +25,7 @@ dependencies = [
 Homepage = "https://github.com/karrioapi/karrio"
 
 [project.entry-points."karrio.plugins"]
-shipengine = "karrio.plugins.shipengine"
+shipengine = "karrio.plugins.shipengine:METADATA"
 
 [tool.setuptools]
 zip-safe = false
