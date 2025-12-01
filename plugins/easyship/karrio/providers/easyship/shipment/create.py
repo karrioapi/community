@@ -2,6 +2,7 @@
 
 import karrio.schemas.easyship.shipment_request as easyship
 import karrio.schemas.easyship.shipment_response as shipping
+import karrio.schemas.easyship.rate_response as rating
 
 import typing
 import karrio.lib as lib
@@ -10,6 +11,7 @@ import karrio.core.models as models
 import karrio.providers.easyship.error as error
 import karrio.providers.easyship.utils as provider_utils
 import karrio.providers.easyship.units as provider_units
+import karrio.providers.easyship.rate as rate
 
 
 def parse_shipment_response(
@@ -45,6 +47,12 @@ def _extract_details(
     tracking_numbers = [tracking.tracking_number for tracking in details.trackings]
     tracking_number, *__ = tracking_numbers
 
+    # Extract selected rate from response if available
+    rate_data = next(iter(data["shipment"]["rates"] or []), None)
+    selected_rate = lib.identity(
+        rate._extract_details(rate_data, settings) if rate_data else None
+    )
+
     return models.ShipmentDetails(
         carrier_id=settings.carrier_id,
         carrier_name=settings.carrier_name,
@@ -52,6 +60,7 @@ def _extract_details(
         shipment_identifier=details.easyship_shipment_id,
         label_type=label_type,
         docs=models.Documents(label=label),
+        selected_rate=selected_rate,
         meta=dict(
             shipment_ids=[details.easyship_shipment_id],
             tracking_numbers=tracking_numbers,
