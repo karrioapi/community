@@ -92,6 +92,7 @@ ParsedErrorResponse = [
                 "thirdPartyMessage": "string",
                 "type": "Success",
             },
+            "level": "error",
             "message": "string",
         }
     ],

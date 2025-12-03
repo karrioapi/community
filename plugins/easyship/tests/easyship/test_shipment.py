@@ -221,6 +221,7 @@ ParsedShipmentResponseWithoutLabel = [
             "carrier_name": "easyship",
             "code": "warning",
             "details": {},
+            "level": "warning",
             "message": "Invalid address provided for Receiver Address - Unable to "
             "identify address if street number is missing.",
         }

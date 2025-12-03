@@ -100,6 +100,7 @@ ParsedTrackingResponse = [
             "carrier_name": "easyship",
             "code": "warning",
             "details": {"shipment_id": "ESSG10006002"},
+            "level": "warning",
             "message": "string",
         }
     ],
@@ -122,6 +123,7 @@ ParsedErrorResponse = [
                 "shipment_id": "ESSG10006002",
                 "type": "invalid_request_error",
             },
+            "level": "error",
             "message": "You have reached your plan limit. Please upgrade your "
             "subscription plan.",
         }

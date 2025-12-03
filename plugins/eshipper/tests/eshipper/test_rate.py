@@ -246,6 +246,7 @@ ParsedRateResponse = [
             "carrier_name": "eshipper",
             "code": "warning",
             "details": {},
+            "level": "warning",
             "message": "PYK: More than 1 package is not supported by the carrier",
         },
         {
@@ -253,6 +254,7 @@ ParsedRateResponse = [
             "carrier_name": "eshipper",
             "code": "warning",
             "details": {},
+            "level": "warning",
             "message": "Canada Post: More than 1 package is not supported by the carrier",
         },
         {
@@ -260,6 +262,7 @@ ParsedRateResponse = [
             "carrier_name": "eshipper",
             "code": "warning",
             "details": {},
+            "level": "warning",
             "message": "Fleet Optics: More than 1 package is not supported by the carrier",
         },
         {
@@ -267,6 +270,7 @@ ParsedRateResponse = [
             "carrier_name": "eshipper",
             "code": "warning",
             "details": {},
+            "level": "warning",
             "message": "Skip: Multiple shipments not supported.",
         },
         {
@@ -274,6 +278,7 @@ ParsedRateResponse = [
             "carrier_name": "eshipper",
             "code": "warning",
             "details": {},
+            "level": "warning",
             "message": "SmartePost INTL: More than 1 package is not supported by the carrier",
         },
         {
@@ -281,6 +286,7 @@ ParsedRateResponse = [
             "carrier_name": "eshipper",
             "code": "warning",
             "details": {},
+            "level": "warning",
             "message": "USPS: Destination country not serviced by the carrier.",
         },
         {
@@ -288,6 +294,7 @@ ParsedRateResponse = [
             "carrier_name": "eshipper",
             "code": "warning",
             "details": {},
+            "level": "warning",
             "message": "FlashBird: No carrier settings for company [8000180], carrier [FlashBird]with id [8000010], origin country [CA], destination country [CA] and account number [null].",
         },
         {
@@ -295,6 +302,7 @@ ParsedRateResponse = [
             "carrier_name": "eshipper",
             "code": "warning",
             "details": {},
+            "level": "warning",
             "message": "UPS: 250002: Invalid Authentication Information.. ",
         },
         {
@@ -302,6 +310,7 @@ ParsedRateResponse = [
             "carrier_name": "eshipper",
             "code": "warning",
             "details": {},
+            "level": "warning",
             "message": "Federal Express: NOT.FOUND.ERROR: The resource you requested is no longer available. Please modify your request and try again.",
         },
     ],

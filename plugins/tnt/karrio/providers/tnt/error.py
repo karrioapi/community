@@ -60,6 +60,7 @@ def _extract_broken_rule(
     node: lib.Element, settings: provider_utils.Settings
 ) -> models.Message:
     error = lib.to_object(tnt.brokenRule, node)
+    message_type = getattr(error, "messageType", None)
 
     return models.Message(
         # context info
@@ -68,8 +69,26 @@ def _extract_broken_rule(
         # carrier error info
         code=getattr(error, "code", None),
         message=getattr(error, "description", None),
-        details=dict(messageType=getattr(error, "messageType", None)),
+        level=_get_level(message_type),
+        details=dict(messageType=message_type),
     )
+
+
+def _get_level(message_type: str) -> str:
+    """Map TNT messageType to standardized level.
+
+    TNT uses: I (Info), W (Warning), E (Error)
+    """
+    if message_type is None:
+        return None
+    message_type_upper = message_type.upper()
+    if message_type_upper == "I":
+        return "info"
+    elif message_type_upper == "W":
+        return "warning"
+    elif message_type_upper == "E":
+        return "error"
+    return message_type.lower()
 
 
 def _extract_runtime_error(

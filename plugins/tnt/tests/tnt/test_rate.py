@@ -104,6 +104,7 @@ ParsedRateResponse = [
             "carrier_name": "tnt",
             "code": "P13",
             "details": {"messageType": "W"},
+            "level": "warning",
             "message": "Standard Rates",
         }
     ],
