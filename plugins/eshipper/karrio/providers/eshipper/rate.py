@@ -93,7 +93,7 @@ def rate_request(
         package_options=packages.options,
     )
     services = lib.to_services(payload.services, provider_units.ShippingService)
-    print(services, "<<<")
+
     service_id = lib.identity(
         options.eshipper_service_id.state
         or provider_units.ShippingService.service_id(
