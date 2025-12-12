@@ -1,10 +1,10 @@
 import base64
-import jstruct
 import datetime
 import urllib.parse
 import karrio.lib as lib
 import karrio.core as core
 import karrio.core.errors as errors
+import karrio.core.models as models
 
 
 class Settings(core.Settings):
@@ -42,19 +42,12 @@ class Settings(core.Settings):
         or collect it from the cache if an unexpired access_token exist.
         """
         cache_key = f"{self.carrier_name}|{self.client_id}|{self.client_secret}"
-        now = datetime.datetime.now() + datetime.timedelta(minutes=30)
 
-        auth = self.connection_cache.get(cache_key) or {}
-        token = auth.get("access_token")
-        expiry = lib.to_date(auth.get("expiry"), current_format="%Y-%m-%d %H:%M:%S")
-
-        if token is not None and expiry is not None and expiry > now:
-            return token
-
-        self.connection_cache.set(cache_key, lambda: login(self))
-        new_auth = self.connection_cache.get(cache_key)
-
-        return new_auth["access_token"]
+        return self.connection_cache.thread_safe(
+            refresh_func=lambda: login(self),
+            cache_key=cache_key,
+            buffer_minutes=30,
+        ).get_state()
 
 
 def login(settings: Settings):
@@ -80,6 +73,19 @@ def login(settings: Settings):
 
     if any(messages):
         raise errors.ParsedMessagesError(messages)
+
+    # Validate that access_token is present in the response
+    if "access_token" not in response:
+        raise errors.ParsedMessagesError(
+            messages=[
+                models.Message(
+                    carrier_name=settings.carrier_name,
+                    carrier_id=settings.carrier_id,
+                    message="Authentication failed: No access token received",
+                    code="AUTH_ERROR",
+                )
+            ]
+        )
 
     expiry = datetime.datetime.now() + datetime.timedelta(
         seconds=float(response.get("expires_in", 0))

@@ -1,9 +1,9 @@
-import jstruct
 import datetime
 import urllib.parse
 import karrio.lib as lib
 import karrio.core as core
 import karrio.core.errors as errors
+import karrio.core.models as models
 
 
 class Settings(core.Settings):
@@ -45,19 +45,13 @@ class Settings(core.Settings):
         or collect it from the cache if an unexpired access_token exist.
         """
         cache_key = f"{self.carrier_name}|{self.seller_id}|{self.developer_id}"
-        now = datetime.datetime.now() + datetime.timedelta(minutes=30)
 
-        auth = self.connection_cache.get(cache_key) or {}
-        token = auth.get("authorizationCode")
-        expiry = lib.to_date(auth.get("expiry"), current_format="%Y-%m-%d %H:%M:%S")
-
-        if token is not None and expiry is not None and expiry > now:
-            return token
-
-        self.connection_cache.set(cache_key, lambda: login(self))
-        new_auth = self.connection_cache.get(cache_key)
-
-        return new_auth["authorizationCode"]
+        return self.connection_cache.thread_safe(
+            refresh_func=lambda: login(self),
+            cache_key=cache_key,
+            buffer_minutes=30,
+            token_field="authorizationCode",
+        ).get_state()
 
 
 def login(settings: Settings):
@@ -82,6 +76,22 @@ def login(settings: Settings):
     if any(messages):
         raise errors.ParsedMessagesError(messages)
 
+    # Validate that authorizationCode is present in the response payload
+    authorization_code = lib.failsafe(
+        lambda: response.get("payload", {}).get("authorizationCode")
+    )
+    if not authorization_code:
+        raise errors.ParsedMessagesError(
+            messages=[
+                models.Message(
+                    carrier_name=settings.carrier_name,
+                    carrier_id=settings.carrier_id,
+                    message="Authentication failed: No authorization code received",
+                    code="AUTH_ERROR",
+                )
+            ]
+        )
+
     expiry = datetime.datetime.now() + datetime.timedelta(
         seconds=float(response.get("expires_in", 0))
     )
@@ -89,5 +99,5 @@ def login(settings: Settings):
     return {
         **response,
         "expiry": lib.fdatetime(expiry),
-        "authorizationCode": response["payload"]["authorizationCode"],
+        "authorizationCode": authorization_code,
     }
