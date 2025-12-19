@@ -59,3 +59,11 @@ class TrackingStatus(lib.Enum):
     in_transit = ["Transit"]
     delivery_failed = ["Failed"]
     out_for_delivery = ["Out"]
+
+
+class TrackingIncidentReason(lib.Enum):
+    """Maps Asendia US exception codes to normalized TrackingIncidentReason."""
+    carrier_damaged_parcel = []
+    consignee_refused = []
+    consignee_not_home = []
+    unknown = []

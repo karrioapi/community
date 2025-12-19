@@ -102,6 +102,14 @@ class TrackingStatus(lib.Enum):
     ready_for_pickup = ["ready_for_pickup"]
 
 
+class TrackingIncidentReason(lib.Enum):
+    """Maps eShipper exception codes to normalized TrackingIncidentReason."""
+    carrier_damaged_parcel = []
+    consignee_refused = []
+    consignee_not_home = []
+    unknown = []
+
+
 def to_carrier_code(carrierDTO: typing.Dict[str, str]) -> str:
     _code = lib.to_snake_case((carrierDTO or {}).get("name") or "eshipper")
 

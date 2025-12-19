@@ -158,6 +158,14 @@ class TrackingStatus(lib.Enum):
     out_for_delivery = ["MD2", "ET1"]
 
 
+class TrackingIncidentReason(lib.Enum):
+    """Maps Colissimo exception codes to normalized TrackingIncidentReason."""
+    carrier_damaged_parcel = []
+    consignee_refused = []
+    consignee_not_home = []
+    unknown = []
+
+
 DEFAULT_SERVICES = [
     models.ServiceLevel(
         service_name="Colissimo Home - without signature",

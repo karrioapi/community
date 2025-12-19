@@ -180,6 +180,14 @@ LABTEST_RATE_SHEET = [
 ]
 
 
+class TrackingIncidentReason(lib.Enum):
+    """Maps Geodis exception codes to normalized TrackingIncidentReason."""
+    carrier_damaged_parcel = []
+    consignee_refused = []
+    consignee_not_home = []
+    unknown = []
+
+
 DEFAULT_SERVICES = [
     models.ServiceLevel(
         service_name="GEODIS Express",

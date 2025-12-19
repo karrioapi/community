@@ -6,6 +6,7 @@ from karrio.core.models import TrackingRequest, TrackingDetails, TrackingEvent, 
 from karrio.providers.dicom.error import parse_error_response
 from karrio.providers.dicom.utils import Settings
 import karrio.lib as lib
+import karrio.providers.dicom.units as provider_units
 
 
 def parse_tracking_response(
@@ -35,6 +36,15 @@ def _extract_detail(detail: Tracking, settings: Settings) -> TrackingDetails:
                 location=event.terminal,
                 code=event.status,
                 time=DF.ftime(event.activityDate, "%Y-%m-%dT%H:%M:%SZ"),
+                timestamp=lib.fiso_timestamp(event.activityDate, current_format="%Y-%m-%dT%H:%M:%SZ"),
+                reason=next(
+                    (
+                        r.name
+                        for r in list(provider_units.TrackingIncidentReason)
+                        if event.status in r.value
+                    ),
+                    None,
+                ),
             )
             for event in detail.activities
         ],

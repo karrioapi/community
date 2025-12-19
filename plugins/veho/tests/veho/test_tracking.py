@@ -93,18 +93,19 @@ ParsedTrackingResponse = [
         {
             "carrier_id": "veho",
             "carrier_name": "veho",
-            "tracking_number": "TRACK123",
+            "estimated_delivery": "2024-04-15",
             "events": [
                 {
-                    "date": "2024-04-12",
-                    "time": "14:30:00",
                     "code": "PU",
+                    "date": "2024-04-12",
                     "description": "Package picked up",
-                    "location": "San Francisco, CA"
+                    "location": "San Francisco, CA",
+                    "time": "14:30:00",
+                    "timestamp": "2024-04-12T14:30:00.000Z",
                 }
             ],
-            "estimated_delivery": "2024-04-15",
-            "status": "in_transit"
+            "status": "in_transit",
+            "tracking_number": "TRACK123",
         }
     ],
     []

@@ -69,6 +69,14 @@ class TrackingStatus(lib.Enum):
     out_for_delivery = ["Arrived"]
 
 
+class TrackingIncidentReason(lib.Enum):
+    """Maps Locate2u exception codes to normalized TrackingIncidentReason."""
+    carrier_damaged_parcel = []
+    consignee_refused = []
+    consignee_not_home = []
+    unknown = []
+
+
 DEFAULT_SERVICES = [
     models.ServiceLevel(
         service_name="Locate2u Local Delivery",

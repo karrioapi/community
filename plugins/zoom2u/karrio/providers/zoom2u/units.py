@@ -79,3 +79,11 @@ class TrackingStatus(lib.Enum):
     in_transit = ["On Route to Pickup", "Picked up"]
     delivery_failed = ["Cancelled", "Returning", "Returned"]
     out_for_delivery = ["On Route to Dropoff", "Tried to deliver"]
+
+
+class TrackingIncidentReason(lib.Enum):
+    """Maps Zoom2u exception codes to normalized TrackingIncidentReason."""
+    carrier_damaged_parcel = []
+    consignee_refused = []
+    consignee_not_home = ["Tried to deliver"]
+    unknown = []

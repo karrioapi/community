@@ -1,5 +1,33 @@
 """ Royal Mail Native Types """
 
+import karrio.lib as lib
+
+
+class TrackingIncidentReason(lib.Enum):
+    """Maps Royal Mail exception codes to normalized TrackingIncidentReason."""
+    carrier_damaged_parcel = ["DAMAGED"]
+    carrier_sorting_error = ["MISROUTE", "EVNMI"]
+    carrier_parcel_lost = ["LOST"]
+    carrier_vehicle_issue = ["DELAY", "VEHICLE"]
+
+    consignee_refused = ["REFUSED", "REF"]
+    consignee_business_closed = ["CLOSED"]
+    consignee_not_home = ["NOTHOME", "EVNPS"]
+    consignee_incorrect_address = ["BADADDR", "INCORRECT"]
+    consignee_access_restricted = ["NOACCESS"]
+
+    customs_delay = ["CUSTOMS", "CUSTOMSHOLD", "EVNCU"]
+    customs_documentation = ["CUSTOMSDOC"]
+    customs_duties_unpaid = ["CUSTOMS_UNPAID"]
+
+    weather_delay = ["WEATHER"]
+
+    delivery_exception_hold = ["HOLD", "ONHOLD", "EVNHE"]
+    delivery_exception_undeliverable = ["UNDELIVERABLE"]
+
+    unknown = []
+
+
 # import karrio.lib as lib
 # from karrio.core.utils import Enum, Flag
 #
@@ -44,3 +72,4 @@
 #     carrier_signature = "SIGNATURE CODE"
 #     carrier_saturday_delivery = "SATURDAY DELIVERY CODE"
 #     carrier_dry_ice = "DRY ICE CODE"
+#

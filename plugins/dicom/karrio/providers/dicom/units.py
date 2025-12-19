@@ -110,6 +110,14 @@ class ShippingOption(lib.Enum):
     saturday_delivery = dicom_parcel_us_saturday_delivery
 
 
+class TrackingIncidentReason(lib.Enum):
+    """Maps Dicom exception codes to normalized TrackingIncidentReason."""
+    carrier_damaged_parcel = []
+    consignee_refused = []
+    consignee_not_home = []
+    unknown = []
+
+
 def shipping_options_initializer(
     options: dict,
     package_options: units.Options = None,

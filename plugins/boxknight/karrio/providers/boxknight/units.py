@@ -63,3 +63,11 @@ class TrackingStatus(lib.Enum):
     in_transit = ["DELIVERY_ASSIGNED", "PICKUP_EN_ROUTE"]
     delivery_delayed = ["delivery_delayed"]
     out_for_delivery = ["PICKUP_COMPLETED", "DELIVERY_EN_ROUTE"]
+
+
+class TrackingIncidentReason(lib.Enum):
+    """Maps Boxknight exception codes to normalized TrackingIncidentReason."""
+    carrier_damaged_parcel = []
+    consignee_refused = []
+    consignee_not_home = []
+    unknown = []

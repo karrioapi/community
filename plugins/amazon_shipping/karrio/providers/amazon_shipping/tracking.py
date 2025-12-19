@@ -4,6 +4,7 @@ import karrio.lib as lib
 import karrio.core.models as models
 import karrio.providers.amazon_shipping.error as error
 import karrio.providers.amazon_shipping.utils as provider_utils
+import karrio.providers.amazon_shipping.units as provider_units
 
 
 def parse_tracking_response(
@@ -55,6 +56,23 @@ def _extract_details(
                     event.location.countryCode,
                     join=True,
                     separator=", ",
+                ),
+                timestamp=lib.fiso_timestamp(event.eventTime, current_format="%Y-%m-%dT%H:%M:%SZ"),
+                status=next(
+                    (
+                        s.name
+                        for s in list(provider_units.TrackingStatus)
+                        if event.eventCode in s.value
+                    ),
+                    None,
+                ),
+                reason=next(
+                    (
+                        r.name
+                        for r in list(provider_units.TrackingIncidentReason)
+                        if event.eventCode in r.value
+                    ),
+                    None,
                 ),
             )
             for event in details.eventHistory

@@ -3,6 +3,7 @@ import karrio.lib as lib
 import karrio.core.models as models
 import karrio.providers.chronopost.utils as provider_utils
 import karrio.providers.chronopost.error as provider_error
+import karrio.providers.chronopost.units as provider_units
 import karrio.schemas.chronopost.trackingservice as chronopost
 
 
@@ -40,6 +41,15 @@ def _extract_details(
                 code=event.code,
                 time=lib.flocaltime(event.eventDate, "%Y-%m%dT%H%:%M:%S"),
                 location=event.officeLabel,
+                timestamp=lib.fiso_timestamp(event.eventDate, current_format="%Y-%m%dT%H%:%M:%S"),
+                reason=next(
+                    (
+                        r.name
+                        for r in list(provider_units.TrackingIncidentReason)
+                        if event.code in r.value
+                    ),
+                    None,
+                ),
             )
             for event in detail.events
         ],

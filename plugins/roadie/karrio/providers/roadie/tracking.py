@@ -52,6 +52,23 @@ def _extract_details(
                 time=lib.flocaltime(event.occurred_at, "%Y-%m-%dT%H:%M:%S.%fZ"),
                 latitude=getattr(event.location, "latitude", None),
                 longitude=getattr(event.location, "longitude", None),
+                timestamp=lib.fiso_timestamp(event.occurred_at, current_format="%Y-%m-%dT%H:%M:%S.%fZ"),
+                status=next(
+                    (
+                        s.name
+                        for s in list(provider_units.TrackingStatus)
+                        if event.name in s.value
+                    ),
+                    None,
+                ),
+                reason=next(
+                    (
+                        r.name
+                        for r in list(provider_units.TrackingIncidentReason)
+                        if event.name in r.value
+                    ),
+                    None,
+                ),
             )
             for event in shipment.events
         ],

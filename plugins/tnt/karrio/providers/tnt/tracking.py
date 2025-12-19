@@ -41,6 +41,26 @@ def _extract_detail(
                 ),
                 code=status.StatusCode,
                 time=lib.flocaltime(status.LocalEventTime.valueOf_, "%H%M"),
+                timestamp=lib.fiso_timestamp(
+                    lib.text(status.LocalEventDate.valueOf_, status.LocalEventTime.valueOf_, separator=" "),
+                    current_format="%Y%m%d %H%M",
+                ),
+                status=next(
+                    (
+                        s.name
+                        for s in list(provider_units.TrackingStatus)
+                        if status.StatusCode in s.value
+                    ),
+                    None,
+                ),
+                reason=next(
+                    (
+                        r.name
+                        for r in list(provider_units.TrackingIncidentReason)
+                        if status.StatusCode in r.value
+                    ),
+                    None,
+                ),
             )
             for status in events
         ],

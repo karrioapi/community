@@ -4,6 +4,7 @@ import karrio.lib as lib
 import karrio.core.models as models
 import karrio.providers.canpar.error as error
 import karrio.providers.canpar.utils as provider_utils
+import karrio.providers.canpar.units as provider_units
 
 
 def parse_tracking_response(
@@ -43,6 +44,15 @@ def _extract_tracking_details(
             ),
             code=event.code,
             time=lib.flocaltime(event.local_date_time, "%Y%m%d %H%M%S"),
+            timestamp=lib.fiso_timestamp(event.local_date_time, current_format="%Y%m%d %H%M%S"),
+            reason=next(
+                (
+                    r.name
+                    for r in list(provider_units.TrackingIncidentReason)
+                    if event.code in r.value
+                ),
+                None,
+            ),
         )
         for event in typing.cast(typing.List[canpar.TrackingEvent], result.events)
     ]

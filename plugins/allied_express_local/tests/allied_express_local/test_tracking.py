@@ -78,6 +78,7 @@ ParsedTrackingResponse = [
                     "description": "In Transit",
                     "location": "BANKSTOWN AERODROME",
                     "time": "10:03 AM",
+                    "timestamp": "2021-05-28T10:03:20.000Z",
                 }
             ],
             "status": "in_transit",
@@ -100,6 +101,7 @@ DeliveredParsedTrackingResponse = [
                     "description": "Freight has been delivered",
                     "location": "NOWRA",
                     "time": "14:03 PM",
+                    "timestamp": "2023-10-26T14:03:55.000Z",
                 }
             ],
             "status": "delivered",

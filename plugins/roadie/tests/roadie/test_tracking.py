@@ -68,7 +68,9 @@ ParsedTrackingResponse = [
                     "description": "at_delivery",
                     "latitude": 36.123456,
                     "longitude": -82.345678,
+                    "status": "out_for_delivery",
                     "time": "10:38 AM",
+                    "timestamp": "2017-12-25T10:38:43.000Z",
                 },
                 {
                     "code": "delivery_confirmed",
@@ -76,7 +78,9 @@ ParsedTrackingResponse = [
                     "description": "delivery_confirmed",
                     "latitude": 36.123456,
                     "longitude": -82.345678,
+                    "status": "delivered",
                     "time": "12:23 PM",
+                    "timestamp": "2017-12-25T12:23:54.000Z",
                 },
             ],
             "info": {
@@ -106,7 +110,9 @@ ParsedTrackingResponse = [
                     "description": "at_delivery",
                     "latitude": 36.123456,
                     "longitude": -82.345678,
+                    "status": "out_for_delivery",
                     "time": "10:38 AM",
+                    "timestamp": "2017-12-25T10:38:43.000Z",
                 },
                 {
                     "code": "delivery_confirmed",
@@ -114,7 +120,9 @@ ParsedTrackingResponse = [
                     "description": "delivery_confirmed",
                     "latitude": 36.123456,
                     "longitude": -82.345678,
+                    "status": "delivered",
                     "time": "12:23 PM",
+                    "timestamp": "2017-12-25T12:23:54.000Z",
                 },
             ],
             "info": {

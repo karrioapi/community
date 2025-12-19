@@ -59,6 +59,14 @@ class TrackingStatus(lib.Enum):
     ready_for_pickup = ["ready_for_pickup"]
 
 
+class TrackingIncidentReason(lib.Enum):
+    """Maps Veho exception codes to normalized TrackingIncidentReason."""
+    carrier_damaged_parcel = []
+    consignee_refused = []
+    consignee_not_home = []
+    unknown = []
+
+
 def is_ground_plus(service: str) -> bool:
     """Check if the service is Veho Ground Plus"""
     return service == ShippingService.veho_ground_plus

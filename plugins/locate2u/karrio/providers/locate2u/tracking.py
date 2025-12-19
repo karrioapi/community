@@ -57,6 +57,23 @@ def _extract_details(
                 time=lib.flocaltime(tracking.lastModifiedDate, "%Y-%m-%dT%H:%M:%S.%fZ"),
                 latitude=tracking.location.latitude,
                 longitude=tracking.location.longitude,
+                timestamp=lib.fiso_timestamp(tracking.lastModifiedDate, current_format="%Y-%m-%dT%H:%M:%S.%fZ"),
+                status=next(
+                    (
+                        s.name
+                        for s in list(provider_units.TrackingStatus)
+                        if tracking.status in s.value
+                    ),
+                    None,
+                ),
+                reason=next(
+                    (
+                        r.name
+                        for r in list(provider_units.TrackingIncidentReason)
+                        if tracking.status in r.value
+                    ),
+                    None,
+                ),
             )
         ],
         estimated_delivery=lib.fdate(tracking.arrivalDate, "%Y-%m-%dT%H:%M:%S%z"),

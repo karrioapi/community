@@ -66,18 +66,21 @@ ParsedTrackingResponse = [
                     "date": "2021-08-09",
                     "description": "Delivered",
                     "time": "11:13 AM",
+                    "timestamp": "2021-08-09T11:13:00.000Z",
                 },
                 {
                     "code": "s8",
                     "date": "2021-08-09",
                     "description": "Arrived at Destination Delivery Office",
                     "time": "09:07 AM",
+                    "timestamp": "2021-08-09T09:07:00.000Z",
                 },
                 {
                     "code": "s7",
                     "date": "2021-08-07",
                     "description": "Out of Customs",
                     "time": "13:17 PM",
+                    "timestamp": "2021-08-07T13:17:00.000Z",
                 },
                 {
                     "code": "s5",
@@ -85,6 +88,7 @@ ParsedTrackingResponse = [
                     "description": "Arrived in Destination Country",
                     "location": "LAKSI MAIL CENTER",
                     "time": "09:43 AM",
+                    "timestamp": "2021-08-07T09:43:00.000Z",
                 },
                 {
                     "code": "s4",
@@ -92,6 +96,7 @@ ParsedTrackingResponse = [
                     "description": "Departed from USA",
                     "location": "Asendia US (Philadelphia)",
                     "time": "08:08 AM",
+                    "timestamp": "2021-07-30T08:08:16.000Z",
                 },
                 {
                     "code": "s2d",
@@ -99,6 +104,7 @@ ParsedTrackingResponse = [
                     "description": "Shipment dispatched by Asendia",
                     "location": "Folcroft, PA 19032",
                     "time": "10:14 AM",
+                    "timestamp": "2021-07-30T10:14:50.000Z",
                 },
                 {
                     "code": "s2c",
@@ -106,6 +112,7 @@ ParsedTrackingResponse = [
                     "description": "Service dispatched by Asendia",
                     "location": "Folcroft, PA 19032",
                     "time": "10:10 AM",
+                    "timestamp": "2021-07-30T10:10:51.000Z",
                 },
                 {
                     "code": "s2b",
@@ -113,6 +120,7 @@ ParsedTrackingResponse = [
                     "description": "Sorted by Asendia",
                     "location": "Folcroft, PA 19032",
                     "time": "16:33 PM",
+                    "timestamp": "2021-07-29T16:33:14.000Z",
                 },
                 {
                     "code": "s2a",
@@ -120,12 +128,14 @@ ParsedTrackingResponse = [
                     "description": "Processed By Asendia",
                     "location": "Asendia US (Philadelphia)",
                     "time": "21:44 PM",
+                    "timestamp": "2021-07-28T21:44:44.000Z",
                 },
                 {
                     "code": "s1",
                     "date": "2021-07-24",
                     "description": "Shipment Information Received",
                     "time": "13:00 PM",
+                    "timestamp": "2021-07-24T13:00:15.000Z",
                 },
             ],
             "status": "in_transit",

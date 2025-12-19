@@ -118,6 +118,14 @@ class TrackingStatus(lib.Enum):
     ready_for_pickup = ["ready_for_pickup"]
 
 
+class TrackingIncidentReason(lib.Enum):
+    """Maps ShipEngine exception codes to normalized TrackingIncidentReason."""
+    carrier_damaged_parcel = []
+    consignee_refused = []
+    consignee_not_home = []
+    unknown = []
+
+
 # Weight and dimension units
 class WeightUnit(lib.Enum):
     KG = "kilogram"

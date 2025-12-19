@@ -128,6 +128,22 @@ class ShippingOption(lib.Enum):
     insurance = tnt_insurance
 
 
+class TrackingStatus(lib.Enum):
+    on_hold = []
+    delivered = ["DEL"]
+    in_transit = []
+    delivery_failed = []
+    out_for_delivery = []
+
+
+class TrackingIncidentReason(lib.Enum):
+    """Maps TNT exception codes to normalized TrackingIncidentReason."""
+    carrier_damaged_parcel = []
+    consignee_refused = []
+    consignee_not_home = []
+    unknown = []
+
+
 def shipping_options_initializer(
     options: dict,
     package_options: lib.units.Options = None,

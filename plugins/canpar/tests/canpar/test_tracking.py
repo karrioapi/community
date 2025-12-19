@@ -62,6 +62,7 @@ ParsedTrackingResponse = [
                     "description": "DELIVERED",
                     "location": "1785 FROBISHER ST, UNIT C, SUDBURY, ON, CA",
                     "time": "09:14 AM",
+                    "timestamp": "2011-03-08T09:14:42.000Z",
                 },
                 {
                     "code": "INA",
@@ -69,6 +70,7 @@ ParsedTrackingResponse = [
                     "description": "ARRIVAL AT INTERLINE",
                     "location": "1785 FROBISHER ST, UNIT C, SUDBURY, ON, CA",
                     "time": "06:15 AM",
+                    "timestamp": "2011-03-08T06:15:42.000Z",
                 },
                 {
                     "code": "INO",
@@ -76,6 +78,7 @@ ParsedTrackingResponse = [
                     "description": "INTERLINE OUTBOUND",
                     "location": "JOHN CYOPECK CENTRE, 205 NEW TORONTO STREET, ETOBICOKE, ON, CA",
                     "time": "23:05 PM",
+                    "timestamp": "2011-03-07T23:05:59.000Z",
                 },
                 {
                     "code": "ARR",
@@ -83,6 +86,7 @@ ParsedTrackingResponse = [
                     "description": "ARRIVAL AT HUB/TERMINAL FROM BULK/CITY TRAILER",
                     "location": "JOHN CYOPECK CENTRE, 205 NEW TORONTO STREET, ETOBICOKE, ON, CA",
                     "time": "23:03 PM",
+                    "timestamp": "2011-03-07T23:03:14.000Z",
                 },
                 {
                     "code": "PIC",
@@ -90,6 +94,7 @@ ParsedTrackingResponse = [
                     "description": "PICKUP FROM CUSTOMER/SHIPPER",
                     "location": "JOHN CYOPECK CENTRE, 205 NEW TORONTO STREET, ETOBICOKE, ON, CA",
                     "time": "14:53 PM",
+                    "timestamp": "2011-03-07T14:53:53.000Z",
                 },
             ],
             "info": {

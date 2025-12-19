@@ -67,3 +67,11 @@ class TrackingStatus(lib.Enum):
     delivery_delayed = ["RETURN TO DEPOT", "CARD LEFT", "LEFT IN DEPOT"]
     out_for_delivery = ["It's on board with driver"]
     ready_for_pickup = ["IN AGENT"]
+
+
+class TrackingIncidentReason(lib.Enum):
+    """Maps Allied Express Local exception codes to normalized TrackingIncidentReason."""
+    carrier_damaged_parcel = ["DAMAGED"]
+    consignee_refused = []
+    consignee_not_home = ["CARD LEFT"]
+    unknown = []

@@ -89,7 +89,15 @@ ParsedTrackingResponse = [
             "carrier_id": "easyship",
             "carrier_name": "easyship",
             "delivered": False,
-            "events": [{"code": "1", "date": "12:21", "time": "12:21"}],
+            "events": [
+                {
+                    "code": "1",
+                    "date": "12:21",
+                    "status": "in_transit",
+                    "time": "12:21",
+                    "timestamp": "2022-02-22T12:21:00.000Z",
+                }
+            ],
             "status": "in_transit",
             "tracking_number": "Courier 1",
         }

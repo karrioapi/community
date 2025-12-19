@@ -66,6 +66,7 @@ ParsedTrackingResponse = [
                     "description": "Shipper Release NSR",
                     "location": "MTL",
                     "time": "04:27",
+                    "timestamp": "2021-02-10T04:27:31.000Z",
                 }
             ],
             "tracking_number": "W1234567",

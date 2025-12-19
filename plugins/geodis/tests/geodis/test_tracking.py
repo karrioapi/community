@@ -68,6 +68,7 @@ ParsedTrackingResponse = [
                     "description": "SOL/REO",
                     "location": "020037",
                     "time": "14:23 PM",
+                    "timestamp": "2020-01-17T14:23:22.000Z",
                 },
                 {
                     "code": "RST/SOU",
@@ -75,6 +76,7 @@ ParsedTrackingResponse = [
                     "description": "RST/SOU",
                     "location": "020037",
                     "time": "14:23 PM",
+                    "timestamp": "2020-01-17T14:23:02.000Z",
                 },
                 {
                     "code": "AAR/CFM",
@@ -82,6 +84,7 @@ ParsedTrackingResponse = [
                     "description": "AAR/CFM",
                     "location": "020037",
                     "time": "14:22 PM",
+                    "timestamp": "2020-01-17T14:22:17.000Z",
                 },
                 {
                     "code": "COM/CFM",
@@ -89,6 +92,7 @@ ParsedTrackingResponse = [
                     "description": "COM/CFM",
                     "location": "020037",
                     "time": "14:21 PM",
+                    "timestamp": "2020-01-17T14:21:12.000Z",
                 },
                 {
                     "code": "EXP/CFM",
@@ -96,6 +100,7 @@ ParsedTrackingResponse = [
                     "description": "EXP/CFM",
                     "location": "Rochefort (FR)",
                     "time": "14:18 PM",
+                    "timestamp": "2020-01-17T14:18:35.000Z",
                 },
                 {
                     "code": "PCH/CFM",
@@ -103,6 +108,7 @@ ParsedTrackingResponse = [
                     "description": "PCH/CFM",
                     "location": "Rochefort (FR)",
                     "time": "14:16 PM",
+                    "timestamp": "2020-01-17T14:16:54.000Z",
                 },
                 {
                     "code": "COM/CFM",
@@ -110,6 +116,7 @@ ParsedTrackingResponse = [
                     "description": "COM/CFM",
                     "location": "Rochefort (FR)",
                     "time": "14:16 PM",
+                    "timestamp": "2020-01-17T14:16:16.000Z",
                 },
             ],
             "info": {

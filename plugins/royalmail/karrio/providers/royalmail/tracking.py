@@ -9,6 +9,7 @@ from karrio.core.models import (
 from karrio.providers.royalmail.utils import Settings
 from karrio.providers.royalmail.error import parse_error_response
 import karrio.lib as lib
+import karrio.providers.royalmail.units as provider_units
 
 
 def parse_tracking_response(
@@ -41,6 +42,15 @@ def _extract_detail(data: dict, settings: Settings) -> TrackingDetails:
                 location=event.locationName,
                 code=event.eventCode,
                 time=lib.flocaltime(event.eventDateTime, "%Y-%m-%dT%H:%M:%S%z"),
+                timestamp=lib.fiso_timestamp(event.eventDateTime, current_format="%Y-%m-%dT%H:%M:%S%z"),
+                reason=next(
+                    (
+                        r.name
+                        for r in list(provider_units.TrackingIncidentReason)
+                        if event.eventCode in r.value
+                    ),
+                    None,
+                ),
             )
             for event in detail.events
         ],

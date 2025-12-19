@@ -268,6 +268,18 @@ class TrackingStatus(lib.Enum):
     ready_for_pickup = ["N74", "R13"]
 
 
+class TrackingIncidentReason(lib.Enum):
+    """Maps Bpost exception codes to normalized TrackingIncidentReason."""
+    carrier_damaged_parcel = ["B05", "B08"]
+    consignee_refused = ["B03", "B23"]
+    consignee_not_home = ["B04", "N01", "N02"]
+    consignee_business_closed = ["N03"]
+    consignee_incorrect_address = ["B06", "B07", "B09", "B10"]
+    customs_delay = ["B00", "B01", "B02"]
+    delivery_exception_hold = ["B11", "B12", "B13", "B18", "B24", "B28"]
+    unknown = []
+
+
 DEFAULT_SERVICES = [
     models.ServiceLevel(
         service_name="Bpost Standard Service",

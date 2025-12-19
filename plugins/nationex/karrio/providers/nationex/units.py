@@ -94,3 +94,11 @@ class TrackingStatus(lib.Enum):
     in_transit = ["Pickup", "Transit"]
     delivery_failed = ["ReturnToSender", "RefusedDelivery"]
     out_for_delivery = ["OutForDelivery", "PartiallyOutForDelivery"]
+
+
+class TrackingIncidentReason(lib.Enum):
+    """Maps Nationex exception codes to normalized TrackingIncidentReason."""
+    carrier_damaged_parcel = []
+    consignee_refused = ["RefusedDelivery"]
+    consignee_not_home = []
+    unknown = []

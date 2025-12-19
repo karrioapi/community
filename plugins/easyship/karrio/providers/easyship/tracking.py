@@ -62,6 +62,23 @@ def _extract_details(
                 date=lib.ftime(details.updated_at, "%Y-%m-%dT%H:%M:%SZ"),
                 time=lib.ftime(details.updated_at, "%Y-%m-%dT%H:%M:%SZ"),
                 description="",
+                timestamp=lib.fiso_timestamp(details.updated_at, current_format="%Y-%m-%dT%H:%M:%SZ"),
+                status=next(
+                    (
+                        s.name
+                        for s in list(provider_units.TrackingStatus)
+                        if getattr(master, "tracking_state", None) in s.value
+                    ),
+                    None,
+                ),
+                reason=next(
+                    (
+                        r.name
+                        for r in list(provider_units.TrackingIncidentReason)
+                        if str(master.leg_number) in r.value
+                    ),
+                    None,
+                ),
             )
         ],
     )

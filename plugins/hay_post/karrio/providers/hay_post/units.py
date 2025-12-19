@@ -83,6 +83,14 @@ class TrackingStatus(lib.Enum):
     delivery_delayed = [8, 9]
 
 
+class TrackingIncidentReason(lib.Enum):
+    """Maps Hay Post exception codes to normalized TrackingIncidentReason."""
+    carrier_damaged_parcel = []
+    consignee_refused = []
+    consignee_not_home = []
+    unknown = []
+
+
 class ShippingCountries(lib.Enum):
     """Country codes"""
 

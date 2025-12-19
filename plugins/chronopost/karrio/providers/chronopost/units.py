@@ -53,6 +53,31 @@ class ShippingOption(lib.Enum):
     saturday_delivery = chronopost_delivery_on_saturday
 
 
+class TrackingIncidentReason(lib.Enum):
+    """Maps Chronopost exception codes to normalized TrackingIncidentReason."""
+    carrier_damaged_parcel = ["DMG", "DAMAGE", "DAMAGED"]
+    carrier_sorting_error = ["MISROUTE", "TRI"]
+    carrier_parcel_lost = ["LOST", "PERDU"]
+    carrier_vehicle_issue = ["DELAY", "RETARD"]
+
+    consignee_refused = ["REFUSED", "REF", "REFUSE"]
+    consignee_business_closed = ["CLOSED", "FERME"]
+    consignee_not_home = ["NOTHOME", "NH", "ABSENT"]
+    consignee_incorrect_address = ["BADADDR", "INCORRECT", "ADRESSE"]
+    consignee_access_restricted = ["NOACCESS", "ACCES"]
+
+    customs_delay = ["CUSTOMS", "CUSTOMSHOLD", "DOUANE"]
+    customs_documentation = ["CUSTOMSDOC", "DOUANE_DOC"]
+    customs_duties_unpaid = ["CUSTOMS_UNPAID", "TAXES"]
+
+    weather_delay = ["WEATHER", "METEO"]
+
+    delivery_exception_hold = ["HOLD", "ONHOLD", "RETENU"]
+    delivery_exception_undeliverable = ["UNDELIVERABLE", "NON_LIVRABLE"]
+
+    unknown = []
+
+
 def shipping_options_initializer(
     options: dict,
     package_options: units.Options = None,

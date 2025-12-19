@@ -66,6 +66,23 @@ def _extract_details(
                 code=detail.order.transactionId,
                 time=lib.fdate(detail.order.createDate, "%Y-%m-%dT%H:%M:%S"),
                 location=detail.orderDestinationAddress.address,
+                timestamp=lib.fiso_timestamp(detail.order.createDate, current_format="%Y-%m-%dT%H:%M:%S"),
+                status=next(
+                    (
+                        s.name
+                        for s in list(provider_units.TrackingStatus)
+                        if detail.order.stateId in s.value
+                    ),
+                    None,
+                ),
+                reason=next(
+                    (
+                        r.name
+                        for r in list(provider_units.TrackingIncidentReason)
+                        if detail.order.stateId in r.value
+                    ),
+                    None,
+                ),
             )
         ],
         delivered=status == "delivered",

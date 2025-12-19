@@ -57,6 +57,7 @@ PARSED_TRACKING_RESPONSE = [
                     "description": "\n        Shipment Delivered In Good Condition.\n      ",
                     "location": "PNA-\n        Pamplona\n      ",
                     "time": "10:20 AM",
+                    "timestamp": "2021-02-18T10:20:00.000Z",
                 }
             ],
             "tracking_number": "123456782",
@@ -72,6 +73,7 @@ PARSED_TRACKING_RESPONSE = [
                     "description": "\n        Shipment Delivered In Good Condition.\n      ",
                     "location": "BA4-\n        Bradford\n      ",
                     "time": "08:41 AM",
+                    "timestamp": "2021-02-04T08:41:00.000Z",
                 },
                 {
                     "code": "OD",
@@ -79,6 +81,7 @@ PARSED_TRACKING_RESPONSE = [
                     "description": "\n        Out For Delivery.\n      ",
                     "location": "BA4-\n        Bradford\n      ",
                     "time": "07:47 AM",
+                    "timestamp": "2021-02-04T07:47:00.000Z",
                 },
                 {
                     "code": "IR",
@@ -86,6 +89,7 @@ PARSED_TRACKING_RESPONSE = [
                     "description": "\n        Shipment Received At Tnt Location\n      ",
                     "location": "BA4-\n        Bradford\n      ",
                     "time": "05:09 AM",
+                    "timestamp": "2021-02-04T05:09:00.000Z",
                 },
                 {
                     "code": "IR",
@@ -93,6 +97,7 @@ PARSED_TRACKING_RESPONSE = [
                     "description": "\n        Shipment Received At Tnt Location\n      ",
                     "location": "BA4-\n        Bradford\n      ",
                     "time": "03:55 AM",
+                    "timestamp": "2021-02-04T03:55:00.000Z",
                 },
                 {
                     "code": "TR",
@@ -100,6 +105,7 @@ PARSED_TRACKING_RESPONSE = [
                     "description": "\n        Shipment In Transit.\n      ",
                     "location": "DZ5-\n        DZ5\n      ",
                     "time": "16:51 PM",
+                    "timestamp": "2021-02-03T16:51:00.000Z",
                 },
                 {
                     "code": "IS",
@@ -107,6 +113,7 @@ PARSED_TRACKING_RESPONSE = [
                     "description": "\n        Shipment Received At Tnt Location\n      ",
                     "location": "DZ5-\n        DZ5\n      ",
                     "time": "16:13 PM",
+                    "timestamp": "2021-02-03T16:13:00.000Z",
                 },
                 {
                     "code": "NR",
@@ -114,6 +121,7 @@ PARSED_TRACKING_RESPONSE = [
                     "description": "\n        Shipment Delayed In Transit Recovery Actions Underway\n      ",
                     "location": "BA4-\n        Bradford\n      ",
                     "time": "14:12 PM",
+                    "timestamp": "2021-02-03T14:12:00.000Z",
                 },
                 {
                     "code": "NR",
@@ -121,6 +129,7 @@ PARSED_TRACKING_RESPONSE = [
                     "description": "\n        Shipment Delayed In Transit Recovery Actions Underway\n      ",
                     "location": "BA4-\n        Bradford\n      ",
                     "time": "10:52 AM",
+                    "timestamp": "2021-02-03T10:52:00.000Z",
                 },
                 {
                     "code": "MLA",
@@ -128,6 +137,7 @@ PARSED_TRACKING_RESPONSE = [
                     "description": "\n        Connection Delay. Recovery Actions Underway.\n      ",
                     "location": "DZ5-\n        DZ5\n      ",
                     "time": "21:45 PM",
+                    "timestamp": "2021-02-02T21:45:00.000Z",
                 },
                 {
                     "code": "IS",
@@ -135,6 +145,7 @@ PARSED_TRACKING_RESPONSE = [
                     "description": "\n        Shipment Received At Tnt Location\n      ",
                     "location": "QAR-\n        Arnhem Hub\n      ",
                     "time": "09:44 AM",
+                    "timestamp": "2021-02-02T09:44:00.000Z",
                 },
                 {
                     "code": "AS",
@@ -142,6 +153,7 @@ PARSED_TRACKING_RESPONSE = [
                     "description": "\n        Shipment Received At Transit Point.\n      ",
                     "location": "QAR-\n        Arnhem Hub\n      ",
                     "time": "09:24 AM",
+                    "timestamp": "2021-02-02T09:24:00.000Z",
                 },
                 {
                     "code": "IS",
@@ -149,6 +161,7 @@ PARSED_TRACKING_RESPONSE = [
                     "description": "\n        Shipment Received At Tnt Location\n      ",
                     "location": "QAR-\n        Arnhem Hub\n      ",
                     "time": "08:50 AM",
+                    "timestamp": "2021-02-02T08:50:00.000Z",
                 },
                 {
                     "code": "TR",
@@ -156,6 +169,7 @@ PARSED_TRACKING_RESPONSE = [
                     "description": "\n        Shipment In Transit.\n      ",
                     "location": "DNG-\n        Nuernberg Hub\n      ",
                     "time": "18:51 PM",
+                    "timestamp": "2021-02-01T18:51:00.000Z",
                 },
                 {
                     "code": "IS",
@@ -163,6 +177,7 @@ PARSED_TRACKING_RESPONSE = [
                     "description": "\n        Shipment Received At Tnt Location\n      ",
                     "location": "DNG-\n        Nuernberg Hub\n      ",
                     "time": "18:46 PM",
+                    "timestamp": "2021-02-01T18:46:00.000Z",
                 },
                 {
                     "code": "CI",
@@ -170,6 +185,7 @@ PARSED_TRACKING_RESPONSE = [
                     "description": "\n        Shipment Received At Origin Depot.\n      ",
                     "location": "NBE-\n        Nuernberg\n      ",
                     "time": "18:42 PM",
+                    "timestamp": "2021-02-01T18:42:00.000Z",
                 },
             ],
             "tracking_number": "123456782",

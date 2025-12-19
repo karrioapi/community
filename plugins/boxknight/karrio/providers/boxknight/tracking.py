@@ -48,6 +48,26 @@ def _extract_details(
                 code=order.orderStatus,
                 date=lib.fdate(datetime.datetime.now(), "%Y-%m-%dT%H:%M:%S.%fZ"),
                 time=lib.flocaltime(datetime.datetime.now(), "%Y-%m-%dT%H:%M:%S.%fZ"),
+                timestamp=lib.fiso_timestamp(
+                    datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                    current_format="%Y-%m-%dT%H:%M:%S.%fZ",
+                ),
+                status=next(
+                    (
+                        s.name
+                        for s in list(provider_units.TrackingStatus)
+                        if order.orderStatus in s.value
+                    ),
+                    None,
+                ),
+                reason=next(
+                    (
+                        r.name
+                        for r in list(provider_units.TrackingIncidentReason)
+                        if order.orderStatus in r.value
+                    ),
+                    None,
+                ),
             )
         ],
         delivered=delivered,

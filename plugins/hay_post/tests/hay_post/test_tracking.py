@@ -206,7 +206,9 @@ ParsedTrackingResponse = [
                 {
                     "date": "2024-06-10",
                     "description": "Test",
-                    "time": "2024-06-10"
+                    "status": "in_transit",
+                    "time": "2024-06-10",
+                    "timestamp": "2024-06-10T08:59:21.000Z",
                 }
             ],
             "info": {

@@ -54,6 +54,17 @@ def _extract_details(
                 code=event.codeSituationJustification,
                 time=lib.flocaltime(event.heureSuivi),
                 location=event.libelleCentre,
+                timestamp=lib.fiso_timestamp(
+                    lib.text(event.dateSuivi, event.heureSuivi, separator=" ")
+                ),
+                reason=next(
+                    (
+                        r.name
+                        for r in list(provider_units.TrackingIncidentReason)
+                        if event.codeSituationJustification in r.value
+                    ),
+                    None,
+                ),
             )
             for event in contenu.listSuivis
         ],

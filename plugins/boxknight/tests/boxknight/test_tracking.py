@@ -63,9 +63,11 @@ ParsedTrackingResponse = [
             "events": [
                 {
                     "code": "GEOCODED",
-                    "description": "GEOCODED",
                     "date": ANY,
+                    "description": "GEOCODED",
+                    "status": "on_hold",
                     "time": ANY,
+                    "timestamp": ANY,
                 }
             ],
             "info": {

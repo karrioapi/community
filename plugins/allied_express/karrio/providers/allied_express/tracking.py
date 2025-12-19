@@ -67,6 +67,26 @@ def _extract_details(
                     result.statusBarcodesList.scannnedTimestamp,
                     "%Y-%m-%dT%H:%M:%S.%f%z",
                 ),
+                timestamp=lib.fiso_timestamp(
+                    result.statusBarcodesList.scannnedTimestamp,
+                    current_format="%Y-%m-%dT%H:%M:%S.%f%z",
+                ),
+                status=next(
+                    (
+                        s.name
+                        for s in list(provider_units.TrackingStatus)
+                        if result.statusBarcodesList.scannedBarcode in s.value
+                    ),
+                    None,
+                ),
+                reason=next(
+                    (
+                        r.name
+                        for r in list(provider_units.TrackingIncidentReason)
+                        if result.statusBarcodesList.scannedBarcode in r.value
+                    ),
+                    None,
+                ),
             )
         ],
         status=status,

@@ -62,6 +62,23 @@ def _extract_details(
                 ),
                 latitude=None,
                 longitude=None,
+                timestamp=lib.fiso_timestamp(event.StatusDate, current_format="%Y-%m-%dT%H:%M:%SZ"),
+                status=next(
+                    (
+                        s.name
+                        for s in list(provider_units.TrackingStatus)
+                        if event.ShipmentStatus in s.value
+                    ),
+                    None,
+                ),
+                reason=next(
+                    (
+                        r.name
+                        for r in list(provider_units.TrackingIncidentReason)
+                        if event.ShipmentStatus in r.value
+                    ),
+                    None,
+                ),
             )
             for event in shipment.StatusHistories
         ],

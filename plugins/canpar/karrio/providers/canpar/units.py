@@ -88,6 +88,30 @@ class ShippingOption(lib.Enum):
         )
 
 
+class TrackingIncidentReason(lib.Enum):
+    """Maps Canpar exception codes to normalized TrackingIncidentReason."""
+    carrier_damaged_parcel = ["DMG", "DAMAGE"]
+    carrier_sorting_error = ["MISROUTE"]
+    carrier_parcel_lost = ["LOST"]
+    carrier_vehicle_issue = ["DELAY"]
+
+    consignee_refused = ["REFUSED", "REF"]
+    consignee_business_closed = ["CLOSED"]
+    consignee_not_home = ["NOTHOME", "NH"]
+    consignee_incorrect_address = ["BADADDR", "INCORRECT"]
+    consignee_access_restricted = ["NOACCESS"]
+
+    customs_delay = ["CUSTOMS", "CUSTOMSHOLD"]
+    customs_documentation = ["CUSTOMSDOC"]
+
+    weather_delay = ["WEATHER"]
+
+    delivery_exception_hold = ["HOLD", "ONHOLD"]
+    delivery_exception_undeliverable = ["UNDELIVERABLE"]
+
+    unknown = []
+
+
 def shipping_options_initializer(
     options: dict,
     package_options: Options = None,

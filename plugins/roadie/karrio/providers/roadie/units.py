@@ -67,3 +67,11 @@ class TrackingStatus(lib.Enum):
         "driver_approaching_delivery",
     ]
     delivery_failed = ["delivery_attempted", "returned", "canceled"]
+
+
+class TrackingIncidentReason(lib.Enum):
+    """Maps Roadie exception codes to normalized TrackingIncidentReason."""
+    carrier_damaged_parcel = []
+    consignee_refused = []
+    consignee_not_home = ["delivery_attempted"]
+    unknown = []

@@ -70,7 +70,9 @@ ParsedTrackingResponse = [
                     "date": "2019-04-04",
                     "description": "Delivered",
                     "location": "San Bernardino, CA, 92404, US",
+                    "status": "delivered",
                     "time": "06:45 AM",
+                    "timestamp": "2019-04-04T06:45:12.000Z",
                 }
             ],
             "tracking_number": "89108749065090",

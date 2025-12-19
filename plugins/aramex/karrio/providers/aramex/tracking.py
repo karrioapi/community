@@ -22,6 +22,7 @@ from karrio.core.models import (
 from karrio.providers.aramex.utils import Settings
 from karrio.providers.aramex.error import parse_error_response
 import karrio.lib as lib
+import karrio.providers.aramex.units as provider_units
 
 
 def parse_tracking_response(
@@ -70,6 +71,15 @@ def _extract_detail(node: Element, settings: Settings) -> TrackingDetails:
                 location=detail.UpdateLocation,
                 code=detail.UpdateCode,
                 time=DF.ftime(detail.UpdateDateTime, "%Y-%m-%dT%H:%M:%S"),
+                timestamp=lib.fiso_timestamp(detail.UpdateDateTime, current_format="%Y-%m-%dT%H:%M:%S"),
+                reason=next(
+                    (
+                        r.name
+                        for r in list(provider_units.TrackingIncidentReason)
+                        if detail.UpdateCode in r.value
+                    ),
+                    None,
+                ),
             )
         ],
     )

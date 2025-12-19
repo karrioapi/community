@@ -106,6 +106,14 @@ class TrackingStatus(lib.Enum):
     ready_for_pickup = ["ready_for_pickup"]
 
 
+class TrackingIncidentReason(lib.Enum):
+    """Maps Easyship exception codes to normalized TrackingIncidentReason."""
+    carrier_damaged_parcel = []
+    consignee_refused = []
+    consignee_not_home = []
+    unknown = []
+
+
 def to_service_code(service: typing.Dict[str, str]) -> str:
     return lib.to_slug(
         f'easyship_{to_carrier_code(service)}_{lib.to_snake_case(service["service_name"])}'

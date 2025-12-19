@@ -55,6 +55,23 @@ def _extract_details(
                     join=True,
                     separator=", ",
                 ),
+                timestamp=lib.fiso_timestamp(event.get("datetime"), current_format="%Y-%m-%dT%H:%M:%SZ"),
+                status=next(
+                    (
+                        s.name
+                        for s in list(provider_units.TrackingStatus)
+                        if event.get("status") in s.value
+                    ),
+                    None,
+                ),
+                reason=next(
+                    (
+                        r.name
+                        for r in list(provider_units.TrackingIncidentReason)
+                        if event.get("status") in r.value
+                    ),
+                    None,
+                ),
             )
             for event in events
             if event.get("datetime") is not None

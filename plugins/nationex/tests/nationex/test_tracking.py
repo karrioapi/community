@@ -67,6 +67,7 @@ ParsedTrackingResponse = [
                     "description": "Data received",
                     "location": "St-Hubert",
                     "time": "14:15 PM",
+                    "timestamp": "2019-08-24T14:15:22.000Z",
                 }
             ],
             "info": {

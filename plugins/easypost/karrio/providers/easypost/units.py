@@ -941,6 +941,24 @@ class CarrierId(lib.StrEnum):
         return {key: enum.value for key, enum in CarrierId.__members__.items()}
 
 
+class TrackingStatus(lib.Enum):
+    on_hold = ["pre_transit", "unknown"]
+    delivered = ["delivered"]
+    in_transit = ["in_transit"]
+    out_for_delivery = ["out_for_delivery"]
+    ready_for_pickup = ["available_for_pickup"]
+    delivery_failed = ["failure", "error", "return_to_sender"]
+    cancelled = ["cancelled"]
+
+
+class TrackingIncidentReason(lib.Enum):
+    """Maps EasyPost exception codes to normalized TrackingIncidentReason."""
+    carrier_damaged_parcel = ["damaged"]
+    consignee_refused = ["refused"]
+    consignee_not_home = ["not_home"]
+    unknown = []
+
+
 class ShippingOption(lib.Enum):
     easypost_additional_handling = lib.OptionEnum("additional_handling", bool)
     easypost_address_validation_level = lib.OptionEnum("address_validation_level")

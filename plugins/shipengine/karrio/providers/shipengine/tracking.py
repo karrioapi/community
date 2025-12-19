@@ -53,6 +53,23 @@ def _extract_details(
                 event.state_province,
                 event.country_code
             ])),
+            timestamp=lib.fiso_timestamp(event.occurred_at, current_format="%Y-%m-%dT%H:%M:%SZ") if event.occurred_at else None,
+            status=next(
+                (
+                    s.name
+                    for s in list(provider_units.TrackingStatus)
+                    if event.event_code in s.value
+                ),
+                None,
+            ) if event.event_code else None,
+            reason=next(
+                (
+                    r.name
+                    for r in list(provider_units.TrackingIncidentReason)
+                    if event.event_code in r.value
+                ),
+                None,
+            ) if event.event_code else None,
         )
         for event in (tracking_details.events or [])
     ]

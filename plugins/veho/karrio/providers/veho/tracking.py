@@ -80,6 +80,25 @@ def _extract_details(
                 code=event["code"],
                 time=event["time"],  # Keep original time format
                 location=event["location"],
+                timestamp=lib.fiso_timestamp(
+                    lib.text(event["date"], event["time"], separator=" ")
+                ),
+                status=next(
+                    (
+                        s.name
+                        for s in list(provider_units.TrackingStatus)
+                        if event["code"] in s.value
+                    ),
+                    None,
+                ),
+                reason=next(
+                    (
+                        r.name
+                        for r in list(provider_units.TrackingIncidentReason)
+                        if event["code"] in r.value
+                    ),
+                    None,
+                ),
             )
             for event in events
         ],

@@ -55,6 +55,26 @@ def _extract_details(
                 description=event.stateDescription,
                 code=event.stateCode,
                 time=lib.flocaltime(event.time, "%Y-%m-%dT%H:%M:%S%z"),
+                timestamp=lib.fiso_timestamp(
+                    event.time.isoformat() if hasattr(event.time, 'isoformat') else event.time,
+                    current_format="%Y-%m-%dT%H:%M:%S%z",
+                ),
+                status=next(
+                    (
+                        s.name
+                        for s in list(provider_units.TrackingStatus)
+                        if event.stateCode in s.value
+                    ),
+                    None,
+                ),
+                reason=next(
+                    (
+                        r.name
+                        for r in list(provider_units.TrackingIncidentReason)
+                        if event.stateCode in r.value
+                    ),
+                    None,
+                ),
             )
             for event in details.stateInfo
         ],

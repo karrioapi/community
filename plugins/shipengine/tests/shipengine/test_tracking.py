@@ -116,14 +116,16 @@ ParsedTrackingResponse = [
                     "date": "2024-01-15",
                     "description": "Package delivered",
                     "location": "Los Angeles, CA, US",
-                    "time": "10:30"
+                    "time": "10:30",
+                    "timestamp": "2024-01-15T10:30:00.000Z",
                 },
                 {
                     "code": "OD",
                     "date": "2024-01-15",
                     "description": "Out for delivery",
                     "location": "Los Angeles, CA, US",
-                    "time": "08:00"
+                    "time": "08:00",
+                    "timestamp": "2024-01-15T08:00:00.000Z",
                 }
             ],
             "info": {

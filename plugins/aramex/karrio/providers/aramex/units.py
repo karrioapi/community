@@ -1,5 +1,33 @@
 """ Aramex Native Types """
 
+import karrio.lib as lib
+
+
+class TrackingIncidentReason(lib.Enum):
+    """Maps Aramex exception codes to normalized TrackingIncidentReason."""
+    carrier_damaged_parcel = ["DMG", "DAMAGE", "DAMAGED"]
+    carrier_sorting_error = ["MISROUTE"]
+    carrier_parcel_lost = ["LOST"]
+    carrier_vehicle_issue = ["DELAY", "VEHICLE"]
+
+    consignee_refused = ["REFUSED", "REF", "REJECT"]
+    consignee_business_closed = ["CLOSED", "BUSINESS_CLOSED"]
+    consignee_not_home = ["NOTHOME", "NH", "NOT_HOME"]
+    consignee_incorrect_address = ["BADADDR", "INCORRECT", "WRONG_ADDRESS"]
+    consignee_access_restricted = ["NOACCESS", "RESTRICTED"]
+
+    customs_delay = ["CUSTOMS", "CUSTOMSHOLD", "CUSTOMS_DELAY"]
+    customs_documentation = ["CUSTOMSDOC", "CUSTOMS_DOCUMENTS"]
+    customs_duties_unpaid = ["CUSTOMS_UNPAID", "DUTIES"]
+
+    weather_delay = ["WEATHER"]
+
+    delivery_exception_hold = ["HOLD", "ONHOLD", "HELD"]
+    delivery_exception_undeliverable = ["UNDELIVERABLE", "UNABLE"]
+
+    unknown = []
+
+
 # import karrio.lib as lib
 # from karrio.core.utils import Enum, Flag
 #
@@ -44,3 +72,4 @@
 #     carrier_signature = "SIGNATURE CODE"
 #     carrier_saturday_delivery = "SATURDAY DELIVERY CODE"
 #     carrier_dry_ice = "DRY ICE CODE"
+#
