@@ -273,7 +273,7 @@ ESHIPPER_CARRIER_METADATA = {
 }
 
 ESHIPPER_SERVICE_METADATA = {
-    lib.to_snake_case(service.get("esServicename") or service.get("name")): {
+    to_service_code(service): {
         **service,
         "ids": list(
             set(
@@ -281,8 +281,7 @@ ESHIPPER_SERVICE_METADATA = {
                     s["id"]
                     for s in METADATA_JSON["PROD_SERVICES"]
                     + METADATA_JSON["DEV_SERVICES"]
-                    if lib.to_snake_case(s["name"])
-                    == lib.to_snake_case(service["name"])
+                    if to_service_code(s) == to_service_code(service)
                 ]
             )
         ),
@@ -290,7 +289,7 @@ ESHIPPER_SERVICE_METADATA = {
             (
                 s["id"]
                 for s in METADATA_JSON["PROD_SERVICES"]
-                if s["name"] == service["name"]
+                if to_service_code(s) == to_service_code(service)
             ),
             None,
         ),
@@ -298,23 +297,20 @@ ESHIPPER_SERVICE_METADATA = {
             (
                 s["id"]
                 for s in METADATA_JSON["DEV_SERVICES"]
-                if s["name"] == service["name"]
+                if to_service_code(s) == to_service_code(service)
             ),
             None,
         ),
         "carrier": lib.to_snake_case(service["carrierDTO"]["name"]),
     }
-    for service in {
-        s["name"]: s
-        for s in METADATA_JSON["PROD_SERVICES"] + METADATA_JSON["DEV_SERVICES"]
-    }.values()
+    for service in METADATA_JSON["PROD_SERVICES"] + METADATA_JSON["DEV_SERVICES"]
 }
 
 
 ShippingService = lib.StrEnum(
     "ShippingService",
     {
-        to_service_code(service): service["name"]
+        to_service_code(service): to_service_code(service)
         for service in ESHIPPER_SERVICE_METADATA.values()
     },
 )
