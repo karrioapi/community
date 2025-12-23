@@ -34,10 +34,12 @@ def _extract_details(
     service = provider_units.ShippingService.find(
         shipment.carrier.serviceName,
         test_mode=settings.test_mode,
+        carrier_name=shipment.carrier.carrierName,
     )
     rate_provider = provider_units.RateProvider.find(
         shipment.carrier.carrierName,
         test_mode=settings.test_mode,
+        carrier_name=shipment.carrier.carrierName,
     )
 
     return models.ShipmentDetails(
@@ -89,11 +91,24 @@ def shipment_request(
         initializer=provider_units.shipping_options_initializer,
     )
     service = provider_units.ShippingService.map(payload.service)
+
+    # Extract carrier from service code if available
+    carrier_name_from_service = None
+    if "_" in service.name_or_key:
+        parts = service.name_or_key.split("_")
+        # Carrier is always at index 1 after "eshipper" prefix
+        if len(parts) >= 2 and parts[0] == "eshipper":
+            potential_carrier = parts[1]  # e.g., "canadapost" from "eshipper_canadapost_expedited"
+            # Validate it's a known carrier
+            if provider_units.RateProvider.map(potential_carrier).name:
+                carrier_name_from_service = potential_carrier
+
     service_id = lib.identity(
         options.eshipper_service_id.state
         or provider_units.ShippingService.service_id(
             service.name_or_key,
             test_mode=settings.test_mode,
+            carrier_name=carrier_name_from_service,
         )
     )
     carrier_id = lib.identity(
@@ -103,6 +118,7 @@ def shipment_request(
             service_id=service_id,
             test_mode=settings.test_mode,
             service_search=service.name_or_key,
+            carrier_name=carrier_name_from_service,
         )
     )
 

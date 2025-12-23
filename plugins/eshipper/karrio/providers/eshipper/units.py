@@ -140,7 +140,12 @@ def to_service_code(service: typing.Dict[str, str]) -> str:
     return output
 
 
-def get_service(search: str, test_mode: bool = False, service_id: str = None):
+def get_service(
+    search: str,
+    test_mode: bool = False,
+    service_id: str = None,
+    carrier_name: str = None,
+):
     prod_metadata = METADATA_JSON["PROD_SERVICES"]
     test_metadata = METADATA_JSON["DEV_SERVICES"]
     metadata = lib.identity(
@@ -152,27 +157,53 @@ def get_service(search: str, test_mode: bool = False, service_id: str = None):
             service
             for service in metadata
             if to_service_code(service) == search
-            or service.get("name") == search
             or str(service.get("id")) == search
             or (service_id and service_id == str(service.get("id")))
+            or (
+                service.get("name") == search
+                and (
+                    not carrier_name
+                    or service.get("carrierDTO", {}).get("name") == carrier_name
+                )
+            )
         ),
         {},
     )
 
 
-def get_service_id(search: str, test_mode: bool = False, service_id: str = None):
+def get_service_id(
+    search: str,
+    test_mode: bool = False,
+    service_id: str = None,
+    carrier_name: str = None,
+):
     return (
-        get_service(search, test_mode=test_mode, service_id=service_id).get("id")
+        get_service(
+            search,
+            test_mode=test_mode,
+            service_id=service_id,
+            carrier_name=carrier_name,
+        ).get("id")
         or service_id
     )
 
 
-def find_service(search: str, test_mode: bool = False, service_id: str = None):
+def find_service(
+    search: str,
+    test_mode: bool = False,
+    service_id: str = None,
+    carrier_name: str = None,
+):
 
     if ShippingService.map(search).name:
         return ShippingService.map(search)
 
-    service = get_service(search, test_mode=test_mode, service_id=service_id)
+    service = get_service(
+        search,
+        test_mode=test_mode,
+        service_id=service_id,
+        carrier_name=carrier_name,
+    )
 
     if service:
         return ShippingService.map(to_service_code(service))
@@ -185,10 +216,16 @@ def get_carrier(
     test_mode: bool = False,
     service_search: str = None,
     service_id: str = None,
+    carrier_name: str = None,
 ):
     id_key = "test_id" if test_mode else "prod_id"
     alternate_key = "prod_id" if not test_mode else "test_id"
-    service = get_service(service_search, test_mode=test_mode, service_id=service_id)
+    service = get_service(
+        service_search,
+        test_mode=test_mode,
+        service_id=service_id,
+        carrier_name=carrier_name or search,
+    )
 
     return service.get("carrierDTO") or next(
         (
@@ -212,12 +249,14 @@ def get_carrier_id(
     test_mode: bool = False,
     service_search: str = None,
     service_id: str = None,
+    carrier_name: str = None,
 ):
     return get_carrier(
         search,
         test_mode=test_mode,
         service_search=service_search,
         service_id=service_id,
+        carrier_name=carrier_name,
     ).get("id")
 
 
@@ -226,6 +265,7 @@ def find_rate_provider(
     test_mode: bool = False,
     service_search: str = None,
     service_id: str = None,
+    carrier_name: str = None,
 ):
 
     if RateProvider.map(lib.to_snake_case(search)).name:
@@ -236,6 +276,7 @@ def find_rate_provider(
         test_mode=test_mode,
         service_search=service_search,
         service_id=service_id,
+        carrier_name=carrier_name,
     )
 
     if carrier and RateProvider.map(to_carrier_code(carrier)).name:
@@ -281,7 +322,7 @@ ESHIPPER_CARRIER_METADATA = {
 }
 
 ESHIPPER_SERVICE_METADATA = {
-    lib.to_snake_case(service.get("esServicename") or service.get("name")): {
+    to_service_code(service): {
         **service,
         "ids": list(
             set(
@@ -289,8 +330,7 @@ ESHIPPER_SERVICE_METADATA = {
                     s["id"]
                     for s in METADATA_JSON["PROD_SERVICES"]
                     + METADATA_JSON["DEV_SERVICES"]
-                    if lib.to_snake_case(s["name"])
-                    == lib.to_snake_case(service["name"])
+                    if to_service_code(s) == to_service_code(service)
                 ]
             )
         ),
@@ -298,7 +338,7 @@ ESHIPPER_SERVICE_METADATA = {
             (
                 s["id"]
                 for s in METADATA_JSON["PROD_SERVICES"]
-                if s["name"] == service["name"]
+                if to_service_code(s) == to_service_code(service)
             ),
             None,
         ),
@@ -306,15 +346,15 @@ ESHIPPER_SERVICE_METADATA = {
             (
                 s["id"]
                 for s in METADATA_JSON["DEV_SERVICES"]
-                if s["name"] == service["name"]
+                if to_service_code(s) == to_service_code(service)
             ),
             None,
         ),
         "carrier": lib.to_snake_case(service["carrierDTO"]["name"]),
     }
     for service in {
-        s["name"]: s
-        for s in METADATA_JSON["PROD_SERVICES"] + METADATA_JSON["DEV_SERVICES"]
+        to_service_code(s): s
+        for s in METADATA_JSON["DEV_SERVICES"] + METADATA_JSON["PROD_SERVICES"]
     }.values()
 }
 
@@ -322,7 +362,7 @@ ESHIPPER_SERVICE_METADATA = {
 ShippingService = lib.StrEnum(
     "ShippingService",
     {
-        to_service_code(service): service["name"]
+        to_service_code(service): to_service_code(service)
         for service in ESHIPPER_SERVICE_METADATA.values()
     },
 )

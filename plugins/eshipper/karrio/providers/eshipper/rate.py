@@ -30,18 +30,21 @@ def _extract_details(
         rate.serviceName,
         service_id=rate.serviceId,
         test_mode=settings.test_mode,
+        carrier_name=rate.carrierName,
     )
     carrier_id = provider_units.ShippingService.carrier_id(
         rate.carrierName,
         test_mode=settings.test_mode,
         service_search=service.name_or_key,
         service_id=rate.serviceId,
+        carrier_name=rate.carrierName,
     )
     rate_provider = provider_units.RateProvider.find(
         rate.carrierName,
         test_mode=settings.test_mode,
         service_search=service.name_or_key,
         service_id=rate.serviceId,
+        carrier_name=rate.carrierName,
     )
 
     charges = [
