@@ -344,7 +344,10 @@ ESHIPPER_SERVICE_METADATA = {
         ),
         "carrier": lib.to_snake_case(service["carrierDTO"]["name"]),
     }
-    for service in METADATA_JSON["PROD_SERVICES"] + METADATA_JSON["DEV_SERVICES"]
+    for service in {
+        to_service_code(s): s
+        for s in METADATA_JSON["DEV_SERVICES"] + METADATA_JSON["PROD_SERVICES"]
+    }.values()
 }
 
 
