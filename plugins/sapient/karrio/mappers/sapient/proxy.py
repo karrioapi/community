@@ -36,6 +36,7 @@ class Proxy(rating_proxy.RatingMixinProxy, proxy.Proxy):
                     )
                 ),
                 decoder=lib.to_dict,
+                max_retries=2,
             )
 
             messages = provider_error.parse_error_response(response, self.settings)
