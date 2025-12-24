@@ -5,6 +5,16 @@ import karrio.core.units as units
 import karrio.core.models as models
 
 
+# EasyPost API carrier name normalization mapping
+# Maps EasyPost's carrier variations to Karrio's standard CarrierId enum names
+CARRIER_NAME_NORMALIZATION = {
+    "UPSDAP": "UPS",
+    "UPS DAP": "UPS",
+    "FedExDefault": "FedEx",
+    "FedEx Default": "FedEx",
+}
+
+
 class LabelType(lib.Enum):
     PDF = "PDF"
     ZPL = "ZPL"
@@ -862,11 +872,13 @@ class Service(lib.StrEnum):
 
     @staticmethod
     def info(serviceName, carrier):
-        rate_provider = CarrierId.map(carrier).name_or_key
+        # Normalize carrier name to handle EasyPost API variations
+        normalized_carrier = CARRIER_NAME_NORMALIZATION.get(carrier, carrier)
+        rate_provider = CarrierId.map(normalized_carrier).name_or_key
 
         # Try carrier-qualified lookup first to avoid service name collisions
         service_code = None
-        carrier_enum = CarrierId.map(carrier)
+        carrier_enum = CarrierId.map(normalized_carrier)
 
         if carrier_enum.name and serviceName:
             # Construct carrier-qualified service code: easypost_{carrier}_{service}
