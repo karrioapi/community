@@ -26,6 +26,7 @@ def parse_error_response(
                 if (error.get("details", {}) or error.get("data", {}))
                 else error.get("message")
             ),
+            level=_get_level(error),
             details={
                 **kwargs,
                 **(error.get('data', {}))
@@ -33,3 +34,12 @@ def parse_error_response(
         )
         for error in errors
     ]
+
+
+def _get_level(error: dict, default_level: str = "error") -> str:
+    """Map Freightcom error response to standardized level.
+    
+    Freightcom API v2 does not provide a level field in error responses.
+    All error responses default to "error" level.
+    """
+    return default_level
