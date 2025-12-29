@@ -89,7 +89,7 @@ def _extract_details(
         meta=dict(
             service_name=service_name,
             rate_provider=rate_provider,
-            request_guaranteed_customs_charges=(
+            is_rate_guaranteed=(
                 rate.customs_charge_data.is_rate_guaranteed
                 if hasattr(rate, 'customs_charge_data') and rate.customs_charge_data and hasattr(rate.customs_charge_data, 'is_rate_guaranteed')
                 else None
