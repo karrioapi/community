@@ -110,6 +110,12 @@ def _extract_details(
         freightcom_service_id = rate.service_id if hasattr(rate, 'service_id') else ""
         freightcom_unique_id = shipment.unique_id if hasattr(shipment, 'unique_id') else ""
 
+        is_customs_rate_guaranteed = (
+            rate.customs_charge_data.is_rate_guaranteed
+            if hasattr(rate, 'customs_charge_data') and rate.customs_charge_data and hasattr(rate.customs_charge_data, 'is_rate_guaranteed')
+            else None
+        )
+
     else:
         tracking_number = ""
         shipment_id = ""
@@ -125,6 +131,7 @@ def _extract_details(
         carrier_tracking_link = ""
         freightcom_service_id = ""
         freightcom_unique_id = ""
+        is_customs_rate_guaranteed = None
 
     documents = models.Documents(
         label=label_base64,
@@ -149,7 +156,8 @@ def _extract_details(
             service_name=service_name,
             freightcom_service_id=freightcom_service_id,
             freightcom_unique_id=freightcom_unique_id,
-            freightcom_shipment_identifier=shipment_id
+            freightcom_shipment_identifier=shipment_id,
+            is_customs_rate_guaranteed=is_customs_rate_guaranteed,
         ),
     )
 
