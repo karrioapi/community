@@ -24,6 +24,15 @@ import datetime
 import uuid
 
 
+def is_usmca_eligible(shipper_country: str, recipient_country: str) -> bool:
+    """Check if shipment is eligible for USMCA customs handling (US, CA, MX)."""
+    USMCA_COUNTRIES = {"US", "CA", "MX"}
+    return (
+        (shipper_country in USMCA_COUNTRIES and recipient_country in USMCA_COUNTRIES) and
+        shipper_country != recipient_country
+    )
+
+
 def parse_shipment_response(
     _response: lib.Deserializable[dict],
     settings: provider_utils.Settings,
@@ -180,7 +189,9 @@ def shipment_request(
     )
 
     is_intl = shipper.country_code != recipient.country_code
-    is_ca_to_us = shipper.country_code == "CA" and recipient.country_code == "US"
+    is_usmca_route = is_usmca_eligible(shipper.country_code, recipient.country_code)
+    use_usmca_option = options.freightcom_use_usmca.state if hasattr(options, 'freightcom_use_usmca') and options.freightcom_use_usmca.state is not None else True
+    is_usmca = is_usmca_route and use_usmca_option
     customs = lib.to_customs_info(
         payload.customs,
         shipper=payload.shipper,
@@ -208,12 +219,6 @@ def shipment_request(
         ),
     )
 
-    payment_method_id = settings.payment_method
-
-    if not payment_method_id:
-        raise Exception("No payment method found need to be set in config")
-
-    # Check if it's DDP (Delivered Duty Paid)
     is_ddp = (
         customs and (
             customs.incoterm == "DDP" or
@@ -221,9 +226,15 @@ def shipment_request(
         )
     ) if customs else False
 
-    # For DDP shipments with Net Terms, need credit card for customs/duties payment
+    payment_method_id = settings.payment_method
+
+    if not payment_method_id:
+        raise Exception("No payment method found need to be set in config")
+
     customs_and_duties_payment_method_id = None
-    if is_ddp and settings.connection_config.payment_method_type.state == provider_utils.PaymentMethodType.net_terms.value:
+    if settings.connection_config.payment_method_type.state == provider_utils.PaymentMethodType.credit_card.value:
+        customs_and_duties_payment_method_id = payment_method_id
+    elif settings.connection_config.customs_and_duties_payment_method.state:
         customs_and_duties_payment_method_id = settings.customs_and_duties_payment_method
 
     request = freightcom_rest_req.ShipmentRequestType(
@@ -355,12 +366,14 @@ def shipment_request(
                                 value=str(int(item.value_amount * 100))
                             ),
                             description=item.description,
-                            fda_regulated="no"
+                            fda_regulated="no",
+                            cusma_included=True if is_usmca else None,
+                            non_auto_parts=options.freightcom_non_auto_parts.state if hasattr(options, 'freightcom_non_auto_parts') and options.freightcom_non_auto_parts.state else None,
                         ) for item in customs.commodities
                     ] if customs and customs.commodities else [],
-                    request_guaranteed_customs_charges=options.request_guaranteed_customs_charges.state if hasattr(options, 'request_guaranteed_customs_charges') else None
+                    request_guaranteed_customs_charges=settings.connection_config.request_guaranteed_customs_charges.state
                 )
-                if is_ca_to_us and customs and any(customs.commodities)
+                if is_usmca and customs and any(customs.commodities)
                 else None
             ),
         ),
@@ -368,7 +381,8 @@ def shipment_request(
             freightcom_rest_req.CustomsInvoiceType(
                 source="details",
                 broker=freightcom_rest_req.BrokerType(
-                  use_carrier=True,
+                    use_carrier=True,
+                    usmca_number=options.freightcom_usmca_number.state if hasattr(options, 'freightcom_usmca_number') and options.freightcom_usmca_number.state else None,
                 ),
                 details=freightcom_rest_req.CustomsInvoiceDetailsType(
                     products=[
@@ -387,7 +401,9 @@ def shipment_request(
                                 value=str(int(item.value_amount * 100))
                             ),
                             description=item.description,
-                            fda_regulated="no"
+                            fda_regulated="no",
+                            cusma_included=True if is_usmca else None,
+                            non_auto_parts=options.freightcom_non_auto_parts.state if hasattr(options, 'freightcom_non_auto_parts') and options.freightcom_non_auto_parts.state else None,
                         ) for item in customs.commodities
                     ],
                     tax_recipient=freightcom_rest_req.TaxRecipientType(
@@ -417,7 +433,23 @@ def shipment_request(
                     )
                 )
             )
-            if customs and customs.commodities
+            if is_intl and customs and customs.commodities
+            else None
+        ),
+        paperless_customs_documents=(
+            [
+                freightcom_rest_req.PaperlessCustomsDocumentType(
+                    type="cusma-form" if doc.get("doc_type") == "cusma-form" else (
+                        "other" if doc.get("doc_type") == "certificate_of_origin" else "other"
+                    ),
+                    type_other_name=doc.get("doc_type") if doc.get("doc_type") not in ["cusma-form"] else None,
+                    file_name=doc.get("doc_name") or "document.pdf",
+                    file_base64=doc.get("doc_file"),
+                )
+                for doc in (options.doc_files.state or [])
+                if doc.get("doc_type") in ["cusma-form", "certificate_of_origin"] and doc.get("doc_file")
+            ]
+            if hasattr(options, 'doc_files') and options.doc_files.state and is_usmca
             else None
         ),
         #TODO: validate if we need to do pickup in the ship request

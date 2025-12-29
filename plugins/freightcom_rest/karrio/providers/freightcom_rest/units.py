@@ -92,6 +92,9 @@ class ShippingOption(lib.Enum):
     freightcom_stackable = lib.OptionEnum("stackable", bool)
     freightcom_payment_method = lib.OptionEnum("payment_method", str)
     freightcom_request_guaranteed_customs_charges = lib.OptionEnum("request_guaranteed_customs_charges", bool)
+    freightcom_usmca_number = lib.OptionEnum("usmca_number", str)
+    freightcom_non_auto_parts = lib.OptionEnum("non_auto_parts", bool)
+    freightcom_use_usmca = lib.OptionEnum("use_usmca", bool)
 
     """ Unified Option type mapping """
     # saturday_delivery = freightcom_saturday_pickup_required
