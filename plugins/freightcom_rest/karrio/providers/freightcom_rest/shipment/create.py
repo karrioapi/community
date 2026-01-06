@@ -454,10 +454,19 @@ def shipment_request(
                     file_name=doc.get("doc_name") or "document.pdf",
                     file_base64=doc.get("doc_file"),
                 )
-                for doc in (options.doc_files.state or [])
+                for doc in (
+                    (options.freightcom_doc_files.state or [])
+                    if hasattr(options, 'freightcom_doc_files') and options.freightcom_doc_files.state
+                    else (options.doc_files.state or [])
+                    if hasattr(options, 'doc_files') and options.doc_files.state
+                    else []
+                )
                 if doc.get("doc_type") in ["cusma-form", "certificate_of_origin"] and doc.get("doc_file")
             ]
-            if hasattr(options, 'doc_files') and options.doc_files.state and is_usmca
+            if is_usmca and (
+                (hasattr(options, 'freightcom_doc_files') and options.freightcom_doc_files.state)
+                or (hasattr(options, 'doc_files') and options.doc_files.state)
+            )
             else None
         ),
         #TODO: validate if we need to do pickup in the ship request
