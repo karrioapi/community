@@ -1,51 +1,53 @@
+"""Amazon Shipping tracking tests."""
+
 import unittest
 from unittest.mock import patch
-from karrio.core.utils import DP
-from karrio.sdk import Tracking
-from karrio.core.models import TrackingRequest
+import karrio.lib as lib
+import karrio.sdk as karrio
+import karrio.core.models as models
 from .fixture import gateway
 
 
 class TestAmazonShippingTracking(unittest.TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.TrackingRequest = TrackingRequest(**TRACKING_PAYLOAD)
+        self.TrackingRequest = models.TrackingRequest(**TRACKING_PAYLOAD)
 
     def test_create_tracking_request(self):
         request = gateway.mapper.create_tracking_request(self.TrackingRequest)
 
-        self.assertEqual(request.serialize(), TrackingRequestJSON)
+        self.assertListEqual(request.serialize(), TrackingRequestJSON)
 
     def test_get_tracking(self):
         with patch("karrio.mappers.amazon_shipping.proxy.lib.request") as mock:
             mock.return_value = "{}"
-            Tracking.fetch(self.TrackingRequest).from_(gateway)
+            karrio.Tracking.fetch(self.TrackingRequest).from_(gateway)
 
             self.assertEqual(
                 mock.call_args[1]["url"],
-                f"{gateway.settings.server_url}/shipping/v1/tracking/89108749065090",
+                f"{gateway.settings.server_url}/shipping/v2/tracking",
             )
 
     def test_parse_tracking_response(self):
         with patch("karrio.mappers.amazon_shipping.proxy.lib.request") as mock:
             mock.return_value = TrackingResponseJSON
             parsed_response = (
-                Tracking.fetch(self.TrackingRequest).from_(gateway).parse()
+                karrio.Tracking.fetch(self.TrackingRequest).from_(gateway).parse()
             )
 
-            self.assertEqual(
-                DP.to_dict(parsed_response), DP.to_dict(ParsedTrackingResponse)
+            self.assertListEqual(
+                lib.to_dict(parsed_response), ParsedTrackingResponse
             )
 
     def test_parse_error_response(self):
         with patch("karrio.mappers.amazon_shipping.proxy.lib.request") as mock:
             mock.return_value = ErrorResponseJSON
             parsed_response = (
-                Tracking.fetch(self.TrackingRequest).from_(gateway).parse()
+                karrio.Tracking.fetch(self.TrackingRequest).from_(gateway).parse()
             )
 
-            self.assertEqual(
-                DP.to_dict(parsed_response), DP.to_dict(ParsedErrorResponse)
+            self.assertListEqual(
+                lib.to_dict(parsed_response), ParsedErrorResponse
             )
 
 
@@ -57,24 +59,54 @@ TRACKING_PAYLOAD = {
     "tracking_numbers": ["89108749065090"],
 }
 
+TrackingRequestJSON = [
+    {
+        "tracking_id": "89108749065090",
+        "carrier_id": "AMZN_US",
+    }
+]
+
 ParsedTrackingResponse = [
     [
         {
             "carrier_id": "amazon_shipping",
             "carrier_name": "amazon_shipping",
             "delivered": True,
-            "estimated_delivery": "2019-04-04",
+            "estimated_delivery": "2024-01-17",
             "events": [
                 {
                     "code": "Delivered",
-                    "date": "2019-04-04",
+                    "date": "2024-01-17",
                     "description": "Delivered",
-                    "location": "San Bernardino, CA, 92404, US",
+                    "location": "Seattle, WA, 98101, US",
                     "status": "delivered",
-                    "time": "06:45 AM",
-                    "timestamp": "2019-04-04T06:45:12.000Z",
-                }
+                    "time": "14:30 PM",
+                    "timestamp": "2024-01-17T14:30:00.000Z",
+                },
+                {
+                    "code": "OutForDelivery",
+                    "date": "2024-01-17",
+                    "description": "OutForDelivery",
+                    "location": "Seattle, WA, 98101, US",
+                    "status": "out_for_delivery",
+                    "time": "08:00 AM",
+                    "timestamp": "2024-01-17T08:00:00.000Z",
+                },
+                {
+                    "code": "InTransit",
+                    "date": "2024-01-16",
+                    "description": "InTransit",
+                    "location": "Portland, OR, 97201, US",
+                    "status": "in_transit",
+                    "time": "10:00 AM",
+                    "timestamp": "2024-01-16T10:00:00.000Z",
+                },
             ],
+            "meta": {
+                "carrier_tracking_id": "89108749065090",
+                "received_by": "John Doe",
+            },
+            "status": "delivered",
             "tracking_number": "89108749065090",
         }
     ],
@@ -87,56 +119,78 @@ ParsedErrorResponse = [
         {
             "carrier_id": "amazon_shipping",
             "carrier_name": "amazon_shipping",
-            "code": "incididunt qui",
-            "details": {"note": "sint est", "tracking_number": "89108749065090"},
-            "message": "officia cillum ut",
-        },
-        {
-            "carrier_id": "amazon_shipping",
-            "carrier_name": "amazon_shipping",
-            "code": "nostrud laboris ex culpa do",
-            "details": {"note": "incididunt", "tracking_number": "89108749065090"},
-            "message": "consequat quis ut minim voluptate",
-        },
+            "code": "InvalidTrackingId",
+            "details": {"note": "Tracking ID not found", "tracking_number": "89108749065090"},
+            "message": "The tracking ID provided is not valid",
+        }
     ],
 ]
 
 
-TrackingRequestJSON = ["89108749065090"]
-
 TrackingResponseJSON = """{
-    "trackingId": "89108749065090",
-    "eventHistory": [
-        {
-            "eventCode": "Delivered",
-            "location": {
-                "city": "San Bernardino",
-                "countryCode": "US",
-                "stateOrRegion": "CA",
-                "postalCode": "92404"
-            },
-            "eventTime": "2019-04-04T06:45:12Z"
-        }
-    ],
-    "promisedDeliveryDate": "2019-04-04T07:05:06Z",
-    "summary": {
-        "status": "Delivered"
+  "trackingId": "89108749065090",
+  "alternateLegTrackingId": null,
+  "eventHistory": [
+    {
+      "eventCode": "Delivered",
+      "location": {
+        "city": "Seattle",
+        "stateOrRegion": "WA",
+        "countryCode": "US",
+        "postalCode": "98101"
+      },
+      "eventTime": "2024-01-17T14:30:00Z",
+      "shipmentType": "FORWARD"
+    },
+    {
+      "eventCode": "OutForDelivery",
+      "location": {
+        "city": "Seattle",
+        "stateOrRegion": "WA",
+        "countryCode": "US",
+        "postalCode": "98101"
+      },
+      "eventTime": "2024-01-17T08:00:00Z",
+      "shipmentType": "FORWARD"
+    },
+    {
+      "eventCode": "InTransit",
+      "location": {
+        "city": "Portland",
+        "stateOrRegion": "OR",
+        "countryCode": "US",
+        "postalCode": "97201"
+      },
+      "eventTime": "2024-01-16T10:00:00Z",
+      "shipmentType": "FORWARD"
     }
+  ],
+  "promisedDeliveryDate": "2024-01-17T20:00:00Z",
+  "summary": {
+    "status": "Delivered",
+    "trackingDetailCodes": {
+      "forward": ["Signed"],
+      "returns": []
+    },
+    "proofOfDelivery": {
+      "deliveryLocationCoordinates": {
+        "latitude": 47.6062,
+        "longitude": -122.3321
+      },
+      "deliveryImageURL": null,
+      "receivedBy": "John Doe"
+    }
+  }
 }
 """
 
 ErrorResponseJSON = """{
-    "errors": [
-        {
-            "code": "incididunt qui",
-            "message": "officia cillum ut",
-            "details": "sint est"
-        },
-        {
-            "code": "nostrud laboris ex culpa do",
-            "message": "consequat quis ut minim voluptate",
-            "details": "incididunt"
-        }
-    ]
+  "errors": [
+    {
+      "code": "InvalidTrackingId",
+      "message": "The tracking ID provided is not valid",
+      "details": "Tracking ID not found"
+    }
+  ]
 }
 """

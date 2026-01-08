@@ -23,12 +23,36 @@
       "end": "2024-01-15T20:00:00Z"
     }
   },
-  "benefits": {
-    "includedBenefits": ["CLAIMS_PROTECTED"],
-    "excludedBenefits": []
+  "carrier": {
+    "id": "AMZN_US",
+    "name": "Amazon Shipping"
+  },
+  "service": {
+    "id": "AMZN_US_STD",
+    "name": "Amazon Shipping Standard"
   },
   "totalCharge": {
     "value": 7.99,
     "unit": "USD"
-  }
+  },
+  "rateItems": [
+    {
+      "rateItemCharge": {
+        "unit": "USD",
+        "value": 6.99
+      },
+      "rateItemID": "BASE_RATE",
+      "rateItemNameLocalization": "Base Rate",
+      "rateItemType": "MANDATORY"
+    },
+    {
+      "rateItemCharge": {
+        "unit": "USD",
+        "value": 1.00
+      },
+      "rateItemID": "FUEL_SURCHARGE",
+      "rateItemNameLocalization": "Fuel Surcharge",
+      "rateItemType": "INCLUDED"
+    }
+  ]
 }

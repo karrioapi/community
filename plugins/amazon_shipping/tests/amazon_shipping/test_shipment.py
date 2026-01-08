@@ -1,21 +1,25 @@
+"""Amazon Shipping shipment tests."""
+
 import unittest
 from unittest.mock import patch
-from karrio.core.utils import DP
-from karrio.core.models import ShipmentRequest, ShipmentCancelRequest
-from karrio.sdk import Shipment
+import karrio.lib as lib
+import karrio.sdk as karrio
+import karrio.core.models as models
 from .fixture import gateway
 
 
 class TestAmazonShippingShipment(unittest.TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.ShipmentRequest = ShipmentRequest(**SHIPMENT_PAYLOAD)
-        self.ShipmentCancelRequest = ShipmentCancelRequest(**CANCEL_SHIPMENT_PAYLOAD)
+        self.ShipmentRequest = models.ShipmentRequest(**SHIPMENT_PAYLOAD)
+        self.ShipmentCancelRequest = models.ShipmentCancelRequest(
+            **CANCEL_SHIPMENT_PAYLOAD
+        )
 
     def test_create_shipment_request(self):
         request = gateway.mapper.create_shipment_request(self.ShipmentRequest)
 
-        self.assertEqual(request.serialize(), ShipmentRequestJSON)
+        self.assertDictEqual(request.serialize(), ShipmentRequestJSON)
 
     def test_create_cancel_shipment_request(self):
         request = gateway.mapper.create_cancel_shipment_request(
@@ -27,47 +31,47 @@ class TestAmazonShippingShipment(unittest.TestCase):
     def test_create_shipment(self):
         with patch("karrio.mappers.amazon_shipping.proxy.lib.request") as mock:
             mock.return_value = "{}"
-            Shipment.create(self.ShipmentRequest).from_(gateway)
+            karrio.Shipment.create(self.ShipmentRequest).from_(gateway)
 
             self.assertEqual(
                 mock.call_args[1]["url"],
-                f"{gateway.settings.server_url}/shipping/v1/purchaseShipment",
+                f"{gateway.settings.server_url}/shipping/v2/oneClickShipment",
             )
 
-    def test_create_cancel_shipment(self):
+    def test_cancel_shipment(self):
         with patch("karrio.mappers.amazon_shipping.proxy.lib.request") as mock:
             mock.return_value = "{}"
-            Shipment.cancel(self.ShipmentCancelRequest).from_(gateway)
+            karrio.Shipment.cancel(self.ShipmentCancelRequest).from_(gateway)
 
             self.assertEqual(
                 mock.call_args[1]["url"],
-                f"{gateway.settings.server_url}/shipping/v1/shipments/{self.ShipmentCancelRequest.shipment_identifier}/cancel",
+                f"{gateway.settings.server_url}/shipping/v2/shipments/{self.ShipmentCancelRequest.shipment_identifier}/cancel",
             )
 
     def test_parse_shipment_response(self):
         with patch("karrio.mappers.amazon_shipping.proxy.lib.request") as mock:
             mock.return_value = ShipmentResponseJSON
-            response = Shipment.create(self.ShipmentRequest).from_(gateway)
+            response = karrio.Shipment.create(self.ShipmentRequest).from_(gateway)
 
             with patch(
                 "karrio.providers.amazon_shipping.shipment.create.lib.image_to_pdf"
-            ) as mock:
-                mock.return_value = ""
+            ) as pdf_mock:
+                pdf_mock.return_value = "base64_pdf_label"
                 parsed_response = response.parse()
 
                 self.assertListEqual(
-                    DP.to_dict(parsed_response), ParsedShipmentResponse
+                    lib.to_dict(parsed_response), ParsedShipmentResponse
                 )
 
     def test_parse_cancel_shipment_response(self):
         with patch("karrio.mappers.amazon_shipping.proxy.lib.request") as mock:
-            mock.return_value = ""
+            mock.return_value = "{}"
             parsed_response = (
-                Shipment.cancel(self.ShipmentCancelRequest).from_(gateway).parse()
+                karrio.Shipment.cancel(self.ShipmentCancelRequest).from_(gateway).parse()
             )
 
             self.assertListEqual(
-                DP.to_dict(parsed_response), ParsedCancelShipmentResponse
+                lib.to_dict(parsed_response), ParsedCancelShipmentResponse
             )
 
 
@@ -76,7 +80,7 @@ if __name__ == "__main__":
 
 
 SHIPMENT_PAYLOAD = {
-    "service": "amazon_shipping_ups_next_day_air",
+    "service": "amazon_shipping_standard",
     "reference": "order #1111",
     "recipient": {
         "company_name": "AmazonShipping",
@@ -85,7 +89,9 @@ SHIPMENT_PAYLOAD = {
         "city": "San Francisco",
         "state_code": "CA",
         "postal_code": "94104",
+        "country_code": "US",
         "phone_number": "415-528-7555",
+        "email": "recipient@example.com",
     },
     "shipper": {
         "person_name": "George Costanza",
@@ -94,22 +100,92 @@ SHIPMENT_PAYLOAD = {
         "city": "Bronx",
         "state_code": "NY",
         "postal_code": "10451",
+        "country_code": "US",
+        "email": "shipper@example.com",
     },
     "parcels": [{"length": 9.0, "width": 6.0, "height": 2.0, "weight": 10.0}],
 }
 
 CANCEL_SHIPMENT_PAYLOAD = {
-    "shipment_identifier": "shipment_id",
+    "shipment_identifier": "shipment-12345",
+}
+
+ShipmentRequestJSON = {
+    "shipFrom": {
+        "name": "Vandelay Industries",
+        "addressLine1": "1 E 161st St.",
+        "companyName": "Vandelay Industries",
+        "stateOrRegion": "NY",
+        "city": "Bronx",
+        "countryCode": "US",
+        "postalCode": "10451",
+        "email": "shipper@example.com",
+    },
+    "shipTo": {
+        "name": "AmazonShipping",
+        "addressLine1": "417 Montgomery Street",
+        "addressLine2": "5th Floor",
+        "companyName": "AmazonShipping",
+        "stateOrRegion": "CA",
+        "city": "San Francisco",
+        "countryCode": "US",
+        "postalCode": "94104",
+        "email": "recipient@example.com",
+        "phoneNumber": "415-528-7555",
+    },
+    "packages": [
+        {
+            "dimensions": {
+                "length": 9.0,
+                "width": 6.0,
+                "height": 2.0,
+                "unit": "INCH",
+            },
+            "weight": {
+                "value": 10.0,
+                "unit": "POUND",
+            },
+            "packageClientReferenceId": "1",
+        }
+    ],
+    "channelDetails": {
+        "channelType": "EXTERNAL",
+    },
+    "labelSpecifications": {
+        "format": "PNG",
+        "size": {
+            "length": 6,
+            "width": 4,
+            "unit": "INCH",
+        },
+        "dpi": 300,
+        "pageLayout": "DEFAULT",
+        "needFileJoining": False,
+        "requestedDocumentTypes": ["LABEL"],
+    },
+    "serviceSelection": {
+        "serviceId": ["AMZN_US_STD"],
+    },
 }
 
 ParsedShipmentResponse = [
     {
         "carrier_id": "amazon_shipping",
         "carrier_name": "amazon_shipping",
-        "docs": {},
+        "docs": {"label": "base64_pdf_label"},
         "label_type": "PDF",
-        "meta": {"containerReferenceId": "CRI123456789"},
-        "tracking_number": "1512748795322",
+        "meta": {
+            "carrier_id": "AMZN",
+            "carrier_name": "Amazon",
+            "currency": "USD",
+            "service_id": "AMZN_US_STD",
+            "service_name": "Amazon Shipping Standard",
+            "shipment_id": "shipment-12345",
+            "total_charge": 5.25,
+            "tracking_numbers": ["1Z999AA10123456784"],
+        },
+        "shipment_identifier": "shipment-12345",
+        "tracking_number": "1Z999AA10123456784",
     },
     [],
 ]
@@ -118,77 +194,40 @@ ParsedCancelShipmentResponse = [
     {
         "carrier_id": "amazon_shipping",
         "carrier_name": "amazon_shipping",
-        "operation": "cancel shipment",
+        "operation": "Cancel Shipment",
         "success": True,
     },
     [],
 ]
 
 
-ShipmentRequestJSON = {
-    "clientReferenceId": "order #1111",
-    "containers": [
-        {
-            "containerType": "PACKAGE",
-            "dimensions": {"height": 2.0, "length": 9.0, "unit": "IN", "width": 6.0},
-            "weight": {"unit": "LB", "value": 10.0},
-        }
-    ],
-    "labelSpecification": {"labelFormat": "PNG", "labelStockSize": "4X6"},
-    "serviceType": "amazon_shipping_ups_next_day_air",
-    "shipFrom": {
-        "addressLine1": "1 E 161st St.",
-        "city": "Bronx",
-        "name": "George Costanza",
-        "stateOrRegion": "NY",
-    },
-    "shipTo": {
-        "addressLine1": "417 Montgomery Street",
-        "addressLine2": "5th Floor",
-        "city": "San Francisco",
-        "phoneNumber": "415-528-7555",
-        "stateOrRegion": "CA",
-    },
-}
-
-CancelShipmentRequestJSON = "shipment_id"
+CancelShipmentRequestJSON = "shipment-12345"
 
 ShipmentResponseJSON = """{
-  "shipmentId": "89108749065090",
-  "serviceRate": {
-    "billableWeight": {
-      "value": 4,
-      "unit": "kg"
-    },
-    "totalCharge": {
-      "value": 3.5,
-      "unit": "GBP"
-    },
-    "serviceType": "Amazon Shipping Standard",
-    "promise": {
-      "deliveryWindow": {
-        "start": "2018-08-25T20:22:30.737Z",
-        "end": "2018-08-26T20:22:30.737Z"
-      },
-      "receiveWindow": {
-        "start": "2018-08-23T09:22:30.737Z",
-        "end": "2018-08-23T11:22:30.737Z"
-      }
-    }
+  "shipmentId": "shipment-12345",
+  "carrier": {
+    "id": "AMZN",
+    "name": "Amazon"
   },
-  "labelResults": [
+  "service": {
+    "id": "AMZN_US_STD",
+    "name": "Amazon Shipping Standard"
+  },
+  "totalCharge": {
+    "value": 5.25,
+    "unit": "USD"
+  },
+  "packageDocumentDetails": [
     {
-      "containerReferenceId": "CRI123456789",
-      "trackingId": "1512748795322",
-      "label": {
-        "labelStream": "iVBORw0KGgo...AAAARK5CYII=(Truncated)",
-        "labelSpecification": {
-          "labelFormat": "PNG",
-          "labelStockSize": "4x6"
+      "trackingId": "1Z999AA10123456784",
+      "packageDocuments": [
+        {
+          "type": "LABEL",
+          "format": "PNG",
+          "contents": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
         }
-      }
+      ]
     }
   ]
 }
-
 """

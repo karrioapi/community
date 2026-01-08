@@ -1,104 +1,165 @@
-import karrio.schemas.amazon_shipping.rate_request as amazon
-from karrio.schemas.amazon_shipping.rate_response import ServiceRate
+"""Karrio Amazon Shipping rating implementation."""
 
 import typing
 import karrio.lib as lib
-import karrio.core.units as units
 import karrio.core.models as models
-import karrio.core.errors as errors
-import karrio.providers.amazon_shipping.error as provider_error
-import karrio.providers.amazon_shipping.units as provider_units
+import karrio.providers.amazon_shipping.error as error
 import karrio.providers.amazon_shipping.utils as provider_utils
+import karrio.providers.amazon_shipping.units as provider_units
+import karrio.schemas.amazon_shipping.rate_response as amazon
 
 
 def parse_rate_response(
-    _response: lib.Deserializable[dict], settings: provider_utils.Settings
+    _response: lib.Deserializable[dict],
+    settings: provider_utils.Settings,
 ) -> typing.Tuple[typing.List[models.RateDetails], typing.List[models.Message]]:
+    """Parse rate response from Amazon Shipping API."""
     response = _response.deserialize()
-    errors: typing.List[models.Message] = sum(
-        [
-            provider_error.parse_error_response(data, settings)
-            for data in response.get("errors", [])
-        ],
-        [],
-    )
+    messages = error.parse_error_response(response, settings)
+
     rates = [
-        _extract_details(data, settings) for data in response.get("serviceRates", [])
+        _extract_details(rate, settings)
+        for rate in response.get("rates") or []
     ]
 
-    return rates, errors
+    return rates, messages
 
 
 def _extract_details(
     data: dict,
     settings: provider_utils.Settings,
 ) -> models.RateDetails:
-    rate = lib.to_object(ServiceRate, data)
-    transit = (
-        lib.to_date(rate.promise.deliveryWindow.start, "%Y-%m-%dT%H:%M:%S.%fZ").date()
-        - lib.to_date(rate.promise.receiveWindow.end, "%Y-%m-%dT%H:%M:%S.%fZ").date()
-    ).days
+    """Extract rate details from API response."""
+    rate = lib.to_object(amazon.Rate, data)
+
+    # Calculate transit days from delivery window
+    transit_days = lib.failsafe(
+        lambda: (
+            lib.to_date(rate.promise.deliveryWindow.start).date()
+            - lib.to_date(rate.promise.pickupWindow.start).date()
+        ).days
+    )
+
+    # Extract rate items as extra charges
+    extra_charges = [
+        models.ChargeDetails(
+            name=item.rateItemNameLocalization or item.rateItemID,
+            amount=lib.to_money(item.rateItemCharge.value),
+            currency=item.rateItemCharge.unit,
+        )
+        for item in rate.rateItemList or []
+    ]
 
     return models.RateDetails(
         carrier_id=settings.carrier_id,
         carrier_name=settings.carrier_name,
-        service=provider_units.Service.map(rate.serviceType).name_or_key,
-        total_charge=lib.to_decimal(rate.totalCharge.value),
+        service=provider_units.ShippingService.map(rate.serviceId).name_or_key,
+        total_charge=lib.to_money(rate.totalCharge.value),
         currency=rate.totalCharge.unit,
-        transit_days=transit,
+        transit_days=transit_days,
+        extra_charges=extra_charges,
         meta=dict(
-            service_name=rate.serviceType,
+            rate_id=rate.rateId,
+            carrier_id=rate.carrierId,
+            carrier_name=rate.carrierName,
+            service_id=rate.serviceId,
+            service_name=rate.serviceName,
         ),
     )
 
 
-def rate_request(payload: models.RateRequest, _) -> lib.Serializable:
+def rate_request(
+    payload: models.RateRequest,
+    settings: provider_utils.Settings,
+) -> lib.Serializable:
+    """Create Amazon Shipping rate request."""
     shipper = lib.to_address(payload.shipper)
     recipient = lib.to_address(payload.recipient)
-    packages = lib.to_packages(payload.parcels)
-    options = lib.to_shipping_options(payload.options)
-    services = lib.to_services(payload.services, provider_units.Service)
+    packages = lib.to_packages(payload.parcels, required=["weight"])
+    services = lib.to_services(payload.services, provider_units.ShippingService)
+    options = lib.to_shipping_options(
+        payload.options,
+        package_options=packages.options,
+        initializer=provider_units.shipping_options_initializer,
+    )
 
-    request = amazon.RateRequest(
-        shipFrom=amazon.Ship(
-            name=shipper.person_name,
-            city=shipper.city,
+    # Determine label format from options or settings
+    label_format = (
+        options.amazon_shipping_label_format.state
+        or settings.connection_config.label_format.state
+        or "PNG"
+    )
+
+    request = dict(
+        shipFrom=dict(
+            name=shipper.company_name or shipper.person_name,
             addressLine1=shipper.street,
             addressLine2=shipper.address_line2,
+            addressLine3=None,
+            companyName=shipper.company_name,
             stateOrRegion=shipper.state_code,
+            city=shipper.city,
+            countryCode=shipper.country_code,
+            postalCode=shipper.postal_code,
             email=shipper.email,
-            copyEmails=lib.join(shipper.email),
             phoneNumber=shipper.phone_number,
         ),
-        shipTo=amazon.Ship(
-            name=recipient.person_name,
-            city=recipient.city,
+        shipTo=dict(
+            name=recipient.company_name or recipient.person_name,
             addressLine1=recipient.street,
             addressLine2=recipient.address_line2,
+            addressLine3=None,
+            companyName=recipient.company_name,
             stateOrRegion=recipient.state_code,
+            city=recipient.city,
+            countryCode=recipient.country_code,
+            postalCode=recipient.postal_code,
             email=recipient.email,
-            copyEmails=lib.join(recipient.email),
             phoneNumber=recipient.phone_number,
         ),
-        serviceTypes=list(services),
         shipDate=lib.fdatetime(
-            options.shipment_date.state, "%Y-%m-%d", "%Y-%m-%dT%H:%M:%S.%fZ"
-        ),
-        containerSpecifications=[
-            amazon.ContainerSpecification(
-                dimensions=amazon.Dimensions(
-                    height=package.height.IN,
+            options.shipment_date.state,
+            current_format="%Y-%m-%d",
+            output_format="%Y-%m-%dT%H:%M:%SZ",
+        ) if options.shipment_date.state else None,
+        packages=[
+            dict(
+                dimensions=dict(
                     length=package.length.IN,
                     width=package.width.IN,
-                    unit="IN",
-                ),
-                weight=amazon.Weight(
+                    height=package.height.IN,
+                    unit="INCH",
+                ) if package.has_dimensions else None,
+                weight=dict(
                     value=package.weight.LB,
-                    unit="LB",
+                    unit="POUND",
                 ),
+                insuredValue=dict(
+                    value=lib.to_money(package.options.declared_value.state),
+                    unit=package.options.currency.state or "USD",
+                ) if package.options.declared_value.state else None,
+                packageClientReferenceId=package.parcel.id or str(index),
             )
-            for package in packages
+            for index, package in enumerate(packages, 1)
         ],
+        channelDetails=dict(
+            channelType=options.amazon_shipping_channel_type.state or "EXTERNAL",
+        ),
+        labelSpecifications=dict(
+            format=label_format,
+            size=dict(
+                length=settings.connection_config.label_size_length.state or 6,
+                width=settings.connection_config.label_size_width.state or 4,
+                unit=settings.connection_config.label_size_unit.state or "INCH",
+            ),
+            dpi=300,
+            pageLayout="DEFAULT",
+            needFileJoining=False,
+            requestedDocumentTypes=["LABEL"],
+        ),
+        serviceSelection=dict(
+            serviceId=list(services) if any(services) else None,
+        ) if any(services) else None,
     )
 
     return lib.Serializable(request, lib.to_dict)

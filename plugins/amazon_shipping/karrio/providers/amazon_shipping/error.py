@@ -1,4 +1,5 @@
-import karrio.schemas.amazon_shipping.error_response as amazon
+"""Karrio Amazon Shipping error parser."""
+
 import typing
 import karrio.lib as lib
 import karrio.core.models as models
@@ -6,24 +7,32 @@ import karrio.providers.amazon_shipping.utils as provider_utils
 
 
 def parse_error_response(
-    response: dict, settings: provider_utils.Settings, details: dict = None
+    response: dict,
+    settings: provider_utils.Settings,
+    **kwargs,
 ) -> typing.List[models.Message]:
-    errors = (
-        lib.to_object(amazon.ErrorResponse, response)
-        if response.get("errors") is not None
-        else amazon.ErrorResponse(errors=[])
-    )
+    """Parse error response from Amazon Shipping API.
+
+    The v2 API returns errors in the format:
+    {
+        "errors": [
+            {"code": "InvalidRequest", "message": "...", "details": "..."}
+        ]
+    }
+    """
+    errors = response.get("errors") or []
 
     return [
         models.Message(
             carrier_id=settings.carrier_id,
             carrier_name=settings.carrier_name,
-            code=error.code,
-            message=error.message,
+            code=error.get("code"),
+            message=error.get("message"),
             details={
-                **(details or {}),
-                **({} if error.details is None else {"note": error.details}),
-            },
+                **kwargs,
+                **({"note": error.get("details")} if error.get("details") else {}),
+            } or None,
         )
-        for error in errors.errors
+        for error in errors
+        if error.get("code") or error.get("message")
     ]
