@@ -5,6 +5,16 @@ import karrio.core.units as units
 import karrio.core.models as models
 
 
+# EasyPost API carrier name normalization mapping
+# Maps EasyPost's carrier variations to Karrio's standard CarrierId enum names
+CARRIER_NAME_NORMALIZATION = {
+    "UPSDAP": "UPS",
+    "UPS DAP": "UPS",
+    "FedExDefault": "FedEx",
+    "FedEx Default": "FedEx",
+}
+
+
 class LabelType(lib.Enum):
     PDF = "PDF"
     ZPL = "ZPL"
@@ -862,13 +872,38 @@ class Service(lib.StrEnum):
 
     @staticmethod
     def info(serviceName, carrier):
-        rate_provider = CarrierId.map(carrier).name_or_key
-        service = Service.map(serviceName)
+        # Normalize carrier name to handle EasyPost API variations
+        normalized_carrier = CARRIER_NAME_NORMALIZATION.get(carrier, carrier)
+        rate_provider = CarrierId.map(normalized_carrier).name_or_key
+
+        # Try carrier-qualified lookup first to avoid service name collisions
+        service_code = None
+        carrier_enum = CarrierId.map(normalized_carrier)
+
+        if carrier_enum.name and serviceName:
+            # Construct carrier-qualified service code: easypost_{carrier}_{service}
+            carrier_code = carrier_enum.name
+            service_snake = lib.to_snake_case(serviceName)
+            qualified_service_name = f"easypost_{carrier_code}_{service_snake}"
+
+            # Check if the qualified service exists
+            # Note: We cannot use Service.map() because Python enums with duplicate
+            # values create aliases, so Service.easypost_usps_priority and
+            # Service.easypost_canadapost_priority are the SAME object (both = 'Priority')
+            if hasattr(Service, qualified_service_name):
+                service_code = qualified_service_name
+
+        # Fallback to original behavior if qualified lookup fails
+        if not service_code:
+            service = Service.map(serviceName)
+            service_code = service.name_or_key
+
+        # Format the service name for display
         service_name = re.sub(
-            r"((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))", r" \1", service.name_or_key
+            r"((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))", r" \1", service_code
         ).replace("easypost_", "")
 
-        return rate_provider, service.name_or_key, service_name
+        return rate_provider, service_code, service_name
 
 
 class CarrierId(lib.StrEnum):

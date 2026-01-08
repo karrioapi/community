@@ -40,6 +40,14 @@ class TestEasyPostRating(unittest.TestCase):
 
             self.assertListEqual(DP.to_dict(parsed_response), ParsedErrorResponse)
 
+    def test_service_collision_fix(self):
+        """Test that service collisions are resolved using carrier context"""
+        with patch("karrio.mappers.easypost.proxy.lib.request") as mock:
+            mock.return_value = ServiceCollisionResponseJSON
+            parsed_response = Rating.fetch(self.RateRequest).from_(gateway).parse()
+
+            self.assertListEqual(DP.to_dict(parsed_response), ParsedServiceCollisionResponse)
+
 
 if __name__ == "__main__":
     unittest.main()
@@ -303,3 +311,110 @@ ErrorResponseJSON = """{
 	}
 }
 """
+
+# Test data for service collision fix
+ServiceCollisionResponseJSON = """{
+  "id": "shp_test_collision",
+  "object": "Shipment",
+  "rates": [
+    {
+      "id": "rate_usps_priority",
+      "object": "Rate",
+      "carrier_account_id": "ca_usps",
+      "service": "Priority",
+      "rate": "15.85",
+      "carrier": "USPS",
+      "shipment_id": "shp_test_collision",
+      "delivery_days": 3,
+      "created_at": "2025-12-24T10:00:00Z",
+      "updated_at": "2025-12-24T10:00:00Z"
+    },
+    {
+      "id": "rate_ups_ground",
+      "object": "Rate",
+      "carrier_account_id": "ca_ups",
+      "service": "Ground",
+      "rate": "17.09",
+      "carrier": "UPS",
+      "shipment_id": "shp_test_collision",
+      "delivery_days": 3,
+      "created_at": "2025-12-24T10:00:00Z",
+      "updated_at": "2025-12-24T10:00:00Z"
+    },
+    {
+      "id": "rate_canadapost_priority",
+      "object": "Rate",
+      "carrier_account_id": "ca_canadapost",
+      "service": "Priority",
+      "rate": "18.50",
+      "carrier": "Canada Post",
+      "shipment_id": "shp_test_collision",
+      "delivery_days": 2,
+      "created_at": "2025-12-24T10:00:00Z",
+      "updated_at": "2025-12-24T10:00:00Z"
+    },
+    {
+      "id": "rate_canpar_ground",
+      "object": "Rate",
+      "carrier_account_id": "ca_canpar",
+      "service": "Ground",
+      "rate": "12.99",
+      "carrier": "Canpar",
+      "shipment_id": "shp_test_collision",
+      "delivery_days": 4,
+      "created_at": "2025-12-24T10:00:00Z",
+      "updated_at": "2025-12-24T10:00:00Z"
+    }
+  ]
+}
+"""
+
+ParsedServiceCollisionResponse = [
+    [
+        {
+            "carrier_id": "easypost",
+            "carrier_name": "easypost",
+            "meta": {
+                "rate_provider": "usps",
+                "service_name": "usps_priority",
+            },
+            "service": "easypost_usps_priority",
+            "total_charge": 15.85,
+            "transit_days": 3,
+        },
+        {
+            "carrier_id": "easypost",
+            "carrier_name": "easypost",
+            "meta": {
+                "rate_provider": "ups",
+                "service_name": "ups_ground",
+            },
+            "service": "easypost_ups_ground",
+            "total_charge": 17.09,
+            "transit_days": 3,
+        },
+        {
+            "carrier_id": "easypost",
+            "carrier_name": "easypost",
+            "meta": {
+                "rate_provider": "canadapost",
+                "service_name": "canadapost_priority",
+            },
+            "service": "easypost_canadapost_priority",
+            "total_charge": 18.5,
+            "transit_days": 2,
+        },
+        {
+            "carrier_id": "easypost",
+            "carrier_name": "easypost",
+            "meta": {
+                "rate_provider": "canpar",
+                "service_name": "canpar_ground",
+            },
+            "service": "easypost_canpar_ground",
+            "total_charge": 12.99,
+            "transit_days": 4,
+        },
+    ],
+    [],
+]
