@@ -49,7 +49,7 @@ class ServiceSelection:
 
 
 @attr.s(auto_attribs=True)
-class RateRequest:
+class OneClickShipmentRequest:
     shipFrom: typing.Optional[typing.Dict[str, typing.Optional[str]]] = None
     shipTo: typing.Optional[typing.Dict[str, typing.Optional[str]]] = None
     returnTo: typing.Any = None

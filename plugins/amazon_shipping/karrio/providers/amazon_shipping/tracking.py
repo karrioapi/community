@@ -1,63 +1,93 @@
-import karrio.schemas.amazon_shipping.tracking_response as amazon
+"""Karrio Amazon Shipping tracking implementation."""
+
 import typing
 import karrio.lib as lib
 import karrio.core.models as models
 import karrio.providers.amazon_shipping.error as error
 import karrio.providers.amazon_shipping.utils as provider_utils
 import karrio.providers.amazon_shipping.units as provider_units
+import karrio.schemas.amazon_shipping.tracking_response as amazon
 
 
 def parse_tracking_response(
     _response: lib.Deserializable[typing.List[typing.Tuple[str, dict]]],
     settings: provider_utils.Settings,
 ) -> typing.Tuple[typing.List[models.TrackingDetails], typing.List[models.Message]]:
+    """Parse tracking response from Amazon Shipping API."""
     responses = _response.deserialize()
-    errors: typing.List[models.Message] = sum(
+
+    messages: typing.List[models.Message] = sum(
         [
-            error.parse_error_response(response, settings, dict(tracking_number=id))
-            for id, response in responses
-            if "errors" in response
+            error.parse_error_response(response, settings, tracking_number=tracking_id)
+            for tracking_id, response in responses
+            if response.get("errors")
         ],
         [],
     )
+
     trackers = [
-        _extract_details(response, settings)
-        for _, response in responses
-        if "errors" not in response
+        _extract_details(tracking_id, response, settings)
+        for tracking_id, response in responses
+        if not response.get("errors")
     ]
 
-    return trackers, errors
+    return trackers, messages
 
 
 def _extract_details(
+    tracking_id: str,
     data: dict,
     settings: provider_utils.Settings,
 ) -> models.TrackingDetails:
+    """Extract tracking details from API response."""
     details = lib.to_object(amazon.TrackingResponse, data)
-    delivered = details.summary.status == "Delivered"
-    estimated_delivery = lib.fdate(details.promisedDeliveryDate, "%Y-%m-%dT%H:%M:%SZ")
+    events = details.eventHistory or []
+    summary = details.summary
+
+    # Check if delivered based on summary status
+    delivered = lib.failsafe(lambda: summary.status == "Delivered") or False
+
+    # Get status from the latest event
+    latest_event = next(iter(events), None)
+    status = lib.failsafe(
+        lambda: next(
+            (
+                s.name
+                for s in list(provider_units.TrackingStatus)
+                if latest_event.eventCode in s.value
+            ),
+            None,
+        )
+    )
 
     return models.TrackingDetails(
         carrier_id=settings.carrier_id,
         carrier_name=settings.carrier_name,
-        tracking_number=details.trackingId,
-        estimated_delivery=estimated_delivery,
+        tracking_number=details.trackingId or tracking_id,
         delivered=delivered,
+        status=status,
+        estimated_delivery=lib.fdate(
+            details.promisedDeliveryDate,
+            "%Y-%m-%dT%H:%M:%SZ",
+        ),
         events=[
             models.TrackingEvent(
                 date=lib.fdate(event.eventTime, "%Y-%m-%dT%H:%M:%SZ"),
-                description=event.eventCode,
-                code=event.eventCode,
                 time=lib.flocaltime(event.eventTime, "%Y-%m-%dT%H:%M:%SZ"),
+                code=event.eventCode,
+                description=event.eventCode,
                 location=lib.join(
-                    event.location.city,
-                    event.location.stateOrRegion,
-                    event.location.postalCode,
-                    event.location.countryCode,
+                    lib.failsafe(lambda: event.location.city),
+                    lib.failsafe(lambda: event.location.stateOrRegion),
+                    lib.failsafe(lambda: event.location.postalCode),
+                    lib.failsafe(lambda: event.location.countryCode),
                     join=True,
                     separator=", ",
                 ),
-                timestamp=lib.fiso_timestamp(event.eventTime, current_format="%Y-%m-%dT%H:%M:%SZ"),
+                timestamp=lib.fiso_timestamp(
+                    event.eventTime,
+                    current_format="%Y-%m-%dT%H:%M:%SZ",
+                ),
                 status=next(
                     (
                         s.name
@@ -75,10 +105,33 @@ def _extract_details(
                     None,
                 ),
             )
-            for event in details.eventHistory
+            for event in events
         ],
+        meta=dict(
+            carrier_tracking_id=details.trackingId,
+            alternate_tracking_id=details.alternateLegTrackingId,
+            received_by=lib.failsafe(
+                lambda: summary.proofOfDelivery.receivedBy
+            ),
+        ),
     )
 
 
-def tracking_request(payload: models.TrackingRequest, _) -> lib.Serializable:
-    return lib.Serializable(payload.tracking_numbers)
+def tracking_request(
+    payload: models.TrackingRequest,
+    settings: provider_utils.Settings,
+) -> lib.Serializable:
+    """Create Amazon Shipping tracking request.
+
+    Returns tracking data for parallel tracking requests.
+    """
+    # Build tracking request data for each tracking number
+    tracking_data = [
+        dict(
+            tracking_id=tracking_number,
+            carrier_id=payload.options.get("carrier_id", "AMZN_US"),
+        )
+        for tracking_number in payload.tracking_numbers
+    ]
+
+    return lib.Serializable(tracking_data)

@@ -1,44 +1,51 @@
+"""Amazon Shipping rating tests."""
+
 import unittest
-from unittest.mock import patch, ANY
-from karrio.core.utils import DP
-from karrio.core.models import RateRequest
-from karrio.sdk import Rating
+from unittest.mock import patch
+import karrio.lib as lib
+import karrio.sdk as karrio
+import karrio.core.models as models
 from .fixture import gateway
 
 
 class TestAmazonShippingRating(unittest.TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.RateRequest = RateRequest(**PAYLOAD)
+        self.RateRequest = models.RateRequest(**RATE_PAYLOAD)
 
     def test_create_rate_request(self):
         request = gateway.mapper.create_rate_request(self.RateRequest)
 
-        self.assertEqual(request.serialize(), RateRequestJSON)
+        self.assertDictEqual(request.serialize(), RateRequestJSON)
 
     def test_get_rate(self):
         with patch("karrio.mappers.amazon_shipping.proxy.lib.request") as mock:
             mock.return_value = "{}"
-            Rating.fetch(self.RateRequest).from_(gateway)
+            karrio.Rating.fetch(self.RateRequest).from_(gateway)
 
             self.assertEqual(
                 mock.call_args[1]["url"],
-                f"{gateway.settings.server_url}/shipping/v1/rates",
+                f"{gateway.settings.server_url}/shipping/v2/shipments/rates",
             )
 
     def test_parse_rate_response(self):
         with patch("karrio.mappers.amazon_shipping.proxy.lib.request") as mock:
             mock.return_value = RateResponseJSON
-            parsed_response = Rating.fetch(self.RateRequest).from_(gateway).parse()
+            parsed_response = (
+                karrio.Rating.fetch(self.RateRequest).from_(gateway).parse()
+            )
 
-            self.assertListEqual(DP.to_dict(parsed_response), ParsedRateResponse)
+            self.assertListEqual(
+                lib.to_dict(parsed_response),
+                ParsedRateResponse,
+            )
 
 
 if __name__ == "__main__":
     unittest.main()
 
 
-PAYLOAD = {
+RATE_PAYLOAD = {
     "reference": "order #1111",
     "recipient": {
         "company_name": "AmazonShipping",
@@ -47,7 +54,9 @@ PAYLOAD = {
         "city": "San Francisco",
         "state_code": "CA",
         "postal_code": "94104",
+        "country_code": "US",
         "phone_number": "415-528-7555",
+        "email": "test@example.com",
     },
     "shipper": {
         "person_name": "George Costanza",
@@ -56,9 +65,65 @@ PAYLOAD = {
         "city": "Bronx",
         "state_code": "NY",
         "postal_code": "10451",
+        "country_code": "US",
     },
     "parcels": [{"length": 9.0, "width": 6.0, "height": 2.0, "weight": 10.0}],
-    "options": {"shipment_date": "2020-04-04"},
+    "options": {"shipment_date": "2024-01-15"},
+}
+
+RateRequestJSON = {
+    "shipFrom": {
+        "name": "Vandelay Industries",
+        "addressLine1": "1 E 161st St.",
+        "companyName": "Vandelay Industries",
+        "stateOrRegion": "NY",
+        "city": "Bronx",
+        "countryCode": "US",
+        "postalCode": "10451",
+    },
+    "shipTo": {
+        "name": "AmazonShipping",
+        "addressLine1": "417 Montgomery Street",
+        "addressLine2": "5th Floor",
+        "companyName": "AmazonShipping",
+        "stateOrRegion": "CA",
+        "city": "San Francisco",
+        "countryCode": "US",
+        "postalCode": "94104",
+        "email": "test@example.com",
+        "phoneNumber": "415-528-7555",
+    },
+    "shipDate": "2024-01-15T00:00:00Z",
+    "packages": [
+        {
+            "dimensions": {
+                "length": 9.0,
+                "width": 6.0,
+                "height": 2.0,
+                "unit": "INCH",
+            },
+            "weight": {
+                "value": 10.0,
+                "unit": "POUND",
+            },
+            "packageClientReferenceId": "1",
+        }
+    ],
+    "channelDetails": {
+        "channelType": "EXTERNAL",
+    },
+    "labelSpecifications": {
+        "format": "PNG",
+        "size": {
+            "length": 6,
+            "width": 4,
+            "unit": "INCH",
+        },
+        "dpi": 300,
+        "pageLayout": "DEFAULT",
+        "needFileJoining": False,
+        "requestedDocumentTypes": ["LABEL"],
+    },
 }
 
 ParsedRateResponse = [
@@ -66,60 +131,55 @@ ParsedRateResponse = [
         {
             "carrier_id": "amazon_shipping",
             "carrier_name": "amazon_shipping",
-            "currency": "GBP",
-            "meta": {"service_name": "Amazon Shipping Standard"},
+            "currency": "USD",
+            "extra_charges": [
+                {"amount": 5.25, "currency": "USD", "name": "Base Rate"}
+            ],
+            "meta": {
+                "carrier_id": "AMZN",
+                "carrier_name": "Amazon",
+                "rate_id": "rate-12345",
+                "service_id": "AMZN_US_STD",
+                "service_name": "Amazon Shipping Standard",
+            },
             "service": "amazon_shipping_standard",
-            "total_charge": 3.25,
-            "transit_days": 2,
+            "total_charge": 5.25,
         }
     ],
     [],
 ]
 
 
-RateRequestJSON = {
-    "containerSpecifications": [
-        {
-            "dimensions": {"height": 2.0, "length": 9.0, "unit": "IN", "width": 6.0},
-            "weight": {"unit": "LB", "value": 10.0},
-        }
-    ],
-    "shipDate": "2020-04-04T00:00:00.000000Z",
-    "shipFrom": {
-        "addressLine1": "1 E 161st St.",
-        "city": "Bronx",
-        "name": "George Costanza",
-        "stateOrRegion": "NY",
-    },
-    "shipTo": {
-        "addressLine1": "417 Montgomery Street",
-        "addressLine2": "5th Floor",
-        "city": "San Francisco",
-        "phoneNumber": "415-528-7555",
-        "stateOrRegion": "CA",
-    },
-}
-
 RateResponseJSON = """{
-  "serviceRates": [
+  "rates": [
     {
-      "billableWeight": {
-        "value": 4,
-        "unit": "kg"
-      },
+      "rateId": "rate-12345",
+      "carrierId": "AMZN",
+      "carrierName": "Amazon",
+      "serviceId": "AMZN_US_STD",
+      "serviceName": "Amazon Shipping Standard",
       "totalCharge": {
-        "value": 3.25,
-        "unit": "GBP"
+        "value": 5.25,
+        "unit": "USD"
       },
-      "serviceType": "Amazon Shipping Standard",
+      "rateItemList": [
+        {
+          "rateItemID": "BASE",
+          "rateItemNameLocalization": "Base Rate",
+          "rateItemCharge": {
+            "value": 5.25,
+            "unit": "USD"
+          }
+        }
+      ],
       "promise": {
         "deliveryWindow": {
-          "start": "2018-08-25T20:22:30.737Z",
-          "end": "2018-08-26T20:22:30.737Z"
+          "start": "2024-01-17T18:00:00Z",
+          "end": "2024-01-17T21:00:00Z"
         },
-        "receiveWindow": {
-          "start": "2018-08-23T09:22:30.737Z",
-          "end": "2018-08-23T11:22:30.737Z"
+        "pickupWindow": {
+          "start": "2024-01-15T09:00:00Z",
+          "end": "2024-01-15T17:00:00Z"
         }
       }
     }

@@ -1,19 +1,77 @@
 {
-  "trackingId": "89108749065090",
+  "trackingId": "1578648261977",
+  "alternateLegTrackingId": null,
   "eventHistory": [
     {
       "eventCode": "Delivered",
       "location": {
-        "city": "San Bernardino",
+        "city": "Seattle",
+        "stateOrRegion": "WA",
         "countryCode": "US",
-        "stateOrRegion": "CA",
-        "postalCode": "92404"
+        "postalCode": "98101"
       },
-      "eventTime": "2019-04-04T06:45:12Z"
+      "eventTime": "2024-01-17T14:30:00Z",
+      "shipmentType": "FORWARD"
+    },
+    {
+      "eventCode": "OutForDelivery",
+      "location": {
+        "city": "Seattle",
+        "stateOrRegion": "WA",
+        "countryCode": "US",
+        "postalCode": "98101"
+      },
+      "eventTime": "2024-01-17T08:00:00Z",
+      "shipmentType": "FORWARD"
+    },
+    {
+      "eventCode": "ArrivedAtDeliveryStation",
+      "location": {
+        "city": "Seattle",
+        "stateOrRegion": "WA",
+        "countryCode": "US",
+        "postalCode": "98101"
+      },
+      "eventTime": "2024-01-16T22:00:00Z",
+      "shipmentType": "FORWARD"
+    },
+    {
+      "eventCode": "InTransit",
+      "location": {
+        "city": "Portland",
+        "stateOrRegion": "OR",
+        "countryCode": "US",
+        "postalCode": "97201"
+      },
+      "eventTime": "2024-01-16T10:00:00Z",
+      "shipmentType": "FORWARD"
+    },
+    {
+      "eventCode": "PickedUp",
+      "location": {
+        "city": "Los Angeles",
+        "stateOrRegion": "CA",
+        "countryCode": "US",
+        "postalCode": "90001"
+      },
+      "eventTime": "2024-01-15T15:00:00Z",
+      "shipmentType": "FORWARD"
     }
   ],
-  "promisedDeliveryDate": "2019-04-04T07:05:06Z",
+  "promisedDeliveryDate": "2024-01-17T20:00:00Z",
   "summary": {
-    "status": "Delivered"
+    "status": "Delivered",
+    "trackingDetailCodes": {
+      "forward": ["Signed"],
+      "returns": []
+    },
+    "proofOfDelivery": {
+      "deliveryLocationCoordinates": {
+        "latitude": 47.6062,
+        "longitude": -122.3321
+      },
+      "deliveryImageURL": null,
+      "receivedBy": "John Doe"
+    }
   }
 }

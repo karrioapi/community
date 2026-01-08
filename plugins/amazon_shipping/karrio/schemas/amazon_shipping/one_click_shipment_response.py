@@ -4,9 +4,9 @@ import typing
 
 
 @attr.s(auto_attribs=True)
-class Benefits:
-    includedBenefits: typing.Optional[typing.List[str]] = None
-    excludedBenefits: typing.Optional[typing.List[typing.Any]] = None
+class Carrier:
+    id: typing.Optional[str] = None
+    name: typing.Optional[str] = None
 
 
 @attr.s(auto_attribs=True)
@@ -36,15 +36,25 @@ class Promise:
 
 
 @attr.s(auto_attribs=True)
-class TotalCharge:
+class Charge:
     value: typing.Optional[float] = None
     unit: typing.Optional[str] = None
 
 
 @attr.s(auto_attribs=True)
-class PurchaseShipmentResponse:
+class RateItem:
+    rateItemCharge: typing.Optional[Charge] = jstruct.JStruct[Charge]
+    rateItemID: typing.Optional[str] = None
+    rateItemNameLocalization: typing.Optional[str] = None
+    rateItemType: typing.Optional[str] = None
+
+
+@attr.s(auto_attribs=True)
+class OneClickShipmentResponse:
     shipmentId: typing.Optional[str] = None
     packageDocumentDetails: typing.Optional[typing.List[PackageDocumentDetail]] = jstruct.JList[PackageDocumentDetail]
     promise: typing.Optional[Promise] = jstruct.JStruct[Promise]
-    benefits: typing.Optional[Benefits] = jstruct.JStruct[Benefits]
-    totalCharge: typing.Optional[TotalCharge] = jstruct.JStruct[TotalCharge]
+    carrier: typing.Optional[Carrier] = jstruct.JStruct[Carrier]
+    service: typing.Optional[Carrier] = jstruct.JStruct[Carrier]
+    totalCharge: typing.Optional[Charge] = jstruct.JStruct[Charge]
+    rateItems: typing.Optional[typing.List[RateItem]] = jstruct.JList[RateItem]
