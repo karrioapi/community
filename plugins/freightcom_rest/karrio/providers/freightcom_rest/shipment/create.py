@@ -24,15 +24,6 @@ import datetime
 import uuid
 
 
-def is_usmca_eligible(shipper_country: str, recipient_country: str) -> bool:
-    """Check if shipment is eligible for USMCA customs handling (US, CA, MX)."""
-    USMCA_COUNTRIES = {"US", "CA", "MX"}
-    return (
-        (shipper_country in USMCA_COUNTRIES and recipient_country in USMCA_COUNTRIES) and
-        shipper_country != recipient_country
-    )
-
-
 def parse_shipment_response(
     _response: lib.Deserializable[dict],
     settings: provider_utils.Settings,
@@ -197,7 +188,7 @@ def shipment_request(
     )
 
     is_intl = shipper.country_code != recipient.country_code
-    is_usmca_route = is_usmca_eligible(shipper.country_code, recipient.country_code)
+    is_usmca_route = provider_utils.is_usmca_eligible(shipper.country_code, recipient.country_code)
     use_usmca_option = options.freightcom_use_usmca.state if hasattr(options, 'freightcom_use_usmca') and options.freightcom_use_usmca.state is not None else True
     is_usmca = is_usmca_route and use_usmca_option
     customs = lib.to_customs_info(
@@ -205,34 +196,23 @@ def shipment_request(
         shipper=payload.shipper,
         recipient=payload.recipient,
         weight_unit=packages.weight_unit,
-        default_to=(
-            models.Customs(
-                commodities=(
-                    packages.items
-                    if any(packages.items)
-                    else [
-                        models.Commodity(
-                            quantity=1,
-                            sku=f"000{index}",
-                            weight=pkg.weight.value,
-                            weight_unit=pkg.weight_unit.value,
-                            description=pkg.parcel.content,
-                        )
-                        for index, pkg in enumerate(packages, start=1)
-                    ]
-                )
-            )
-            if is_intl
-            else None
-        ),
+    )
+
+    # Use customs.commodities if available, otherwise fall back to packages.items
+    commodities = customs.commodities if customs and customs.is_defined and any(customs.commodities) else packages.items
+
+    # Only include customs for international shipments with valid customs data
+    has_customs = (
+        is_intl
+        and customs
+        and customs.is_defined
+        and any(commodities)
     )
 
     is_ddp = (
-        customs and (
-            customs.incoterm == "DDP" or
-            (customs.duty and customs.duty.paid_by == "sender")
-        )
-    ) if customs else False
+        customs.incoterm == "DDP"
+        or (customs.duty and customs.duty.paid_by == "sender")
+    ) if customs and customs.is_defined else False
 
     payment_method_id = settings.payment_method
 
@@ -361,7 +341,7 @@ def shipment_request(
                 freightcom_rest_req.CustomsDataType(
                     products=[
                         freightcom_rest_req.ProductType(
-                            product_name=item.description,
+                            product_name=item.title,
                             weight=freightcom_rest_req.WeightType(
                                 unit="kg" if item.weight_unit.upper() == "KG" else "lb",
                                 value=lib.to_decimal(item.weight)
@@ -376,12 +356,18 @@ def shipment_request(
                             description=item.description,
                             fda_regulated="no",
                             cusma_included=True if is_usmca else None,
-                            non_auto_parts=options.freightcom_non_auto_parts.state if hasattr(options, 'freightcom_non_auto_parts') and options.freightcom_non_auto_parts.state else None,
-                        ) for item in customs.commodities
-                    ] if customs and customs.commodities else [],
+                            non_auto_parts=(
+                                options.freightcom_non_auto_parts.state
+                                if hasattr(options, 'freightcom_non_auto_parts') and options.freightcom_non_auto_parts.state
+                                else None
+                            ),
+                        )
+                        for item in commodities
+                        if item.hs_code
+                    ],
                     request_guaranteed_customs_charges=settings.connection_config.request_guaranteed_customs_charges.state
                 )
-                if is_usmca and customs and any(customs.commodities)
+                if has_customs
                 else None
             ),
         ),
@@ -390,12 +376,16 @@ def shipment_request(
                 source="details",
                 broker=freightcom_rest_req.BrokerType(
                     use_carrier=True,
-                    usmca_number=options.freightcom_usmca_number.state if hasattr(options, 'freightcom_usmca_number') and options.freightcom_usmca_number.state else None,
+                    usmca_number=(
+                        options.freightcom_usmca_number.state
+                        if hasattr(options, 'freightcom_usmca_number') and options.freightcom_usmca_number.state
+                        else None
+                    ),
                 ),
                 details=freightcom_rest_req.CustomsInvoiceDetailsType(
                     products=[
                         freightcom_rest_req.ProductType(
-                            product_name=item.description,
+                            product_name=item.title,
                             weight=freightcom_rest_req.WeightType(
                                 unit="kg" if item.weight_unit.upper() == "KG" else "lb",
                                 value=lib.to_decimal(item.weight)
@@ -405,21 +395,24 @@ def shipment_request(
                             num_units=item.quantity,
                             unit_price=freightcom_rest_req.TotalCostType(
                                 currency=item.value_currency,
-                                # the api expect to be a whole number like 16900 for 169.00
                                 value=str(int(item.value_amount * 100))
                             ),
                             description=item.description,
                             fda_regulated="no",
                             cusma_included=True if is_usmca else None,
-                            non_auto_parts=options.freightcom_non_auto_parts.state if hasattr(options, 'freightcom_non_auto_parts') and options.freightcom_non_auto_parts.state else None,
-                        ) for item in customs.commodities
+                            non_auto_parts=(
+                                options.freightcom_non_auto_parts.state
+                                if hasattr(options, 'freightcom_non_auto_parts') and options.freightcom_non_auto_parts.state
+                                else None
+                            ),
+                        )
+                        for item in commodities
+                        if item.hs_code
                     ],
                     tax_recipient=freightcom_rest_req.TaxRecipientType(
-                        # For DDP shipments, tax recipient must be 'shipper'
-                        type="shipper" if is_ddp else (
-                            provider_units.PaymentType.map(
-                                customs.duty.paid_by
-                            ).value
+                        type=(
+                            "shipper" if is_ddp
+                            else provider_units.PaymentType.map(customs.duty.paid_by).value
                             if customs.duty and customs.duty.paid_by
                             else "receiver"
                         ),
@@ -441,7 +434,7 @@ def shipment_request(
                     )
                 )
             )
-            if is_intl and customs and customs.commodities
+            if has_customs
             else None
         ),
         paperless_customs_documents=(

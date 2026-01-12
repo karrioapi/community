@@ -89,6 +89,15 @@ def ceil(value: typing.Optional[float]) -> typing.Optional[int]:
         return None
     return math.ceil(value)
 
+
+def is_usmca_eligible(shipper_country: str, recipient_country: str) -> bool:
+    """Check if shipment is eligible for USMCA customs handling (US, CA, MX)."""
+    USMCA_COUNTRIES = {"US", "CA", "MX"}
+    return (
+        (shipper_country in USMCA_COUNTRIES and recipient_country in USMCA_COUNTRIES) and
+        shipper_country != recipient_country
+    )
+
 def get_payment_id(settings: Settings) -> dict:
 
     try:

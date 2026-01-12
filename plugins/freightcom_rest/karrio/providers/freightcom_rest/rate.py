@@ -123,7 +123,9 @@ def rate_request(
 
     # Create the carrier-specific request object
     is_intl = shipper.country_code != recipient.country_code
-    is_ca_to_us = shipper.country_code == "CA" and recipient.country_code == "US"
+    is_usmca_route = provider_utils.is_usmca_eligible(shipper.country_code, recipient.country_code)
+    use_usmca_option = options.freightcom_use_usmca.state if hasattr(options, 'freightcom_use_usmca') and options.freightcom_use_usmca.state is not None else True
+    is_usmca = is_usmca_route and use_usmca_option
     
     customs = lib.to_customs_info(
         payload.customs,
@@ -131,10 +133,16 @@ def rate_request(
         recipient=payload.recipient,
         weight_unit=packages.weight_unit,
     )
-    commodities = lib.identity(
-        (customs.commodities if any(customs.commodities) else packages.items)
-        if any(packages.items) or any(customs.commodities)
-        else []
+
+    # Use customs.commodities if available, otherwise fall back to packages.items
+    commodities = customs.commodities if customs and customs.is_defined and any(customs.commodities) else packages.items
+
+    # Only include customs for international shipments with valid customs data
+    has_customs = (
+        is_intl
+        and customs
+        and customs.is_defined
+        and any(commodities)
     )
 
     packaging_type = provider_units.PackagingType.map(packages.package_type or "small_box").value
@@ -267,23 +275,37 @@ def rate_request(
                 freightcom_rest_req.CustomsDataType(
                     products=[
                         freightcom_rest_req.ProductType(
-                            hs_code=item.hs_code,
-                            country_of_origin=item.origin_country or shipper.country_code,
-                            num_units=item.quantity or 1,
-                            unit_price=freightcom_rest_req.TotalCostType(
-                                currency=item.value_currency or "CAD",
-                                value=str(int((item.value_amount or 0) * 100))
+                            product_name=item.title,
+                            weight=freightcom_rest_req.WeightType(
+                                unit="kg" if item.weight_unit.upper() == "KG" else "lb",
+                                value=lib.to_decimal(item.weight)
                             ),
-                            description=item.description or item.title,
-                            fda_regulated="no"
-                        ) for item in (list(commodities) if is_ca_to_us else [])
+                            hs_code=item.hs_code,
+                            country_of_origin=item.origin_country,
+                            num_units=item.quantity,
+                            unit_price=freightcom_rest_req.TotalCostType(
+                                currency=item.value_currency,
+                                value=str(int(item.value_amount * 100))
+                            ),
+                            description=item.description,
+                            fda_regulated="no",
+                            cusma_included=True if is_usmca else None,
+                            non_auto_parts=(
+                                options.freightcom_non_auto_parts.state
+                                if hasattr(options, 'freightcom_non_auto_parts') and options.freightcom_non_auto_parts.state
+                                else None
+                            ),
+                        )
+                        for item in commodities
+                        if item.hs_code
                     ],
                     request_guaranteed_customs_charges=settings.connection_config.request_guaranteed_customs_charges.state or True
                 )
-                if is_ca_to_us and len(commodities) > 0
+                if has_customs
                 else None
             ),
         ),
     )
+    
     return lib.Serializable(request, lib.to_dict)
 
