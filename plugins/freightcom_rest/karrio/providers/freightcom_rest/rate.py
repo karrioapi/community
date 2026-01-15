@@ -218,14 +218,14 @@ def rate_request(
                     freightcom_rest_req.PalletType(
                         measurements=freightcom_rest_req.PackageMeasurementsType(
                             weight=freightcom_rest_req.WeightType(
-                                unit="kg",
-                                value=parcel.weight.KG
+                                unit="lb",
+                                value=parcel.weight.LB
                             ),
                             cuboid=freightcom_rest_req.CuboidType(
-                                unit="cm",
-                                l=parcel.length.CM,
-                                w=parcel.width.CM,
-                                h=parcel.height.CM
+                                unit="in",
+                                l=parcel.length.IN,
+                                w=parcel.width.IN,
+                                h=parcel.height.IN
                             )
                         ),
                         description=parcel.description,
@@ -236,14 +236,14 @@ def rate_request(
                     freightcom_rest_req.PackageType(
                         measurements=freightcom_rest_req.PackageMeasurementsType(
                             weight=freightcom_rest_req.WeightType(
-                                unit="kg",
-                                value=parcel.weight.KG
+                                unit="lb",
+                                value=parcel.weight.LB
                             ),
                             cuboid=freightcom_rest_req.CuboidType(
-                                unit="cm",
-                                l=parcel.length.CM,
-                                w=parcel.width.CM,
-                                h=parcel.height.CM
+                                unit="in",
+                                l=parcel.length.IN,
+                                w=parcel.width.IN,
+                                h=parcel.height.IN
                             )
                         ),
                         description=parcel.description,
@@ -253,8 +253,8 @@ def rate_request(
                     freightcom_rest_req.CourierpakType(
                         measurements=freightcom_rest_req.CourierpakMeasurementsType(
                             weight=freightcom_rest_req.WeightType(
-                                unit="kg",
-                                value=parcel.weight.KG
+                                unit="lb",
+                                value=parcel.weight.LB
                             ),
                         ),
                         description=parcel.description,
