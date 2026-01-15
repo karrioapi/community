@@ -82,6 +82,15 @@ def rate_request(
         package_options=packages.options,
         initializer=provider_units.shipping_options_initializer,
     )
+    customs = lib.to_customs_info(
+        payload.customs,
+        shipper=payload.shipper,
+        recipient=payload.recipient,
+        weight_unit=packages.weight_unit,
+    )
+    customs_declared_value = lib.to_money(
+        customs.duty.declared_value if customs.duty else None
+    )
 
     # Determine label format from options or settings
     label_format = (
@@ -134,10 +143,16 @@ def rate_request(
                     value=package.weight.LB,
                     unit="POUND",
                 ),
-                insuredValue=dict(
-                    value=lib.to_money(package.options.declared_value.state),
-                    unit=package.options.currency.state or "USD",
-                ) if package.options.declared_value.state else None,
+                insuredValue=lib.identity(
+                    dict(
+                        value=lib.to_money(
+                            package.options.declared_value.state or customs_declared_value
+                        ),
+                        unit=package.options.currency.state or "USD",
+                    )
+                    if (package.options.declared_value.state or customs_declared_value)
+                    else None
+                ),
                 packageClientReferenceId=package.parcel.id or str(index),
             )
             for index, package in enumerate(packages, 1)

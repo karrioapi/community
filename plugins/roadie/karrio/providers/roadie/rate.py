@@ -63,6 +63,17 @@ def rate_request(
         package_options=packages.options,
         initializer=provider_units.shipping_options_initializer,
     )
+    customs = lib.to_customs_info(
+        payload.customs,
+        shipper=payload.shipper,
+        recipient=payload.recipient,
+        weight_unit=packages.weight_unit,
+    )
+    declared_value = (
+        lib.to_money(customs.duty.declared_value if customs.duty else None)
+        or options.declared_value.state
+        or 0.0
+    )
 
     pickup_after = lib.to_date(
         options.pickup_after.state or datetime.datetime.now(),
@@ -89,7 +100,7 @@ def rate_request(
                 quantity=(
                     package.items.quantity if package.items.quantity or 0 > 0 else 1
                 ),
-                value=options.declared_value.state or 0.0,
+                value=declared_value,
             )
             for package in packages
         ],

@@ -79,6 +79,16 @@ def rate_request(
         package_options=packages.options,
         initializer=provider_units.shipping_options_initializer,
     )
+    customs = lib.to_customs_info(
+        payload.customs,
+        shipper=payload.shipper,
+        recipient=payload.recipient,
+        weight_unit=packages.weight_unit,
+    )
+    declared_value = (
+        lib.to_money(customs.duty.declared_value if customs.duty else None)
+        or options.declared_value.state
+    )
 
     shipment_date = lib.fdatetime(
         options.shipment_date.state or time.strftime("%Y-%m-%d"),
@@ -122,7 +132,7 @@ def rate_request(
                             alternative_reference=None,
                             cod=None,
                             cost_centre=None,
-                            declared_value=None,
+                            declared_value=declared_value,
                             height=pkg.height.CM,
                             length=pkg.length.CM,
                             lg=None,

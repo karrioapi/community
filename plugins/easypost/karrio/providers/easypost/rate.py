@@ -61,23 +61,11 @@ def rate_request(payload: models.RateRequest, _) -> lib.Serializable:
         initializer=provider_units.shipping_options_initializer,
     )
     is_intl = shipper.country_code != recipient.country_code
-    customs = (
-        models.Customs(
-            commodities=(
-                package.parcel.items
-                if any(package.parcel.items)
-                else [
-                    models.Commodity(
-                        sku="0000",
-                        quantity=1,
-                        weight=package.weight.value,
-                        weight_unit=package.weight_unit.value,
-                    )
-                ]
-            )
-        )
-        if is_intl
-        else None
+    customs = lib.to_customs_info(
+        payload.customs,
+        shipper=payload.shipper,
+        recipient=payload.recipient,
+        weight_unit=package.weight_unit.value,
     )
 
     requests = easypost.ShipmentRequest(
@@ -163,9 +151,9 @@ def rate_request(payload: models.RateRequest, _) -> lib.Serializable:
             options={option.code: option.state for _, option in options.items()},
             customs_info=(
                 easypost.CustomsInfo(
-                    contents_type="other",
-                    customs_certify=True,
-                    customs_signer=shipper.person_name,
+                    contents_type=customs.content_type or "other",
+                    customs_certify=customs.certify if customs.certify is not None else True,
+                    customs_signer=customs.signer or shipper.person_name,
                     customs_items=[
                         easypost.CustomsItem(
                             description=lib.text(
@@ -182,10 +170,14 @@ def rate_request(payload: models.RateRequest, _) -> lib.Serializable:
                             printed_commodity_identifier=(item.sku or item.id),
                             hs_tariff_number=item.hs_code,
                         )
-                        for item in customs.commodities
+                        for item in (
+                            package.parcel.items
+                            if any(package.parcel.items)
+                            else customs.commodities or []
+                        )
                     ],
                 )
-                if customs
+                if payload.customs and is_intl
                 else None
             ),
         )

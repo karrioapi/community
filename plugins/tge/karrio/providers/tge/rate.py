@@ -95,6 +95,16 @@ def rate_request(
         package_option_type=provider_units.ShippingOption,
         shipping_options_initializer=provider_units.shipping_options_initializer,
     )
+    customs = lib.to_customs_info(
+        payload.customs,
+        shipper=payload.shipper,
+        recipient=payload.recipient,
+        weight_unit=packages.weight_unit,
+    )
+    declared_value = (
+        lib.to_money(customs.duty.declared_value if customs.duty else None)
+        or options.declared_value.state
+    )
     service = getattr(services.first, "value", None) or "X"
 
     now = datetime.datetime.now()
@@ -141,7 +151,7 @@ def rate_request(
                                 Value=str(
                                     lib.to_int(
                                         options.tge_extra_services_amount.state
-                                        or options.declared_value.state
+                                        or declared_value
                                         or 10
                                     )
                                 ),

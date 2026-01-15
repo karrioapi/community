@@ -96,6 +96,16 @@ def rate_request(
         package_options=packages.options,
     )
     services = lib.to_services(payload.services, provider_units.ShippingService)
+    customs = lib.to_customs_info(
+        payload.customs,
+        shipper=payload.shipper,
+        recipient=payload.recipient,
+        weight_unit=packages.weight_unit,
+    )
+    declared_value = (
+        lib.to_money(customs.duty.declared_value if customs.duty else None)
+        or options.declared_value.state
+    )
 
     service_id = lib.identity(
         options.eshipper_service_id.state
@@ -161,7 +171,7 @@ def rate_request(
                     type=provider_units.PackagingType.map(package.packaging_type).value,
                     freightClass=None,
                     nmfcCode=None,
-                    insuranceAmount=None,
+                    insuranceAmount=declared_value,
                     codAmount=None,
                     description=package.description,
                     harmonizedCode=None,

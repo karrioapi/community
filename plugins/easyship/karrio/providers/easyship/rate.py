@@ -94,9 +94,15 @@ def rate_request(
         package_options=packages.options,
         initializer=provider_units.shipping_options_initializer,
     )
+    customs = lib.to_customs_info(
+        payload.customs,
+        shipper=payload.shipper,
+        recipient=payload.recipient,
+        weight_unit=weight_unit.name,
+    )
     incoterms = lib.identity(
         options.easyship_incoterms.state
-        or getattr(getattr(payload, "customs", None), "incoterm", None)
+        or customs.incoterm
     )
 
     # map data to convert karrio model to easyship specific type
@@ -133,11 +139,18 @@ def rate_request(
         ),
         incoterms=incoterms,
         insurance=easyship.InsuranceType(
-            insured_amount=options.insurance.state,
-            insured_currency=lib.identity(
-                options.currency.state if options.insurance.state is not None else None
+            insured_amount=lib.identity(
+                options.insurance.state
+                or lib.to_money(customs.duty.declared_value if customs.duty else None)
             ),
-            is_insured=options.insurance.state is not None,
+            insured_currency=lib.identity(
+                options.currency.state
+                or (customs.duty.currency if customs.duty else None)
+            ),
+            is_insured=lib.identity(
+                options.insurance.state is not None
+                or (customs.duty.declared_value if customs.duty else None) is not None
+            ),
         ),
         origin_address=easyship.NAddressType(
             country_alpha2=shipper.country_code,
@@ -186,17 +199,21 @@ def rate_request(
                     for item in lib.identity(
                         package.items
                         if any(package.items)
-                        else [
-                            models.Commodity(
-                                title=lib.text(package.description, max=35),
-                                description=package.description,
-                                quantity=1,
-                                hs_code="N/A",
-                                value_amount=1.0,
-                                value_currency=options.currency.state or "USD",
-                                category="bags_luggages",
-                            )
-                        ]
+                        else (
+                            customs.commodities
+                            if any(customs.commodities or [])
+                            else [
+                                models.Commodity(
+                                    title=lib.text(package.description, max=35),
+                                    description=package.description,
+                                    quantity=1,
+                                    hs_code="N/A",
+                                    value_amount=1.0,
+                                    value_currency=options.currency.state or "USD",
+                                    category="bags_luggages",
+                                )
+                            ]
+                        )
                     )
                 ],
                 total_actual_weight=package.weight.value,

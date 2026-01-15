@@ -84,6 +84,16 @@ def rate_request(
         package_options=packages.options,
         initializer=provider_units.shipping_options_initializer,
     )
+    customs = lib.to_customs_info(
+        payload.customs,
+        shipper=payload.shipper,
+        recipient=payload.recipient,
+        weight_unit=packages.weight_unit,
+    )
+    insurance_amount = (
+        options.nationex_insurance_amount.state
+        or lib.to_money(customs.duty.declared_value if customs.duty else None)
+    )
     unit = provider_units.MeasurementUnit.map(packages.weight_unit).value
 
     request = nationex.RateRequestType(
@@ -96,7 +106,7 @@ def rate_request(
         TotalParcels=len(packages),
         UnitsOfMeasurement=unit,
         Accessory=nationex.AccessoryType(
-            InsuranceAmount=options.nationex_insurance_amount.state,
+            InsuranceAmount=insurance_amount,
             FrozenProtection=options.nationex_frozen_protection.state,
             DangerousGoods=options.nationex_dangerous_goods.state,
             SNR=(

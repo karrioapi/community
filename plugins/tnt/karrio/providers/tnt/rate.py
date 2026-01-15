@@ -87,6 +87,16 @@ def rate_request(
         ),
         initializer=provider_units.shipping_options_initializer,
     )
+    customs = lib.to_customs_info(
+        payload.customs,
+        shipper=payload.shipper,
+        recipient=payload.recipient,
+        weight_unit=packages.weight_unit,
+    )
+    declared_value = (
+        lib.to_money(customs.duty.declared_value if customs.duty else None)
+        or options.declared_value.state
+    )
     is_document = all([parcel.is_document for parcel in payload.parcels])
 
     request = tnt.priceRequest(
@@ -145,7 +155,7 @@ def rate_request(
                 insurance=(
                     tnt.insurance(
                         insuranceValue=options.insurance.state,
-                        goodsValue=options.declared_value.state,
+                        goodsValue=declared_value,
                     )
                     if options.insurance.state is not None
                     else None
