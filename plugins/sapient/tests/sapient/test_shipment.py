@@ -21,6 +21,13 @@ class TestSAPIENTShipping(unittest.TestCase):
 
         self.assertEqual(request.serialize(), ShipmentRequest)
 
+    def test_create_shipment_request_small_item_weights(self):
+        """Test that small item weights result in correct declared weight adjustment."""
+        request = models.ShipmentRequest(**SmallWeightsShipmentPayload)
+        serialized = gateway.mapper.create_shipment_request(request).serialize()
+
+        self.assertEqual(serialized, SmallWeightsShipmentRequest)
+
     def test_create_cancel_shipment_request(self):
         request = gateway.mapper.create_cancel_shipment_request(
             self.ShipmentCancelRequest
@@ -326,3 +333,219 @@ ShipmentResponse = """{
 """
 
 ShipmentCancelResponse = """{"ok": true}"""
+
+
+SmallWeightsShipmentPayload = {
+    "service": "sapient_royal_mail_tracked_24",
+    "shipper": {
+        "company_name": "Test Warehouse Ltd",
+        "person_name": "Warehouse Manager",
+        "address_line1": "27 High Street",
+        "city": "London",
+        "postal_code": "WC1N 3AX",
+        "country_code": "GB",
+        "phone_number": "07849539027",
+        "email": "warehouse@example.com",
+    },
+    "recipient": {
+        "company_name": "Customer Corp",
+        "person_name": "Test Customer",
+        "address_line1": "Unit 3, Business Park",
+        "address_line2": "Industrial Road",
+        "city": "Manchester",
+        "postal_code": "M1 2AB",
+        "country_code": "GB",
+        "phone_number": "07557544686",
+        "email": "customer@example.com",
+    },
+    "parcels": [
+        {
+            "weight": 0.12,
+            "weight_unit": "KG",
+            "length": 27,
+            "width": 20,
+            "height": 3,
+            "dimension_unit": "CM",
+            "items": [
+                {
+                    "title": "Electronic Component A",
+                    "description": "Small electronic component",
+                    "origin_country": "PH",
+                    "quantity": 4,
+                    "sku": "COMP-A",
+                    "value_amount": 2.95,
+                    "value_currency": "GBP",
+                    "weight": 0.005,
+                    "weight_unit": "KG",
+                },
+                {
+                    "title": "Electronic Component B",
+                    "description": "Small electronic component",
+                    "origin_country": "MY",
+                    "quantity": 4,
+                    "sku": "COMP-B",
+                    "value_amount": 2.95,
+                    "value_currency": "GBP",
+                    "weight": 0.005,
+                    "weight_unit": "KG",
+                },
+                {
+                    "title": "Electronic Component C",
+                    "description": "Tiny electronic component",
+                    "origin_country": "JP",
+                    "quantity": 4,
+                    "sku": "COMP-C",
+                    "value_amount": 0.95,
+                    "value_currency": "GBP",
+                    "weight": 0.001,
+                    "weight_unit": "KG",
+                },
+                {
+                    "title": "Electronic Component D",
+                    "description": "Small electronic component",
+                    "origin_country": "CN",
+                    "quantity": 3,
+                    "sku": "COMP-D",
+                    "value_amount": 0.95,
+                    "value_currency": "GBP",
+                    "weight": 0.002,
+                    "weight_unit": "KG",
+                },
+                {
+                    "title": "Electronic Component E",
+                    "description": "Small electronic component",
+                    "origin_country": "CN",
+                    "quantity": 3,
+                    "sku": "COMP-E",
+                    "value_amount": 0.95,
+                    "value_currency": "GBP",
+                    "weight": 0.005,
+                    "weight_unit": "KG",
+                },
+                {
+                    "title": "Electronic Component F",
+                    "description": "Small electronic component",
+                    "origin_country": "CN",
+                    "quantity": 4,
+                    "sku": "COMP-F",
+                    "value_amount": 0.95,
+                    "value_currency": "GBP",
+                    "weight": 0.002,
+                    "weight_unit": "KG",
+                },
+            ],
+        }
+    ],
+    "options": {
+        "shipment_date": "2024-08-11",
+        "declared_value": 36.9,
+        "currency": "GBP",
+    },
+    "reference": "ORDER-12345",
+}
+
+SmallWeightsShipmentRequest = {
+    "CarrierSpecifics": {
+        "ServiceLevel": "02",
+    },
+    "Destination": {
+        "Address": {
+            "CompanyName": "Customer Corp",
+            "ContactEmail": "customer@example.com",
+            "ContactName": "Test Customer",
+            "ContactPhone": "07557544686",
+            "CountryCode": "GB",
+            "Line1": "Unit 3, Business Park",
+            "Line2": "Industrial Road",
+            "Postcode": "M1 2AB",
+            "Town": "Manchester",
+        }
+    },
+    "Items": [
+        {
+            "CountryOfOrigin": "PH",
+            "Description": "Electronic Component A",
+            "Quantity": 4,
+            "SkuCode": "COMP-A",
+            "Value": 2.95,
+            "Weight": 0.01,
+        },
+        {
+            "CountryOfOrigin": "MY",
+            "Description": "Electronic Component B",
+            "Quantity": 4,
+            "SkuCode": "COMP-B",
+            "Value": 2.95,
+            "Weight": 0.01,
+        },
+        {
+            "CountryOfOrigin": "JP",
+            "Description": "Electronic Component C",
+            "Quantity": 4,
+            "SkuCode": "COMP-C",
+            "Value": 0.95,
+            "Weight": 0.001,
+        },
+        {
+            "CountryOfOrigin": "CN",
+            "Description": "Electronic Component D",
+            "Quantity": 3,
+            "SkuCode": "COMP-D",
+            "Value": 0.95,
+            "Weight": 0.002,
+        },
+        {
+            "CountryOfOrigin": "CN",
+            "Description": "Electronic Component E",
+            "Quantity": 3,
+            "SkuCode": "COMP-E",
+            "Value": 0.95,
+            "Weight": 0.01,
+        },
+        {
+            "CountryOfOrigin": "CN",
+            "Description": "Electronic Component F",
+            "Quantity": 4,
+            "SkuCode": "COMP-F",
+            "Value": 0.95,
+            "Weight": 0.002,
+        },
+    ],
+    "Packages": [
+        {
+            # DeclaredWeight adjusted to 0.13 (>= items total 0.128, rounded to 2 decimals)
+            # Original: 0.12, but items total after rounding: 0.128
+            "DeclaredValue": 36.9,
+            "DeclaredWeight": 0.13,
+            "Dimensions": {"Height": 3.0, "Length": 27.0, "Width": 20.0},
+            "PackageType": "Parcel",
+        }
+    ],
+    "ShipmentInformation": {
+        "Action": "Process",
+        "ContentType": "NDX",
+        "CurrencyCode": "GBP",
+        # DeclaredWeight adjusted to 0.13 (>= items total 0.128, rounded to 2 decimals)
+        "DeclaredWeight": 0.13,
+        "DescriptionOfGoods": "Electronic Component A Electronic Component B Electronic Component C E",
+        "DimensionsUnitOfMeasure": "CM",
+        "LabelFormat": "PDF",
+        "ServiceCode": "sapient_royal_mail_tracked_24",
+        "ShipmentDate": ANY,
+        "WeightUnitOfMeasure": "KG",
+    },
+    "Shipper": {
+        "Address": {
+            "CompanyName": "Test Warehouse Ltd",
+            "ContactEmail": "warehouse@example.com",
+            "ContactName": "Warehouse Manager",
+            "ContactPhone": "07849539027",
+            "CountryCode": "GB",
+            "Line1": "27 High Street",
+            "Postcode": "WC1N 3AX",
+            "Town": "London",
+        },
+        "Reference1": "ORDER-12345",
+        "ShippingAccountId": "shipping_account_id",
+    },
+}
