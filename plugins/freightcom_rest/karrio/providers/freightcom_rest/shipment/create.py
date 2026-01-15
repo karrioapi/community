@@ -189,7 +189,7 @@ def shipment_request(
 
     is_intl = shipper.country_code != recipient.country_code
     is_usmca_route = provider_utils.is_usmca_eligible(shipper.country_code, recipient.country_code)
-    use_usmca_option = options.freightcom_use_usmca.state if hasattr(options, 'freightcom_use_usmca') and options.freightcom_use_usmca.state is not None else True
+    use_usmca_option = options.freightcom_use_usmca.state if "freightcom_use_usmca" in options else False
     is_usmca = is_usmca_route and use_usmca_option
     customs = lib.to_customs_info(
         payload.customs,
