@@ -275,11 +275,6 @@ def rate_request(
                 freightcom_rest_req.CustomsDataType(
                     products=[
                         freightcom_rest_req.ProductType(
-                            product_name=item.title,
-                            weight=freightcom_rest_req.WeightType(
-                                unit="kg" if item.weight_unit.upper() == "KG" else "lb",
-                                value=lib.to_decimal(item.weight)
-                            ),
                             hs_code=item.hs_code,
                             country_of_origin=item.origin_country,
                             num_units=item.quantity,
@@ -292,7 +287,7 @@ def rate_request(
                             cusma_included=True if is_usmca else None,
                             non_auto_parts=(
                                 options.freightcom_non_auto_parts.state
-                                if hasattr(options, 'freightcom_non_auto_parts') and options.freightcom_non_auto_parts.state
+                                if "freightcom_non_auto_parts" in options and options.freightcom_non_auto_parts.state
                                 else None
                             ),
                         )

@@ -358,7 +358,7 @@ def shipment_request(
                             cusma_included=True if is_usmca else None,
                             non_auto_parts=(
                                 options.freightcom_non_auto_parts.state
-                                if hasattr(options, 'freightcom_non_auto_parts') and options.freightcom_non_auto_parts.state
+                                if "freightcom_non_auto_parts" in options and options.freightcom_non_auto_parts.state
                                 else None
                             ),
                         )
@@ -402,7 +402,7 @@ def shipment_request(
                             cusma_included=True if is_usmca else None,
                             non_auto_parts=(
                                 options.freightcom_non_auto_parts.state
-                                if hasattr(options, 'freightcom_non_auto_parts') and options.freightcom_non_auto_parts.state
+                                if "freightcom_non_auto_parts" in options and options.freightcom_non_auto_parts.state
                                 else None
                             ),
                         )
