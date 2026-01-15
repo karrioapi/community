@@ -326,7 +326,7 @@ ShipmentRequest = {
                     "sku": "sku",
                 }
             ],
-            "total_actual_weight": 1.0,
+            "total_actual_weight": 20.0,
         }
     ],
 }

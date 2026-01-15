@@ -455,7 +455,7 @@ RateRequest = {
                     "hs_code": "N/A",
                 }
             ],
-            "total_actual_weight": 1.0,
+            "total_actual_weight": 20.0,
         }
     ],
     "shipping_settings": {"units": {"dimensions": "cm", "weight": "kg"}},
