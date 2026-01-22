@@ -220,10 +220,35 @@ def shipment_request(
         raise Exception("No payment method found need to be set in config")
 
     customs_and_duties_payment_method_id = None
-    if settings.connection_config.payment_method_type.state == provider_utils.PaymentMethodType.credit_card.value:
-        customs_and_duties_payment_method_id = payment_method_id
-    elif settings.connection_config.customs_and_duties_payment_method.state:
-        customs_and_duties_payment_method_id = settings.customs_and_duties_payment_method
+    if has_customs:
+        if settings.connection_config.payment_method_type.state == provider_utils.PaymentMethodType.credit_card.value:
+            customs_and_duties_payment_method_id = payment_method_id
+        elif settings.connection_config.customs_and_duties_payment_method.state:
+            customs_and_duties_payment_method_id = settings.customs_and_duties_payment_method
+
+    # Build paperless customs documents only for USMCA shipments with valid documents
+    paperless_docs = None
+    if is_usmca:
+        doc_files = (
+            (options.freightcom_doc_files.state or [])
+            if hasattr(options, 'freightcom_doc_files') and options.freightcom_doc_files.state
+            else (options.doc_files.state or [])
+            if hasattr(options, 'doc_files') and options.doc_files.state
+            else []
+        )
+        docs_list = [
+            freightcom_rest_req.PaperlessCustomsDocumentType(
+                type="cusma-form" if doc.get("doc_type") == "cusma-form" else (
+                    "other" if doc.get("doc_type") == "certificate_of_origin" else "other"
+                ),
+                type_other_name=doc.get("doc_type") if doc.get("doc_type") not in ["cusma-form"] else None,
+                file_name=doc.get("doc_name") or "document.pdf",
+                file_base64=doc.get("doc_file"),
+            )
+            for doc in doc_files
+            if doc.get("doc_type") in ["cusma-form", "certificate_of_origin"] and doc.get("doc_file")
+        ]
+        paperless_docs = docs_list if docs_list else None
 
     request = freightcom_rest_req.ShipmentRequestType(
         unique_id=str(uuid.uuid4()),
@@ -437,35 +462,11 @@ def shipment_request(
             if has_customs
             else None
         ),
-        paperless_customs_documents=(
-            [
-                freightcom_rest_req.PaperlessCustomsDocumentType(
-                    type="cusma-form" if doc.get("doc_type") == "cusma-form" else (
-                        "other" if doc.get("doc_type") == "certificate_of_origin" else "other"
-                    ),
-                    type_other_name=doc.get("doc_type") if doc.get("doc_type") not in ["cusma-form"] else None,
-                    file_name=doc.get("doc_name") or "document.pdf",
-                    file_base64=doc.get("doc_file"),
-                )
-                for doc in (
-                    (options.freightcom_doc_files.state or [])
-                    if hasattr(options, 'freightcom_doc_files') and options.freightcom_doc_files.state
-                    else (options.doc_files.state or [])
-                    if hasattr(options, 'doc_files') and options.doc_files.state
-                    else []
-                )
-                if doc.get("doc_type") in ["cusma-form", "certificate_of_origin"] and doc.get("doc_file")
-            ]
-            if is_usmca and (
-                (hasattr(options, 'freightcom_doc_files') and options.freightcom_doc_files.state)
-                or (hasattr(options, 'doc_files') and options.doc_files.state)
-            )
-            else None
-        ),
         #TODO: validate if we need to do pickup in the ship request
         # pickup_details=freightcom.PickupDetailsType(
         #
         # )
+        **({"paperless_customs_documents": paperless_docs} if paperless_docs else {}),
     )
 
     return lib.Serializable(
