@@ -15,7 +15,10 @@ class Proxy(proxy.Proxy):
             data=request.serialize(),
             trace=self.trace_as("json"),
             method="POST",
-            headers={"Authorization": f"Basic {self.settings.authorization}"},
+            headers={
+                "Authorization": f"Basic {self.settings.authorization}",
+                "Content-Type": "application/json",
+            },
         )
 
         return lib.Deserializable(response, lib.to_dict)
