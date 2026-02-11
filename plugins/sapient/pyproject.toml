@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "karrio_sapient"
-version = "2026.1.4"
+version = "2026.1.6"
 description = "Karrio - SAPIENT Shipping Extension"
 readme = "README.md"
 requires-python = ">=3.7"
