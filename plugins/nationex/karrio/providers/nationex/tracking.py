@@ -40,7 +40,7 @@ def _extract_details(
             for status in list(provider_units.TrackingStatus)
             if shipment.ShipmentStatus in status.value
         ),
-        provider_units.TrackingStatus.in_transit.name,
+        provider_units.TrackingStatus.unknown.name,
     )
 
     return models.TrackingDetails(
