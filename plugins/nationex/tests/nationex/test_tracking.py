@@ -1,4 +1,5 @@
 import unittest
+import json
 from unittest.mock import patch, ANY
 from .fixture import gateway
 
@@ -36,6 +37,44 @@ class TestNationexTracking(unittest.TestCase):
 
             self.assertListEqual(lib.to_dict(parsed_response), ParsedTrackingResponse)
 
+    def test_status_mapping(self):
+        status_expectations = {
+            "Creation": "pending",
+            "DataReceived": "pending",
+            "Pickup": "picked_up",
+            "PartiallyPickedUp": "picked_up",
+            "Transit": "in_transit",
+            "PartiallyInTransit": "in_transit",
+            "OutForDelivery": "out_for_delivery",
+            "PartiallyOutForDelivery": "out_for_delivery",
+            "Delivered": "delivered",
+            "PartiallyDelivered": "delivered",
+            "OnHold": "on_hold",
+            "Attention": "on_hold",
+            "PickupAttemptFailed": "on_hold",
+            "RefusedDelivery": "on_hold",
+            "Cancelled": "cancelled",
+            "ReturnCompleted": "return_to_sender",
+            "ReturnToSender": "return_to_sender",
+            "OutForPickup": "ready_for_pickup",
+            "SomethingUnexpected": "unknown",
+        }
+
+        for nationex_status, expected_karrio_status in status_expectations.items():
+            with self.subTest(nationex_status=nationex_status):
+                tracking_response = json.loads(TrackingResponse)
+                tracking_response["ShipmentStatus"] = nationex_status
+                tracking_response["StatusHistories"][0]["ShipmentStatus"] = nationex_status
+
+                with patch("karrio.mappers.nationex.proxy.lib.request") as mock:
+                    mock.return_value = json.dumps(tracking_response)
+                    parsed_response = (
+                        karrio.Tracking.fetch(self.TrackingRequest).from_(gateway).parse()
+                    )
+
+                tracking = lib.to_dict(parsed_response)[0][0]
+                self.assertEqual(tracking["status"], expected_karrio_status)
+
     def test_parse_error_response(self):
         with patch("karrio.mappers.nationex.proxy.lib.request") as mock:
             mock.return_value = ErrorResponse
@@ -66,6 +105,7 @@ ParsedTrackingResponse = [
                     "date": "2019-08-24",
                     "description": "Data received",
                     "location": "St-Hubert",
+                    "status": "pending",
                     "time": "14:15 PM",
                     "timestamp": "2019-08-24T14:15:22.000Z",
                 }
@@ -83,7 +123,7 @@ ParsedTrackingResponse = [
                 "shipping_date": "2021-03-30",
             },
             "meta": {"accounty_number": "165556", "reference": "CX4335"},
-            "status": "in_transit",
+            "status": "pending",
             "tracking_number": "103882774",
         }
     ],
