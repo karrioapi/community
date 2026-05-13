@@ -184,6 +184,7 @@
           "description": "string",
           "cusma_included": true,
           "non_auto_parts": true,
+          "completed_kitchen_cabinets_or_vanities": true,
           "fda_regulated": "yes",
           "product_composition_allocation": {
             "provided": true,

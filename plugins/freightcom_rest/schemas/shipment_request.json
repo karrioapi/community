@@ -182,6 +182,7 @@
           "description": "string",
           "cusma_included": true,
           "non_auto_parts": true,
+          "completed_kitchen_cabinets_or_vanities": true,
           "fda_regulated": "yes",
           "product_composition_allocation": {
             "provided": true,
@@ -246,6 +247,9 @@
             "value": 2.95
           },
           "hs_code": "string",
+          "hsverified": true,
+          "provided_hscode": "string",
+          "provided_description": "string",
           "country_of_origin": "CA",
           "num_units": 1,
           "unit_price": {
@@ -253,9 +257,6 @@
             "value": "4250"
           },
           "description": "string",
-          "hsverified": true,
-          "provided_hscode": "string",
-          "provided_description": "string",
           "cusma_included": true,
           "non_auto_parts": true,
           "fda_regulated": "yes",
