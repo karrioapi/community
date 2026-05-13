@@ -78,21 +78,21 @@ RatePayload = {
     },
     "parcels": [
         {
-            "height": 50,
-            "length": 50,
-            "weight": 20,
-            "width": 12,
-            "dimension_unit": "CM",
-            "weight_unit": "KG",
+            "height": 20,
+            "length": 20,
+            "weight": 44,
+            "width": 5,
+            "dimension_unit": "IN",
+            "weight_unit": "LB",
             "description": "Package 1 Description"
         },
         {
-            "height": 30,
-            "length": 50,
-            "weight": 20,
-            "width": 12,
-            "dimension_unit": "CM",
-            "weight_unit": "KG",
+            "height": 12,
+            "length": 20,
+            "weight": 44,
+            "width": 5,
+            "dimension_unit": "IN",
+            "weight_unit": "LB",
             "description": "Package 2 Description"
         }
     ],
@@ -148,14 +148,14 @@ RateRequest = {
                     "description": "Package 1 Description",
                     "measurements": {
                         "cuboid": {
-                            "h": 50.0,
-                            "l": 50.0,
-                            "unit": "cm",
-                            "w": 12.0
+                            "h": 20.0,
+                            "l": 20.0,
+                            "unit": "in",
+                            "w": 5.0
                         },
                         "weight": {
-                            "unit": "kg",
-                            "value": 20.0
+                            "unit": "lb",
+                            "value": 44.0
                         }
                     }
                 },
@@ -163,14 +163,14 @@ RateRequest = {
                     "description": "Package 2 Description",
                     "measurements": {
                         "cuboid": {
-                            "h": 30.0,
-                            "l": 50.0,
-                            "unit": "cm",
-                            "w": 12.0
+                            "h": 12.0,
+                            "l": 20.0,
+                            "unit": "in",
+                            "w": 5.0
                         },
                         "weight": {
-                            "unit": "kg",
-                            "value": 20.0
+                            "unit": "lb",
+                            "value": 44.0
                         }
                     }
                 }
