@@ -19,11 +19,15 @@ class BaseType:
 
 @attr.s(auto_attribs=True)
 class ProductType:
+    product_name: typing.Optional[str] = None
     hs_code: typing.Optional[str] = None
     country_of_origin: typing.Optional[str] = None
     num_units: typing.Optional[int] = None
     unit_price: typing.Optional[BaseType] = jstruct.JStruct[BaseType]
     description: typing.Optional[str] = None
+    hsverified: typing.Optional[bool] = None
+    provided_hscode: typing.Optional[str] = None
+    provided_description: typing.Optional[str] = None
     cusma_included: typing.Optional[bool] = None
     non_auto_parts: typing.Optional[bool] = None
     fda_regulated: typing.Optional[str] = None

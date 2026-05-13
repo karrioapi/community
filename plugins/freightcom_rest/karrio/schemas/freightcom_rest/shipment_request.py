@@ -50,6 +50,9 @@ class ProductType:
     num_units: typing.Optional[int] = None
     unit_price: typing.Optional[TotalCostType] = jstruct.JStruct[TotalCostType]
     description: typing.Optional[str] = None
+    hsverified: typing.Optional[bool] = None
+    provided_hscode: typing.Optional[str] = None
+    provided_description: typing.Optional[str] = None
     cusma_included: typing.Optional[bool] = None
     non_auto_parts: typing.Optional[bool] = None
     fda_regulated: typing.Optional[str] = None

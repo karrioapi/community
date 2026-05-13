@@ -169,6 +169,10 @@
       "products": [
         {
           "hs_code": "string",
+          "hsverified": true,
+          "product_name": "string",
+          "provided_hscode": "string",
+          "provided_description": "string",
           "country_of_origin": "CA",
           "num_units": 1,
           "unit_price": {
@@ -249,6 +253,9 @@
             "value": "4250"
           },
           "description": "string",
+          "hsverified": true,
+          "provided_hscode": "string",
+          "provided_description": "string",
           "cusma_included": true,
           "non_auto_parts": true,
           "fda_regulated": "yes",
