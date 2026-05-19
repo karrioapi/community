@@ -96,6 +96,7 @@ class ShippingOption(lib.Enum):
     freightcom_non_auto_parts = lib.OptionEnum("non_auto_parts", bool)
     freightcom_use_usmca = lib.OptionEnum("use_usmca", bool)
     freightcom_doc_files = lib.OptionEnum("freightcom_doc_files", lib.to_dict)
+    freightcom_hts_validated = lib.OptionEnum("hts_validated", bool)
 
     """ Unified Option type mapping """
     # saturday_delivery = freightcom_saturday_pickup_required

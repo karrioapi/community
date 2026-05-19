@@ -126,7 +126,7 @@ def rate_request(
     is_usmca_route = provider_utils.is_usmca_eligible(shipper.country_code, recipient.country_code)
     use_usmca_option = options.freightcom_use_usmca.state if "freightcom_use_usmca" in options else False
     is_usmca = is_usmca_route and use_usmca_option
-    
+
     customs = lib.to_customs_info(
         payload.customs,
         shipper=payload.shipper,
@@ -275,6 +275,7 @@ def rate_request(
                 freightcom_rest_req.CustomsDataType(
                     products=[
                         freightcom_rest_req.ProductType(
+                            product_name=lib.text(item.title or item.description),
                             hs_code=item.hs_code,
                             country_of_origin=item.origin_country,
                             num_units=item.quantity,
@@ -284,6 +285,9 @@ def rate_request(
                             ),
                             description=item.description,
                             fda_regulated="no",
+                            hsverified=True if (is_usmca and getattr(options.freightcom_hts_validated, "state", False)) else None,
+                            provided_hscode=item.hs_code if (is_usmca and getattr(options.freightcom_hts_validated, "state", False)) else None,
+                            provided_description=item.description if (is_usmca and getattr(options.freightcom_hts_validated, "state", False)) else None,
                             cusma_included=True if is_usmca else None,
                             non_auto_parts=(
                                 options.freightcom_non_auto_parts.state
@@ -301,6 +305,5 @@ def rate_request(
             ),
         ),
     )
-    
-    return lib.Serializable(request, lib.to_dict)
 
+    return lib.Serializable(request, lib.to_dict)

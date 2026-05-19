@@ -366,7 +366,7 @@ def shipment_request(
                 freightcom_rest_req.CustomsDataType(
                     products=[
                         freightcom_rest_req.ProductType(
-                            product_name=item.title,
+                            product_name=lib.text(item.title or item.description),
                             weight=freightcom_rest_req.WeightType(
                                 unit="kg" if item.weight_unit.upper() == "KG" else "lb",
                                 value=lib.to_decimal(item.weight)
@@ -380,6 +380,9 @@ def shipment_request(
                             ),
                             description=item.description,
                             fda_regulated="no",
+                            hsverified=True if (is_usmca and getattr(options.freightcom_hts_validated, "state", False)) else None,
+                            provided_hscode=item.hs_code if (is_usmca and getattr(options.freightcom_hts_validated, "state", False)) else None,
+                            provided_description=item.description if (is_usmca and getattr(options.freightcom_hts_validated, "state", False)) else None,
                             cusma_included=True if is_usmca else None,
                             non_auto_parts=(
                                 options.freightcom_non_auto_parts.state
@@ -410,7 +413,7 @@ def shipment_request(
                 details=freightcom_rest_req.CustomsInvoiceDetailsType(
                     products=[
                         freightcom_rest_req.ProductType(
-                            product_name=item.title,
+                            product_name=lib.text(item.title or item.description),
                             weight=freightcom_rest_req.WeightType(
                                 unit="kg" if item.weight_unit.upper() == "KG" else "lb",
                                 value=lib.to_decimal(item.weight)
@@ -424,6 +427,9 @@ def shipment_request(
                             ),
                             description=item.description,
                             fda_regulated="no",
+                            hsverified=True if (is_usmca and getattr(options.freightcom_hts_validated, "state", False)) else None,
+                            provided_hscode=item.hs_code if (is_usmca and getattr(options.freightcom_hts_validated, "state", False)) else None,
+                            provided_description=item.description if (is_usmca and getattr(options.freightcom_hts_validated, "state", False)) else None,
                             cusma_included=True if is_usmca else None,
                             non_auto_parts=(
                                 options.freightcom_non_auto_parts.state
