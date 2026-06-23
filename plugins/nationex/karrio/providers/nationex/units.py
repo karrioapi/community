@@ -89,11 +89,17 @@ def shipping_options_initializer(
 
 
 class TrackingStatus(lib.Enum):
-    on_hold = ["OnHold", "Attention"]
-    delivered = ["Delivered"]
-    in_transit = ["Pickup", "Transit"]
-    delivery_failed = ["ReturnToSender", "RefusedDelivery"]
+    # Nationex shipment states normalized to Karrio tracker status values.
+    pending = ["Creation", "DataReceived"]
+    picked_up = ["Pickup", "PartiallyPickedUp"]
+    in_transit = ["Transit", "PartiallyInTransit"]
     out_for_delivery = ["OutForDelivery", "PartiallyOutForDelivery"]
+    delivered = ["Delivered", "PartiallyDelivered"]
+    on_hold = ["OnHold", "Attention", "PickupAttemptFailed", "RefusedDelivery"]
+    cancelled = ["Cancelled"]
+    return_to_sender = ["ReturnCompleted", "ReturnToSender"]
+    ready_for_pickup = ["OutForPickup"]
+    unknown = ["Unknown"]
 
 
 class TrackingIncidentReason(lib.Enum):
