@@ -80,7 +80,7 @@ ParsedTrackingResponse = [
                     "description": "Delivered",
                     "location": "Seattle, WA, 98101, US",
                     "status": "delivered",
-                    "time": "14:30 PM",
+                    "time": "02:30 PM",
                     "timestamp": "2024-01-17T14:30:00.000Z",
                 },
                 {

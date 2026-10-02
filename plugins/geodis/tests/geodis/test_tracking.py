@@ -67,7 +67,7 @@ ParsedTrackingResponse = [
                     "date": "2020-01-17",
                     "description": "SOL/REO",
                     "location": "020037",
-                    "time": "14:23 PM",
+                    "time": "02:23 PM",
                     "timestamp": "2020-01-17T14:23:22.000Z",
                 },
                 {
@@ -75,7 +75,7 @@ ParsedTrackingResponse = [
                     "date": "2020-01-17",
                     "description": "RST/SOU",
                     "location": "020037",
-                    "time": "14:23 PM",
+                    "time": "02:23 PM",
                     "timestamp": "2020-01-17T14:23:02.000Z",
                 },
                 {
@@ -83,7 +83,7 @@ ParsedTrackingResponse = [
                     "date": "2020-01-17",
                     "description": "AAR/CFM",
                     "location": "020037",
-                    "time": "14:22 PM",
+                    "time": "02:22 PM",
                     "timestamp": "2020-01-17T14:22:17.000Z",
                 },
                 {
@@ -91,7 +91,7 @@ ParsedTrackingResponse = [
                     "date": "2020-01-17",
                     "description": "COM/CFM",
                     "location": "020037",
-                    "time": "14:21 PM",
+                    "time": "02:21 PM",
                     "timestamp": "2020-01-17T14:21:12.000Z",
                 },
                 {
@@ -99,7 +99,7 @@ ParsedTrackingResponse = [
                     "date": "2020-01-17",
                     "description": "EXP/CFM",
                     "location": "Rochefort (FR)",
-                    "time": "14:18 PM",
+                    "time": "02:18 PM",
                     "timestamp": "2020-01-17T14:18:35.000Z",
                 },
                 {
@@ -107,7 +107,7 @@ ParsedTrackingResponse = [
                     "date": "2020-01-17",
                     "description": "PCH/CFM",
                     "location": "Rochefort (FR)",
-                    "time": "14:16 PM",
+                    "time": "02:16 PM",
                     "timestamp": "2020-01-17T14:16:54.000Z",
                 },
                 {
@@ -115,7 +115,7 @@ ParsedTrackingResponse = [
                     "date": "2020-01-17",
                     "description": "COM/CFM",
                     "location": "Rochefort (FR)",
-                    "time": "14:16 PM",
+                    "time": "02:16 PM",
                     "timestamp": "2020-01-17T14:16:16.000Z",
                 },
             ],
