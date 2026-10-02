@@ -69,7 +69,7 @@ ParsedTrackingResponse = [
                     "latitude": -33.8706672,
                     "longitude": 151.192487,
                     "status": "in_transit",
-                    "time": "13:07 PM",
+                    "time": "01:07 PM",
                     "timestamp": "2023-09-08T13:07:24.000Z",
                 }
             ],

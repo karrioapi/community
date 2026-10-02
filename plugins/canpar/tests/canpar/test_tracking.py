@@ -77,7 +77,7 @@ ParsedTrackingResponse = [
                     "date": "2011-03-07",
                     "description": "INTERLINE OUTBOUND",
                     "location": "JOHN CYOPECK CENTRE, 205 NEW TORONTO STREET, ETOBICOKE, ON, CA",
-                    "time": "23:05 PM",
+                    "time": "11:05 PM",
                     "timestamp": "2011-03-07T23:05:59.000Z",
                 },
                 {
@@ -85,7 +85,7 @@ ParsedTrackingResponse = [
                     "date": "2011-03-07",
                     "description": "ARRIVAL AT HUB/TERMINAL FROM BULK/CITY TRAILER",
                     "location": "JOHN CYOPECK CENTRE, 205 NEW TORONTO STREET, ETOBICOKE, ON, CA",
-                    "time": "23:03 PM",
+                    "time": "11:03 PM",
                     "timestamp": "2011-03-07T23:03:14.000Z",
                 },
                 {
@@ -93,7 +93,7 @@ ParsedTrackingResponse = [
                     "date": "2011-03-07",
                     "description": "PICKUP FROM CUSTOMER/SHIPPER",
                     "location": "JOHN CYOPECK CENTRE, 205 NEW TORONTO STREET, ETOBICOKE, ON, CA",
-                    "time": "14:53 PM",
+                    "time": "02:53 PM",
                     "timestamp": "2011-03-07T14:53:53.000Z",
                 },
             ],

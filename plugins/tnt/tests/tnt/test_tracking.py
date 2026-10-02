@@ -104,7 +104,7 @@ PARSED_TRACKING_RESPONSE = [
                     "date": "2021-02-03",
                     "description": "\n        Shipment In Transit.\n      ",
                     "location": "DZ5-\n        DZ5\n      ",
-                    "time": "16:51 PM",
+                    "time": "04:51 PM",
                     "timestamp": "2021-02-03T16:51:00.000Z",
                 },
                 {
@@ -112,7 +112,7 @@ PARSED_TRACKING_RESPONSE = [
                     "date": "2021-02-03",
                     "description": "\n        Shipment Received At Tnt Location\n      ",
                     "location": "DZ5-\n        DZ5\n      ",
-                    "time": "16:13 PM",
+                    "time": "04:13 PM",
                     "timestamp": "2021-02-03T16:13:00.000Z",
                 },
                 {
@@ -120,7 +120,7 @@ PARSED_TRACKING_RESPONSE = [
                     "date": "2021-02-03",
                     "description": "\n        Shipment Delayed In Transit Recovery Actions Underway\n      ",
                     "location": "BA4-\n        Bradford\n      ",
-                    "time": "14:12 PM",
+                    "time": "02:12 PM",
                     "timestamp": "2021-02-03T14:12:00.000Z",
                 },
                 {
@@ -136,7 +136,7 @@ PARSED_TRACKING_RESPONSE = [
                     "date": "2021-02-02",
                     "description": "\n        Connection Delay. Recovery Actions Underway.\n      ",
                     "location": "DZ5-\n        DZ5\n      ",
-                    "time": "21:45 PM",
+                    "time": "09:45 PM",
                     "timestamp": "2021-02-02T21:45:00.000Z",
                 },
                 {
@@ -168,7 +168,7 @@ PARSED_TRACKING_RESPONSE = [
                     "date": "2021-02-01",
                     "description": "\n        Shipment In Transit.\n      ",
                     "location": "DNG-\n        Nuernberg Hub\n      ",
-                    "time": "18:51 PM",
+                    "time": "06:51 PM",
                     "timestamp": "2021-02-01T18:51:00.000Z",
                 },
                 {
@@ -176,7 +176,7 @@ PARSED_TRACKING_RESPONSE = [
                     "date": "2021-02-01",
                     "description": "\n        Shipment Received At Tnt Location\n      ",
                     "location": "DNG-\n        Nuernberg Hub\n      ",
-                    "time": "18:46 PM",
+                    "time": "06:46 PM",
                     "timestamp": "2021-02-01T18:46:00.000Z",
                 },
                 {
@@ -184,7 +184,7 @@ PARSED_TRACKING_RESPONSE = [
                     "date": "2021-02-01",
                     "description": "\n        Shipment Received At Origin Depot.\n      ",
                     "location": "NBE-\n        Nuernberg\n      ",
-                    "time": "18:42 PM",
+                    "time": "06:42 PM",
                     "timestamp": "2021-02-01T18:42:00.000Z",
                 },
             ],

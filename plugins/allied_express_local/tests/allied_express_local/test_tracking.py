@@ -100,7 +100,7 @@ DeliveredParsedTrackingResponse = [
                     "date": "2023-10-26",
                     "description": "Freight has been delivered",
                     "location": "NOWRA",
-                    "time": "14:03 PM",
+                    "time": "02:03 PM",
                     "timestamp": "2023-10-26T14:03:55.000Z",
                 }
             ],
